@@ -27,7 +27,20 @@ final class SDKManagerImpl {
 
     private var cancellables: [AnyCancellable] = []
 
-    private let synchronizer: SDKSynchronizer
+    var transactionsStream: AnyPublisher<[Transaction], Never> {
+        return synchronizer.eventStream
+            .compactMap { event in
+                switch event {
+                case let .foundTransactions(transactions, _):
+                    return transactions.map { Transaction(zcashTransaction: $0) }
+                default:
+                    return nil
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+
+    let synchronizer: SDKSynchronizer
     init() {
         // We need to use some kind of DI here in future
         let initializer = Initializer(
@@ -115,6 +128,12 @@ final class SDKManagerImpl {
         synchronizer.eventStream
             .sink(
                 receiveValue: { event in
+                    switch event {
+                    case .foundTransactions:
+                        print("Found transactions !!! Manager")
+                    default:
+                        break
+                    }
                     print("Event:\n\(event)")
                 }
             )

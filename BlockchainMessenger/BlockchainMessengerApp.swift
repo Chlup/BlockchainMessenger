@@ -9,11 +9,18 @@ import SwiftUI
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let sdkManager = SDKManagerImpl()
+    var messagesManager: MessagesManagerImpl!
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        messagesManager = MessagesManagerImpl(
+            synchronizer: sdkManager.synchronizer,
+            foundTransactionsStream: sdkManager.transactionsStream
+        )
+        messagesManager.start()
+
         Task {
             let seed = """
             vault stage draft bomb sport actor phrase sunset filter yellow coral jealous loan exact spot announce dragon federal congress false \
@@ -21,7 +28,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             """
 
             do {
-                try await sdkManager.start(with: seed, birthday: 2500000, walletMode: .existingWallet)
+                try await sdkManager.start(with: seed, birthday: 2115000, walletMode: .existingWallet)
             } catch {
                 print("Init or sync failed with error: \(error)")
             }
