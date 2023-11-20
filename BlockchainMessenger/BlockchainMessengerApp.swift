@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Chlup
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let sdkManager = SDKManagerImpl()

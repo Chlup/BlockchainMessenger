@@ -9,16 +9,16 @@ import Foundation
 import Combine
 import ZcashLightClientKit
 
-protocol MessagesManager {
+public protocol MessagesManager {
     func start()
 }
 
-final class MessagesManagerImpl {
+public final class MessagesManagerImpl {
     private var cancellables: [AnyCancellable] = []
     private let storage: MessagesStorage
 
     let stream: AnyPublisher<[Transaction], Never>
-    init(synchronizer: Synchronizer, foundTransactionsStream stream: AnyPublisher<[Transaction], Never>) {
+    public init(synchronizer: Synchronizer, foundTransactionsStream stream: AnyPublisher<[Transaction], Never>) {
         self.stream = stream
         // DI should be used
         self.storage = MessagesStorageImpl(synchronizer: synchronizer)
@@ -47,7 +47,7 @@ final class MessagesManagerImpl {
 }
 
 extension MessagesManagerImpl: MessagesManager {
-    func start() {
+    public func start() {
         cancel()
         stream
             .sink(

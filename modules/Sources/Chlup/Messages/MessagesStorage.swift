@@ -8,14 +8,14 @@
 import Foundation
 import ZcashLightClientKit
 
-typealias TransactionID = String
-typealias MessageID = String
+public typealias TransactionID = String
+public typealias MessageID = String
 
-protocol MessagesStorage {
+public protocol MessagesStorage {
     func store(transaction: Transaction) async throws
 }
 
-actor MessagesStorageImpl {
+public actor MessagesStorageImpl {
     private var messages: [TransactionID: Message] = [:]
     private var messagesList: [Message] = []
 
@@ -87,7 +87,7 @@ actor MessagesStorageImpl {
 }
 
 extension MessagesStorageImpl: MessagesStorage {
-    func store(transaction: Transaction) async throws {
+    public func store(transaction: Transaction) async throws {
         print("Storing transaction in storage")
         let transactionID = transaction.rawID.sha256
         if let existingMessage = messages[transactionID] {

@@ -10,11 +10,11 @@ import ZcashLightClientKit
 import MnemonicSwift
 import Combine
 
-protocol SDKManager: AnyObject {
+public protocol SDKManager: AnyObject {
     func start(with seed: String, birthday: BlockHeight, walletMode: WalletInitMode) async throws
 }
 
-final class SDKManagerImpl {
+public final class SDKManagerImpl {
     enum Errors: Error {
         case synchronizerInitFailed(Initializer.InitializationResult)
     }
@@ -41,7 +41,7 @@ final class SDKManagerImpl {
     }
 
     let synchronizer: SDKSynchronizer
-    init() {
+    public init() {
         // We need to use some kind of DI here in future
         let initializer = Initializer(
             cacheDbURL: nil,
@@ -142,7 +142,7 @@ final class SDKManagerImpl {
 }
 
 extension SDKManagerImpl: SDKManager {
-    func start(with seed: String, birthday: BlockHeight, walletMode: WalletInitMode) async throws {
+    public func start(with seed: String, birthday: BlockHeight, walletMode: WalletInitMode) async throws {
         if synchronizer.latestState.syncStatus == .unprepared {
             let seedBytes = try Mnemonic.deterministicSeedBytes(from: seed)
             let result = try await synchronizer.prepare(with: seedBytes, walletBirthday: birthday, for: walletMode)
