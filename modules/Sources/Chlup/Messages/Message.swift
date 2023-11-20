@@ -8,7 +8,7 @@
 import Foundation
 import ZcashLightClientKit
 
-struct Message {
+public struct Message {
     enum State {
         case sent
         case received

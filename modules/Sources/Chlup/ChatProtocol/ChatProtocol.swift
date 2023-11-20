@@ -16,7 +16,7 @@ import Foundation
 
  */
 
-enum ChatProtocol {
+public enum ChatProtocol {
     enum Errors: Error {
         case notImplemented
         case textTooLong
@@ -44,7 +44,7 @@ enum ChatProtocol {
             Constants.maxLength - Constants.prefix.utf8.count - Constants.versionLength - Constants.chatIDLength - Constants.messageTypeLength
     }
 
-    enum Version: Int {
+    public enum Version: Int {
         case v1 = 1
     }
 
@@ -54,7 +54,7 @@ enum ChatProtocol {
         case video = 3
     }
 
-    enum MessageToEncode {
+    public enum MessageToEncode {
         case text(String)
         // Future types
         case image(Data)
@@ -69,11 +69,11 @@ enum ChatProtocol {
         }
     }
 
-    enum EncodedMessage {
+    public enum EncodedMessage {
         case text(String)
     }
 
-    enum DecodedMessage {
+    public enum DecodedMessage {
         case text(_ chatID: Int, _ text: String)
     }
 
@@ -95,7 +95,7 @@ enum ChatProtocol {
         )
     }
 
-    static func encodeMessage(version: Version = .v1, chatID: Int, message: MessageToEncode) throws -> EncodedMessage {
+    public static func encodeMessage(version: Version = .v1, chatID: Int, message: MessageToEncode) throws -> EncodedMessage {
         doAssertions()
 
         let text: String
@@ -133,7 +133,7 @@ enum ChatProtocol {
         return .text(output)
     }
 
-    static func decode(message: String) throws -> DecodedMessage {
+    public static func decode(message: String) throws -> DecodedMessage {
         doAssertions()
 
         guard message.utf8.count > Constants.prefix.utf8.count + Constants.versionLength + Constants.chatIDLength + Constants.messageTypeLength else {

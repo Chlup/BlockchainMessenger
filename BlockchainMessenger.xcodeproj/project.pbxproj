@@ -14,16 +14,8 @@
 		3457A7E32B07C91300216B3E /* BlockchainMessengerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7E22B07C91300216B3E /* BlockchainMessengerTests.swift */; };
 		3457A7ED2B07C91300216B3E /* BlockchainMessengerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EC2B07C91300216B3E /* BlockchainMessengerUITests.swift */; };
 		3457A7EF2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EE2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift */; };
-		348027B72B0A5A8A004C2A3A /* BinaryInteger+binaryDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348027B62B0A5A8A004C2A3A /* BinaryInteger+binaryDescription.swift */; };
-		3487EF1A2B0A0D37009FB245 /* ZcashLightClientKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3487EF192B0A0D37009FB245 /* ZcashLightClientKit */; };
-		3487EF1C2B0A12A4009FB245 /* SDKManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487EF1B2B0A12A4009FB245 /* SDKManager.swift */; };
-		3487EF1F2B0A1539009FB245 /* MnemonicSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3487EF1E2B0A1539009FB245 /* MnemonicSwift */; };
-		3487EF212B0A1AD1009FB245 /* MessagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487EF202B0A1AD1009FB245 /* MessagesManager.swift */; };
-		3487EF232B0A1F3C009FB245 /* MessagesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487EF222B0A1F3C009FB245 /* MessagesStorage.swift */; };
-		3487EF252B0A239F009FB245 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487EF242B0A239F009FB245 /* Message.swift */; };
-		3487EF2A2B0A2453009FB245 /* Data+Hash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487EF292B0A2453009FB245 /* Data+Hash.swift */; };
-		3487EF2D2B0A2D51009FB245 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487EF2C2B0A2D51009FB245 /* Transaction.swift */; };
-		3487EF302B0A4323009FB245 /* ChatProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487EF2F2B0A4323009FB245 /* ChatProtocol.swift */; };
+		9E476B232B0B44020050E543 /* Chlup in Frameworks */ = {isa = PBXBuildFile; productRef = 9E476B222B0B44020050E543 /* Chlup */; };
+		9E9C27052B0B3F1C00A588A8 /* modules in Resources */ = {isa = PBXBuildFile; fileRef = 9E9C27042B0B3F1C00A588A8 /* modules */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,14 +46,7 @@
 		3457A7E82B07C91300216B3E /* BlockchainMessengerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlockchainMessengerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3457A7EC2B07C91300216B3E /* BlockchainMessengerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainMessengerUITests.swift; sourceTree = "<group>"; };
 		3457A7EE2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainMessengerUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		348027B62B0A5A8A004C2A3A /* BinaryInteger+binaryDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BinaryInteger+binaryDescription.swift"; sourceTree = "<group>"; };
-		3487EF1B2B0A12A4009FB245 /* SDKManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKManager.swift; sourceTree = "<group>"; };
-		3487EF202B0A1AD1009FB245 /* MessagesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesManager.swift; sourceTree = "<group>"; };
-		3487EF222B0A1F3C009FB245 /* MessagesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesStorage.swift; sourceTree = "<group>"; };
-		3487EF242B0A239F009FB245 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		3487EF292B0A2453009FB245 /* Data+Hash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hash.swift"; sourceTree = "<group>"; };
-		3487EF2C2B0A2D51009FB245 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
-		3487EF2F2B0A4323009FB245 /* ChatProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatProtocol.swift; sourceTree = "<group>"; };
+		9E9C27042B0B3F1C00A588A8 /* modules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = modules; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,8 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3487EF1F2B0A1539009FB245 /* MnemonicSwift in Frameworks */,
-				3487EF1A2B0A0D37009FB245 /* ZcashLightClientKit in Frameworks */,
+				9E476B232B0B44020050E543 /* Chlup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +82,7 @@
 				3457A7E12B07C91300216B3E /* BlockchainMessengerTests */,
 				3457A7EB2B07C91300216B3E /* BlockchainMessengerUITests */,
 				3457A7CF2B07C91200216B3E /* Products */,
+				9E476B212B0B44020050E543 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,15 +99,11 @@
 		3457A7D02B07C91200216B3E /* BlockchainMessenger */ = {
 			isa = PBXGroup;
 			children = (
+				9E9C27042B0B3F1C00A588A8 /* modules */,
 				3457A7D12B07C91200216B3E /* BlockchainMessengerApp.swift */,
 				3457A7D32B07C91200216B3E /* ContentView.swift */,
 				3457A7D52B07C91300216B3E /* Assets.xcassets */,
-				3487EF272B0A23F8009FB245 /* Messages */,
-				3487EF282B0A2400009FB245 /* Misc */,
 				3457A7D72B07C91300216B3E /* Preview Content */,
-				3487EF2E2B0A4314009FB245 /* ChatProtocol */,
-				3487EF262B0A23F0009FB245 /* SDK */,
-				3487EF2B2B0A2D44009FB245 /* Transaction */,
 			);
 			path = BlockchainMessenger;
 			sourceTree = "<group>";
@@ -152,47 +133,11 @@
 			path = BlockchainMessengerUITests;
 			sourceTree = "<group>";
 		};
-		3487EF262B0A23F0009FB245 /* SDK */ = {
+		9E476B212B0B44020050E543 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3487EF1B2B0A12A4009FB245 /* SDKManager.swift */,
 			);
-			path = SDK;
-			sourceTree = "<group>";
-		};
-		3487EF272B0A23F8009FB245 /* Messages */ = {
-			isa = PBXGroup;
-			children = (
-				3487EF202B0A1AD1009FB245 /* MessagesManager.swift */,
-				3487EF222B0A1F3C009FB245 /* MessagesStorage.swift */,
-				3487EF242B0A239F009FB245 /* Message.swift */,
-			);
-			path = Messages;
-			sourceTree = "<group>";
-		};
-		3487EF282B0A2400009FB245 /* Misc */ = {
-			isa = PBXGroup;
-			children = (
-				3487EF292B0A2453009FB245 /* Data+Hash.swift */,
-				348027B62B0A5A8A004C2A3A /* BinaryInteger+binaryDescription.swift */,
-			);
-			path = Misc;
-			sourceTree = "<group>";
-		};
-		3487EF2B2B0A2D44009FB245 /* Transaction */ = {
-			isa = PBXGroup;
-			children = (
-				3487EF2C2B0A2D51009FB245 /* Transaction.swift */,
-			);
-			path = Transaction;
-			sourceTree = "<group>";
-		};
-		3487EF2E2B0A4314009FB245 /* ChatProtocol */ = {
-			isa = PBXGroup;
-			children = (
-				3487EF2F2B0A4323009FB245 /* ChatProtocol.swift */,
-			);
-			path = ChatProtocol;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,8 +157,7 @@
 			);
 			name = BlockchainMessenger;
 			packageProductDependencies = (
-				3487EF192B0A0D37009FB245 /* ZcashLightClientKit */,
-				3487EF1E2B0A1539009FB245 /* MnemonicSwift */,
+				9E476B222B0B44020050E543 /* Chlup */,
 			);
 			productName = BlockchainMessenger;
 			productReference = 3457A7CE2B07C91200216B3E /* BlockchainMessenger.app */;
@@ -288,8 +232,6 @@
 			);
 			mainGroup = 3457A7C52B07C91200216B3E;
 			packageReferences = (
-				3487EF182B0A0D37009FB245 /* XCRemoteSwiftPackageReference "ZcashLightClientKit" */,
-				3487EF1D2B0A1539009FB245 /* XCRemoteSwiftPackageReference "MnemonicSwift" */,
 			);
 			productRefGroup = 3457A7CF2B07C91200216B3E /* Products */;
 			projectDirPath = "";
@@ -307,6 +249,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E9C27052B0B3F1C00A588A8 /* modules in Resources */,
 				3457A7D92B07C91300216B3E /* Preview Assets.xcassets in Resources */,
 				3457A7D62B07C91300216B3E /* Assets.xcassets in Resources */,
 			);
@@ -334,15 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3457A7D42B07C91200216B3E /* ContentView.swift in Sources */,
-				3487EF232B0A1F3C009FB245 /* MessagesStorage.swift in Sources */,
-				3487EF2D2B0A2D51009FB245 /* Transaction.swift in Sources */,
-				3487EF2A2B0A2453009FB245 /* Data+Hash.swift in Sources */,
 				3457A7D22B07C91200216B3E /* BlockchainMessengerApp.swift in Sources */,
-				3487EF302B0A4323009FB245 /* ChatProtocol.swift in Sources */,
-				3487EF252B0A239F009FB245 /* Message.swift in Sources */,
-				3487EF1C2B0A12A4009FB245 /* SDKManager.swift in Sources */,
-				3487EF212B0A1AD1009FB245 /* MessagesManager.swift in Sources */,
-				348027B72B0A5A8A004C2A3A /* BinaryInteger+binaryDescription.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +366,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -488,7 +423,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -506,7 +441,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BlockchainMessenger/Preview Content\"";
-				DEVELOPMENT_TEAM = PANT4FKZGM;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -514,6 +449,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -535,7 +471,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BlockchainMessenger/Preview Content\"";
-				DEVELOPMENT_TEAM = PANT4FKZGM;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -543,6 +479,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -673,35 +610,10 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		3487EF182B0A0D37009FB245 /* XCRemoteSwiftPackageReference "ZcashLightClientKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Chlup/ZcashLightClientKit.git";
-			requirement = {
-				branch = blockchainmessenger;
-				kind = branch;
-			};
-		};
-		3487EF1D2B0A1539009FB245 /* XCRemoteSwiftPackageReference "MnemonicSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Electric-Coin-Company/MnemonicSwift.git";
-			requirement = {
-				kind = exactVersion;
-				version = 2.2.4;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		3487EF192B0A0D37009FB245 /* ZcashLightClientKit */ = {
+		9E476B222B0B44020050E543 /* Chlup */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3487EF182B0A0D37009FB245 /* XCRemoteSwiftPackageReference "ZcashLightClientKit" */;
-			productName = ZcashLightClientKit;
-		};
-		3487EF1E2B0A1539009FB245 /* MnemonicSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3487EF1D2B0A1539009FB245 /* XCRemoteSwiftPackageReference "MnemonicSwift" */;
-			productName = MnemonicSwift;
+			productName = Chlup;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
