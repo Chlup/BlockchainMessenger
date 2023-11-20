@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension BinaryInteger {
+extension BinaryInteger {
     var binaryDescription: String {
         var binaryString = ""
         var internalNumber = self

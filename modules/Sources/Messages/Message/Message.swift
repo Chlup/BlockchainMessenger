@@ -8,7 +8,7 @@
 import Foundation
 import ZcashLightClientKit
 
-public struct Message {
+struct Message {
     enum State {
         case sent
         case received
@@ -22,7 +22,7 @@ public struct Message {
 }
 
 extension Message: Equatable {
-    public static func == (lhs: Message, rhs: Message) -> Bool {
+    static func == (lhs: Message, rhs: Message) -> Bool {
         return lhs.id == rhs.id
     }
 }

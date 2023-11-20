@@ -9,15 +9,16 @@ let package = Package(
         .iOS(.v16)
     ],
     products: [
-        .library(name: "Chlup", targets: ["Chlup"]),
+        .library(name: "Messages", targets: ["Messages"]),
         .library(name: "CreateAccount", targets: ["CreateAccount"]),
         .library(name: "RestoreAccount", targets: ["RestoreAccount"]),
         .library(name: "Root", targets: ["Root"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.4.0"),
-        .package(url: "https://github.com/zcash-hackworks/MnemonicSwift", from: "2.2.4"),
-        .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", branch: "blockchainmessenger")
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.4.0"),
+        .package(url: "https://github.com/zcash-hackworks/MnemonicSwift", exact: "2.2.4"),
+        .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", branch: "blockchainmessenger"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.1")
     ],
     targets: [
         .target(
@@ -28,12 +29,13 @@ let package = Package(
             path: "Sources/Features/CreateAccount"
         ),
         .target(
-            name: "Chlup",
+            name: "Messages",
             dependencies: [
                 .product(name: "MnemonicSwift", package: "MnemonicSwift"),
-                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
+                .product(name: "Dependencies", package: "swift-dependencies")
             ],
-            path: "Sources/Chlup"
+            path: "Sources/Messages"
         ),
         .target(
             name: "RestoreAccount",

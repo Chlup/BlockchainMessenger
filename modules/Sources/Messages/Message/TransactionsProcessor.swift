@@ -1,5 +1,5 @@
 //
-//  MessagesManager.swift
+//  TransactionsProcessor.swift
 //  BlockchainMessenger
 //
 //  Created by Michal Fousek on 19.11.2023.
@@ -8,20 +8,18 @@
 import Foundation
 import Combine
 import ZcashLightClientKit
+import Dependencies
 
-public protocol MessagesManager {
+protocol TransactionsProcessor {
     func start()
 }
 
-public final class MessagesManagerImpl {
+final class TransactionsProcessorImpl {
     private var cancellables: [AnyCancellable] = []
-    private let storage: MessagesStorage
+    @Dependency(\.messagesStorage) var storage
+    @Dependency(\.sdkManager) var sdkManager
 
-    let stream: AnyPublisher<[Transaction], Never>
-    public init(synchronizer: Synchronizer, foundTransactionsStream stream: AnyPublisher<[Transaction], Never>) {
-        self.stream = stream
-        // DI should be used
-        self.storage = MessagesStorageImpl(synchronizer: synchronizer)
+    init() {
     }
 
     deinit {
@@ -46,10 +44,10 @@ public final class MessagesManagerImpl {
     }
 }
 
-extension MessagesManagerImpl: MessagesManager {
-    public func start() {
+extension TransactionsProcessorImpl: TransactionsProcessor {
+    func start() {
         cancel()
-        stream
+        sdkManager.transactionsStream
             .sink(
                 receiveValue: { [weak self] transactions in
                     print("Found transactions !!! \(transactions.count)")
@@ -62,5 +60,16 @@ extension MessagesManagerImpl: MessagesManager {
                 }
             )
             .store(in: &cancellables)
+    }
+}
+
+private enum TransactionsProcessorClientKey: DependencyKey {
+    static let liveValue: TransactionsProcessor = TransactionsProcessorImpl()
+}
+
+extension DependencyValues {
+    var transactionsProcessor: TransactionsProcessor {
+        get { self[TransactionsProcessorClientKey.self] }
+        set { self[TransactionsProcessorClientKey.self] = newValue }
     }
 }

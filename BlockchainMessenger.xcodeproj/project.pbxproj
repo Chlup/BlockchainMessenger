@@ -13,7 +13,9 @@
 		3457A7E32B07C91300216B3E /* BlockchainMessengerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7E22B07C91300216B3E /* BlockchainMessengerTests.swift */; };
 		3457A7ED2B07C91300216B3E /* BlockchainMessengerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EC2B07C91300216B3E /* BlockchainMessengerUITests.swift */; };
 		3457A7EF2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EE2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift */; };
-		9E476B232B0B44020050E543 /* Chlup in Frameworks */ = {isa = PBXBuildFile; productRef = 9E476B222B0B44020050E543 /* Chlup */; };
+		3499D9F52B0BC7C40024DA08 /* CreateAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 3499D9F42B0BC7C40024DA08 /* CreateAccount */; };
+		3499D9F72B0BC7C40024DA08 /* Messages in Frameworks */ = {isa = PBXBuildFile; productRef = 3499D9F62B0BC7C40024DA08 /* Messages */; };
+		3499D9F92B0BC7C40024DA08 /* RestoreAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 3499D9F82B0BC7C40024DA08 /* RestoreAccount */; };
 		9E9C27052B0B3F1C00A588A8 /* modules in Resources */ = {isa = PBXBuildFile; fileRef = 9E9C27042B0B3F1C00A588A8 /* modules */; };
 		9EF840E12B0B544A007718D9 /* Root in Frameworks */ = {isa = PBXBuildFile; productRef = 9EF840E02B0B544A007718D9 /* Root */; };
 /* End PBXBuildFile section */
@@ -53,8 +55,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3499D9F72B0BC7C40024DA08 /* Messages in Frameworks */,
+				3499D9F52B0BC7C40024DA08 /* CreateAccount in Frameworks */,
 				9EF840E12B0B544A007718D9 /* Root in Frameworks */,
-				9E476B232B0B44020050E543 /* Chlup in Frameworks */,
+				3499D9F92B0BC7C40024DA08 /* RestoreAccount in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,8 +160,10 @@
 			);
 			name = BlockchainMessenger;
 			packageProductDependencies = (
-				9E476B222B0B44020050E543 /* Chlup */,
 				9EF840E02B0B544A007718D9 /* Root */,
+				3499D9F42B0BC7C40024DA08 /* CreateAccount */,
+				3499D9F62B0BC7C40024DA08 /* Messages */,
+				3499D9F82B0BC7C40024DA08 /* RestoreAccount */,
 			);
 			productName = BlockchainMessenger;
 			productReference = 3457A7CE2B07C91200216B3E /* BlockchainMessenger.app */;
@@ -610,9 +616,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9E476B222B0B44020050E543 /* Chlup */ = {
+		3499D9F42B0BC7C40024DA08 /* CreateAccount */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Chlup;
+			productName = CreateAccount;
+		};
+		3499D9F62B0BC7C40024DA08 /* Messages */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Messages;
+		};
+		3499D9F82B0BC7C40024DA08 /* RestoreAccount */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RestoreAccount;
 		};
 		9EF840E02B0B544A007718D9 /* Root */ = {
 			isa = XCSwiftPackageProductDependency;

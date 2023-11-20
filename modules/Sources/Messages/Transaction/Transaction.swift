@@ -8,14 +8,14 @@
 import Foundation
 import ZcashLightClientKit
 
-public struct Transaction {
+struct Transaction {
     let id: TransactionID
     let rawID: Data
     let isSentTransaction: Bool
     let minedHeight: BlockHeight?
     let memoCount: Int
 
-    public init(id: TransactionID, rawID: Data, isSentTransaction: Bool, minedHeight: BlockHeight?, memoCount: Int) {
+    init(id: TransactionID, rawID: Data, isSentTransaction: Bool, minedHeight: BlockHeight?, memoCount: Int) {
         self.id = id
         self.rawID = rawID
         self.isSentTransaction = isSentTransaction
@@ -23,7 +23,7 @@ public struct Transaction {
         self.memoCount = memoCount
     }
 
-    public init(zcashTransaction: ZcashTransaction.Overview) {
+    init(zcashTransaction: ZcashTransaction.Overview) {
         self.id = zcashTransaction.rawID.sha256
         self.rawID = zcashTransaction.rawID
         self.isSentTransaction = zcashTransaction.isSentTransaction

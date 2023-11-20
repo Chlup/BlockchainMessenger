@@ -7,49 +7,29 @@
 
 import SwiftUI
 import ComposableArchitecture
-import Chlup
+import Messages
 import Root
+import Dependencies
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    let sdkManager = SDKManagerImpl()
-    var messagesManager: MessagesManagerImpl!
+    @Dependency(\.messages) var messages
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        do {
-            let encoded = try ChatProtocol.encodeMessage(chatID: 21768, message: .text("Hello 🐞world"))
-            switch encoded {
-            case let .text(text):
-                print(text)
-                print("decoding")
-                let decoded = try ChatProtocol.decode(message: text)
-                print(decoded)
+        Task {
+            let seed = """
+            vault stage draft bomb sport actor phrase sunset filter yellow coral jealous loan exact spot announce dragon federal congress false \
+            link either frown economy
+            """
+
+            do {
+                try await messages.start(with: seed, birthday: 2115000, walletMode: .existingWallet)
+            } catch {
+                print("Init or sync failed with error: \(error)")
             }
-
-        } catch {
-            print("Error while encoding/decoding message: \(error)")
         }
-
-//        messagesManager = MessagesManagerImpl(
-//            synchronizer: sdkManager.synchronizer,
-//            foundTransactionsStream: sdkManager.transactionsStream
-//        )
-//        messagesManager.start()
-//
-//        Task {
-//            let seed = """
-//            vault stage draft bomb sport actor phrase sunset filter yellow coral jealous loan exact spot announce dragon federal congress false \
-//            link either frown economy
-//            """
-//
-//            do {
-//                try await sdkManager.start(with: seed, birthday: 2115000, walletMode: .existingWallet)
-//            } catch {
-//                print("Init or sync failed with error: \(error)")
-//            }
-//        }
 
         return true
     }

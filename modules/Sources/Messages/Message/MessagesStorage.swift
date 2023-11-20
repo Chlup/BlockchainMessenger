@@ -7,21 +7,22 @@
 
 import Foundation
 import ZcashLightClientKit
+import Dependencies
 
-public typealias TransactionID = String
-public typealias MessageID = String
+typealias TransactionID = String
+typealias MessageID = String
 
-public protocol MessagesStorage {
+protocol MessagesStorage: Actor {
     func store(transaction: Transaction) async throws
 }
 
-public actor MessagesStorageImpl {
+actor MessagesStorageImpl {
     private var messages: [TransactionID: Message] = [:]
     private var messagesList: [Message] = []
 
-    let synchronizer: Synchronizer
-    init(synchronizer: Synchronizer) {
-        self.synchronizer = synchronizer
+    @Dependency(\.sdkSynchronizer) var synchronizer
+
+    init() {
     }
 
     private func processTransactionForExistingMessage(transaction: Transaction, existingMessage: Message) {
@@ -87,7 +88,7 @@ public actor MessagesStorageImpl {
 }
 
 extension MessagesStorageImpl: MessagesStorage {
-    public func store(transaction: Transaction) async throws {
+    func store(transaction: Transaction) async throws {
         print("Storing transaction in storage")
         let transactionID = transaction.rawID.sha256
         if let existingMessage = messages[transactionID] {
@@ -107,5 +108,16 @@ extension MessagesStorageImpl: MessagesStorage {
             print("Raw messages:")
             messagesList.forEach { print($0) }
         }
+    }
+}
+
+private enum MessagesStorageClientKey: DependencyKey {
+    static let liveValue: MessagesStorage = MessagesStorageImpl()
+}
+
+extension DependencyValues {
+    var messagesStorage: MessagesStorage {
+        get { self[MessagesStorageClientKey.self] }
+        set { self[MessagesStorageClientKey.self] = newValue }
     }
 }
