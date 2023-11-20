@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		3457A7D22B07C91200216B3E /* BlockchainMessengerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7D12B07C91200216B3E /* BlockchainMessengerApp.swift */; };
-		3457A7D42B07C91200216B3E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7D32B07C91200216B3E /* ContentView.swift */; };
 		3457A7D62B07C91300216B3E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3457A7D52B07C91300216B3E /* Assets.xcassets */; };
 		3457A7D92B07C91300216B3E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3457A7D82B07C91300216B3E /* Preview Assets.xcassets */; };
 		3457A7E32B07C91300216B3E /* BlockchainMessengerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7E22B07C91300216B3E /* BlockchainMessengerTests.swift */; };
@@ -16,6 +15,7 @@
 		3457A7EF2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EE2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift */; };
 		9E476B232B0B44020050E543 /* Chlup in Frameworks */ = {isa = PBXBuildFile; productRef = 9E476B222B0B44020050E543 /* Chlup */; };
 		9E9C27052B0B3F1C00A588A8 /* modules in Resources */ = {isa = PBXBuildFile; fileRef = 9E9C27042B0B3F1C00A588A8 /* modules */; };
+		9EF840E12B0B544A007718D9 /* Root in Frameworks */ = {isa = PBXBuildFile; productRef = 9EF840E02B0B544A007718D9 /* Root */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +38,6 @@
 /* Begin PBXFileReference section */
 		3457A7CE2B07C91200216B3E /* BlockchainMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlockchainMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3457A7D12B07C91200216B3E /* BlockchainMessengerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainMessengerApp.swift; sourceTree = "<group>"; };
-		3457A7D32B07C91200216B3E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3457A7D52B07C91300216B3E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3457A7D82B07C91300216B3E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3457A7DE2B07C91300216B3E /* BlockchainMessengerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlockchainMessengerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9EF840E12B0B544A007718D9 /* Root in Frameworks */,
 				9E476B232B0B44020050E543 /* Chlup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,7 +101,6 @@
 			children = (
 				9E9C27042B0B3F1C00A588A8 /* modules */,
 				3457A7D12B07C91200216B3E /* BlockchainMessengerApp.swift */,
-				3457A7D32B07C91200216B3E /* ContentView.swift */,
 				3457A7D52B07C91300216B3E /* Assets.xcassets */,
 				3457A7D72B07C91300216B3E /* Preview Content */,
 			);
@@ -158,6 +157,7 @@
 			name = BlockchainMessenger;
 			packageProductDependencies = (
 				9E476B222B0B44020050E543 /* Chlup */,
+				9EF840E02B0B544A007718D9 /* Root */,
 			);
 			productName = BlockchainMessenger;
 			productReference = 3457A7CE2B07C91200216B3E /* BlockchainMessenger.app */;
@@ -276,7 +276,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3457A7D42B07C91200216B3E /* ContentView.swift in Sources */,
 				3457A7D22B07C91200216B3E /* BlockchainMessengerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -614,6 +613,10 @@
 		9E476B222B0B44020050E543 /* Chlup */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Chlup;
+		};
+		9EF840E02B0B544A007718D9 /* Root */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Root;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

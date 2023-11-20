@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 import Chlup
+import Root
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let sdkManager = SDKManagerImpl()
@@ -59,7 +61,15 @@ struct BlockchainMessengerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView(
+                store:
+                    Store(
+                        initialState: RootReducer.State()
+                    ) {
+                        RootReducer()
+                            ._printChanges()
+                    }
+            )
         }
     }
 }

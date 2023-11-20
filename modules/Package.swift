@@ -10,6 +10,8 @@ let package = Package(
     ],
     products: [
         .library(name: "Chlup", targets: ["Chlup"]),
+        .library(name: "CreateAccount", targets: ["CreateAccount"]),
+        .library(name: "RestoreAccount", targets: ["RestoreAccount"]),
         .library(name: "Root", targets: ["Root"])
     ],
     dependencies: [
@@ -19,6 +21,13 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "CreateAccount",
+            dependencies: [
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+            ],
+            path: "Sources/Features/CreateAccount"
+        ),
+        .target(
             name: "Chlup",
             dependencies: [
                 .product(name: "MnemonicSwift", package: "MnemonicSwift"),
@@ -27,8 +36,17 @@ let package = Package(
             path: "Sources/Chlup"
         ),
         .target(
+            name: "RestoreAccount",
+            dependencies: [
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+            ],
+            path: "Sources/Features/RestoreAccount"
+        ),
+        .target(
             name: "Root",
             dependencies: [
+                "CreateAccount",
+                "RestoreAccount",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Features/Root"
