@@ -21,6 +21,7 @@ actor MessagesStorageImpl {
     private var messagesList: [Message] = []
 
     @Dependency(\.sdkSynchronizer) var synchronizer
+    @Dependency(\.logger) var logger
 
     init() {
     }
@@ -46,27 +47,27 @@ actor MessagesStorageImpl {
     }
 
     private func processNewTransaction(_ transaction: Transaction) async throws {
-        print("Storing new transaction")
+        logger.debug("Storing new transaction")
         // Transaction must have memo
         guard transaction.memoCount > 0 else {
-            print("Transaction doesn't have memos count")
+            logger.debug("Transaction doesn't have memos count")
             return
         }
         let memos = try await synchronizer.getMemos(for: transaction.rawID)
         // Memo must be text and text of memo must be recognized as chat message.
         guard let memo = memos.first else {
-            print("Transaction doesn't have memos")
+            logger.debug("Transaction doesn't have memos")
             return
         }
 
         guard let text = memo.toString() else {
-            print("Memo for transaction can't be converted to text.")
+            logger.debug("Memo for transaction can't be converted to text.")
             return
         }
 
         guard doesMemoContainChatMessage(text: text) else { return }
 
-        print("Storing!!!!")
+        logger.debug("Storing!!!!")
 
         let message = Message(
             id: UUID().uuidString,
@@ -89,7 +90,7 @@ actor MessagesStorageImpl {
 
 extension MessagesStorageImpl: MessagesStorage {
     func store(transaction: Transaction) async throws {
-        print("Storing transaction in storage")
+        logger.debug("Storing transaction in storage")
         let transactionID = transaction.rawID.sha256
         if let existingMessage = messages[transactionID] {
             processTransactionForExistingMessage(transaction: transaction, existingMessage: existingMessage)
@@ -97,16 +98,16 @@ extension MessagesStorageImpl: MessagesStorage {
             try await processNewTransaction(transaction)
         }
 
-        print("Messages list: \(messagesList.count)")
+        logger.debug("Messages list: \(messagesList.count)")
         if messagesList.count > 0 {
             for message in messagesList {
                 var output = message.state == .sent ? "S: " : "R: "
                 output += message.text
-                print(output)
+                logger.debug(output)
             }
             
-            print("Raw messages:")
-            messagesList.forEach { print($0) }
+            logger.debug("Raw messages:")
+            messagesList.forEach { self.logger.debug("\($0)") }
         }
     }
 }

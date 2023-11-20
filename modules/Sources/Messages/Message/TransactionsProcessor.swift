@@ -18,6 +18,7 @@ final class TransactionsProcessorImpl {
     private var cancellables: [AnyCancellable] = []
     @Dependency(\.messagesStorage) var storage
     @Dependency(\.sdkManager) var sdkManager
+    @Dependency(\.logger) var logger
 
     init() {
     }
@@ -32,13 +33,13 @@ final class TransactionsProcessorImpl {
     }
 
     private func process(transactions: [Transaction]) async {
-        print("Processing received transactions")
+        logger.debug("Processing received transactions")
         for transaction in transactions {
-            print("processing transaction \(transaction)")
+            logger.debug("processing transaction \(transaction)")
             do {
                 try await storage.store(transaction: transaction)
             } catch {
-                print("Failed to store transaction: \(error) \(transaction)")
+                logger.debug("Failed to store transaction: \(error) \(transaction)")
             }
         }
     }
@@ -50,7 +51,7 @@ extension TransactionsProcessorImpl: TransactionsProcessor {
         sdkManager.transactionsStream
             .sink(
                 receiveValue: { [weak self] transactions in
-                    print("Found transactions !!! \(transactions.count)")
+                    self?.logger.debug("Found transactions !!! \(transactions.count)")
                     // Strange hack. If self?.process... is used then compiler throws:
                     // "Reference to captured var 'self' in concurrently-executing code" error.
                     let me = self

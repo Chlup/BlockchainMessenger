@@ -42,6 +42,7 @@ final class SDKManagerImpl {
     }
 
     @Dependency(\.sdkSynchronizer) var synchronizer
+    @Dependency(\.logger) var logger
 
     init() {
     }
@@ -53,22 +54,22 @@ final class SDKManagerImpl {
         cancellables = []
         synchronizer.stateStream
             .sink(
-                receiveValue: { state in
-                    print("State:\n\(state)")
+                receiveValue: { [weak self] state in
+                    self?.logger.debug("State:\n\(state)")
                 }
             )
             .store(in: &cancellables)
 
         synchronizer.eventStream
             .sink(
-                receiveValue: { event in
+                receiveValue: { [weak self] event in
                     switch event {
                     case .foundTransactions:
-                        print("Found transactions !!! Manager")
+                        self?.logger.debug("Found transactions !!! Manager")
                     default:
                         break
                     }
-                    print("Event:\n\(event)")
+                    self?.logger.debug("Event:\n\(event)")
                 }
             )
             .store(in: &cancellables)

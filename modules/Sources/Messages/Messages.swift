@@ -15,42 +15,28 @@ public protocol Messages {
 
 struct MessagesImpl {
     @Dependency(\.transactionsProcessor) var transactionsProcessor
+    @Dependency(\.sdkManager) var sdkManager
+    @Dependency(\.logger) var logger
 }
 
 extension MessagesImpl: Messages {
     func start(with seed: String, birthday: BlockHeight, walletMode: WalletInitMode) async throws {
-        do {
-            let encoded = try ChatProtocol.encodeMessage(chatID: 21768, message: .text("Hello 🐞world"))
-            switch encoded {
-            case let .text(text):
-                print(text)
-                print("decoding")
-                let decoded = try ChatProtocol.decode(message: text)
-                print(decoded)
-            }
+//        do {
+//            let encoded = try ChatProtocol.encodeMessage(chatID: 21768, message: .text("Hello 🐞world"))
+//            switch encoded {
+//            case let .text(text):
+//                logger.debug(text)
+//                logger.debug("decoding")
+//                let decoded = try ChatProtocol.decode(message: text)
+//                logger.debug(decoded)
+//            }
+//
+//        } catch {
+//            logger.debug("Error while encoding/decoding message: \(error)")
+//        }
 
-        } catch {
-            print("Error while encoding/decoding message: \(error)")
-        }
-
-        //        TransactionsProcessor = TransactionsProcessorImpl(
-        //            synchronizer: sdkManager.synchronizer,
-        //            foundTransactionsStream: sdkManager.transactionsStream
-        //        )
-        //        TransactionsProcessor.start()
-        //
-        //        Task {
-        //            let seed = """
-        //            vault stage draft bomb sport actor phrase sunset filter yellow coral jealous loan exact spot announce dragon federal congress false \
-        //            link either frown economy
-        //            """
-        //
-        //            do {
-        //                try await sdkManager.start(with: seed, birthday: 2115000, walletMode: .existingWallet)
-        //            } catch {
-        //                print("Init or sync failed with error: \(error)")
-        //            }
-        //        }
+        transactionsProcessor.start()
+        try await sdkManager.start(with: seed, birthday: birthday, walletMode: walletMode)
     }
 }
 

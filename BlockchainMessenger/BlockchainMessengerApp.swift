@@ -13,6 +13,7 @@ import Dependencies
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     @Dependency(\.messages) var messages
+    @Dependency(\.logger) var logger
 
     func application(
         _ application: UIApplication,
@@ -27,7 +28,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             do {
                 try await messages.start(with: seed, birthday: 2115000, walletMode: .existingWallet)
             } catch {
-                print("Init or sync failed with error: \(error)")
+                logger.debug("Init or sync failed with error: \(error)")
             }
         }
 

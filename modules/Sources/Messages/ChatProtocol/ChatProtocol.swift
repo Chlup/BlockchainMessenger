@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Dependencies
 
 /*
  prefix - "}b." - 3 bajty
@@ -16,7 +17,9 @@ import Foundation
 
  */
 
-enum ChatProtocol {
+struct ChatProtocol {
+    @Dependency(\.logger) var logger
+
     enum Errors: Error {
         case notImplemented
         case textTooLong
@@ -77,7 +80,7 @@ enum ChatProtocol {
         case text(_ chatID: Int, _ text: String)
     }
 
-    private static func doAssertions() {
+    private func doAssertions() {
         assert(
             Constants.maxLength <= 512,
             "It looks like that ChatProtocol is incorrectly configured. Max length of the final message can't be higher than 512 bytes."
@@ -95,7 +98,7 @@ enum ChatProtocol {
         )
     }
 
-    static func encodeMessage(version: Version = .v1, chatID: Int, message: MessageToEncode) throws -> EncodedMessage {
+    func encodeMessage(version: Version = .v1, chatID: Int, message: MessageToEncode) throws -> EncodedMessage {
         doAssertions()
 
         let text: String
@@ -133,7 +136,7 @@ enum ChatProtocol {
         return .text(output)
     }
 
-    static func decode(message: String) throws -> DecodedMessage {
+    func decode(message: String) throws -> DecodedMessage {
         doAssertions()
 
         guard message.utf8.count > Constants.prefix.utf8.count + Constants.versionLength + Constants.chatIDLength + Constants.messageTypeLength else {
@@ -156,7 +159,7 @@ enum ChatProtocol {
             throw Errors.unknownVersion(rawVersion)
         }
 
-        print("version: \(version)")
+        logger.debug("version: \(version)")
 
         switch version {
         case .v1:
@@ -164,7 +167,7 @@ enum ChatProtocol {
         }
     }
 
-    private static func decodeV1(message: String) throws -> DecodedMessage {
+    private func decodeV1(message: String) throws -> DecodedMessage {
         let chatID = try decodeNumber(
             from: message,
             startIndex: Constants.prefix.utf8.count + Constants.versionLength,
@@ -172,7 +175,7 @@ enum ChatProtocol {
             error: .cantDecodeChatID
         )
 
-        print("chatid \(chatID)")
+        logger.debug("chatid \(chatID)")
 
         let rawMessageType = try decodeNumber(
             from: message,
@@ -194,18 +197,18 @@ enum ChatProtocol {
         }
     }
 
-    private static func decodeV1Text(from message: String) -> String {
+    private func decodeV1Text(from message: String) -> String {
         let startIndex = message.index(
             message.startIndex,
             offsetBy: Constants.prefix.utf8.count + Constants.versionLength + Constants.chatIDLength + Constants.messageTypeLength
         )
 
         let text = String(message[startIndex..<message.endIndex])
-        print("Text \(text)")
+        logger.debug("Text \(text)")
         return text
     }
 
-    private static func encode(number: Int, length: Int, into output: inout [UInt8]) {
+    private func encode(number: Int, length: Int, into output: inout [UInt8]) {
         for i in 0..<length {
             let bitShift = 8*i
             let byte = (number & (255 << bitShift)) >> bitShift
@@ -213,7 +216,7 @@ enum ChatProtocol {
         }
     }
 
-    private static func decodeNumber(from message: String, startIndex: Int, endIndex: Int, error: Errors) throws -> Int {
+    private func decodeNumber(from message: String, startIndex: Int, endIndex: Int, error: Errors) throws -> Int {
         let strStartIndex = message.index(message.startIndex, offsetBy: startIndex)
         let strEndIndex = message.index(message.startIndex, offsetBy: endIndex)
         let bytes = Array(message[strStartIndex..<strEndIndex].utf8)
