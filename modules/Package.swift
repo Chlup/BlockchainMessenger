@@ -18,7 +18,8 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.4.0"),
         .package(url: "https://github.com/zcash-hackworks/MnemonicSwift", exact: "2.2.4"),
         .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", branch: "blockchainmessenger"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.1")
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.1"),
+        .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.14.1")
     ],
     targets: [
         .target(
@@ -33,7 +34,8 @@ let package = Package(
             dependencies: [
                 .product(name: "MnemonicSwift", package: "MnemonicSwift"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
-                .product(name: "Dependencies", package: "swift-dependencies")
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "SQLite", package: "SQLite.swift")
             ],
             path: "Sources/Messages"
         ),

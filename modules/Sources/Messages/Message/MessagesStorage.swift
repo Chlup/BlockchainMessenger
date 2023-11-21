@@ -8,6 +8,7 @@
 import Foundation
 import ZcashLightClientKit
 import Dependencies
+import SQLite
 
 typealias TransactionID = String
 typealias MessageID = String

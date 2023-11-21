@@ -18,8 +18,6 @@ import Dependencies
  */
 
 struct ChatProtocol {
-    @Dependency(\.logger) var logger
-
     enum Errors: Error {
         case notImplemented
         case textTooLong
@@ -80,7 +78,7 @@ struct ChatProtocol {
         case text(_ chatID: Int, _ text: String)
     }
 
-    private func doAssertions() {
+    private static func doAssertions() {
         assert(
             Constants.maxLength <= 512,
             "It looks like that ChatProtocol is incorrectly configured. Max length of the final message can't be higher than 512 bytes."
@@ -98,7 +96,7 @@ struct ChatProtocol {
         )
     }
 
-    func encodeMessage(version: Version = .v1, chatID: Int, message: MessageToEncode) throws -> EncodedMessage {
+    static func encodeMessage(version: Version = .v1, chatID: Int, message: MessageToEncode) throws -> EncodedMessage {
         doAssertions()
 
         let text: String
@@ -136,7 +134,8 @@ struct ChatProtocol {
         return .text(output)
     }
 
-    func decode(message: String) throws -> DecodedMessage {
+    static func decode(message: String) throws -> DecodedMessage {
+        @Dependency(\.logger) var logger
         doAssertions()
 
         guard message.utf8.count > Constants.prefix.utf8.count + Constants.versionLength + Constants.chatIDLength + Constants.messageTypeLength else {
@@ -167,7 +166,9 @@ struct ChatProtocol {
         }
     }
 
-    private func decodeV1(message: String) throws -> DecodedMessage {
+    private static func decodeV1(message: String) throws -> DecodedMessage {
+        @Dependency(\.logger) var logger
+
         let chatID = try decodeNumber(
             from: message,
             startIndex: Constants.prefix.utf8.count + Constants.versionLength,
@@ -197,7 +198,9 @@ struct ChatProtocol {
         }
     }
 
-    private func decodeV1Text(from message: String) -> String {
+    private static func decodeV1Text(from message: String) -> String {
+        @Dependency(\.logger) var logger
+
         let startIndex = message.index(
             message.startIndex,
             offsetBy: Constants.prefix.utf8.count + Constants.versionLength + Constants.chatIDLength + Constants.messageTypeLength
@@ -208,7 +211,7 @@ struct ChatProtocol {
         return text
     }
 
-    private func encode(number: Int, length: Int, into output: inout [UInt8]) {
+    private static func encode(number: Int, length: Int, into output: inout [UInt8]) {
         for i in 0..<length {
             let bitShift = 8*i
             let byte = (number & (255 << bitShift)) >> bitShift
@@ -216,7 +219,7 @@ struct ChatProtocol {
         }
     }
 
-    private func decodeNumber(from message: String, startIndex: Int, endIndex: Int, error: Errors) throws -> Int {
+    private static func decodeNumber(from message: String, startIndex: Int, endIndex: Int, error: Errors) throws -> Int {
         let strStartIndex = message.index(message.startIndex, offsetBy: startIndex)
         let strEndIndex = message.index(message.startIndex, offsetBy: endIndex)
         let bytes = Array(message[strStartIndex..<strEndIndex].utf8)

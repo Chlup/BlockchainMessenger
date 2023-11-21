@@ -10,6 +10,12 @@ import Combine
 import ZcashLightClientKit
 import Dependencies
 
+enum Whatever {
+    static func doSomething() {
+        @Dependency(\.logger) var logger
+    }
+}
+
 protocol TransactionsProcessor {
     func start()
 }
