@@ -17,26 +17,31 @@ struct MessagesImpl {
     @Dependency(\.transactionsProcessor) var transactionsProcessor
     @Dependency(\.sdkManager) var sdkManager
     @Dependency(\.logger) var logger
+    @Dependency(\.chatProtocol) var chatProtocol
+    @Dependency(\.chatIDBuilder) var chatIDBuilder
+    @Dependency(\.timestampBuilder) var timestampBuilder
 }
 
 extension MessagesImpl: Messages {
     func start(with seed: String, birthday: BlockHeight, walletMode: WalletInitMode) async throws {
-//        do {
-//            let encoded = try ChatProtocol.encodeMessage(chatID: 21768, message: .text("Hello 🐞world"))
-//            switch encoded {
-//            case let .text(text):
-//                logger.debug(text)
-//                logger.debug("decoding")
-//                let decoded = try ChatProtocol.decode(message: text)
-//                logger.debug(decoded)
-//            }
-//
-//        } catch {
-//            logger.debug("Error while encoding/decoding message: \(error)")
-//        }
+        do {
+            let message = ChatProtocol.Message(
+                chatID: chatIDBuilder.buildForNow(),
+                timestmap: timestampBuilder.now(),
+                content: .text("Hello 🐞world")
+            )
 
-        transactionsProcessor.start()
-        try await sdkManager.start(with: seed, birthday: birthday, walletMode: walletMode)
+            let encoded = try chatProtocol.encode(message)
+
+            let decoded = try chatProtocol.decode(encoded)
+            logger.debug("Decoded message \(decoded)")
+
+        } catch {
+            logger.debug("Error while encoding/decoding message: \(error)")
+        }
+
+//        transactionsProcessor.start()
+//        try await sdkManager.start(with: seed, birthday: birthday, walletMode: walletMode)
     }
 }
 
