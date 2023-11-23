@@ -5,8 +5,8 @@
 //  Created by Lukáš Korba on 20.11.2023.
 //
 
-import SwiftUI
 import ComposableArchitecture
+import SwiftUI
 
 public struct RestoreAccountView: View {
     let store: StoreOf<RestoreAccountReducer>
