@@ -106,6 +106,7 @@ let package = Package(
                 "ChatsList",
                 "CreateAccount",
                 "DatabaseFiles",
+                "Messages",
                 "MnemonicClient",
                 "Models",
                 "RestoreAccount",
