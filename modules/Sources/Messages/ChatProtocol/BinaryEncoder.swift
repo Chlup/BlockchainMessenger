@@ -1,5 +1,5 @@
 //
-//  BitEncoder.swift
+//  BinaryEncoder.swift
 //  
 //
 //  Created by Michal Fousek on 21.11.2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class BitEncoder {
+final class BinaryEncoder {
     private(set) var data: Data
     init() {
         data = Data()

@@ -1,5 +1,5 @@
 //
-//  BitDecoder.swift
+//  BinaryDecoder.swift
 //  
 //
 //  Created by Michal Fousek on 21.11.2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class BitDecoder {
+final class BinaryDecoder {
     enum Errors: Error {
         case bytesRangeOutOfBounds
         case cantDecodeString

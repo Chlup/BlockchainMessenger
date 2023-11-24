@@ -15,7 +15,7 @@ import Foundation
  */
 
 enum ChatProtocolV1 {
-    static func encode(encoder: BitEncoder, message: ChatProtocol.Message) throws -> Data {
+    static func encode(encoder: BinaryEncoder, message: ChatProtocol.Message) throws -> Data {
         encoder.encode(value: message.chatID, bytesCount: 7)
         encoder.encode(value: message.timestmap, bytesCount: 5)
         encoder.encode(byte: message.content.messageType.rawValue)
@@ -37,7 +37,7 @@ enum ChatProtocolV1 {
         return encoder.data
     }
 
-    static func decode(decoder: BitDecoder) throws -> ChatProtocol.Message {
+    static func decode(decoder: BinaryDecoder) throws -> ChatProtocol.Message {
         let chatID = try decoder.decodeInt(bytesCount: 7)
         let timestamp = try decoder.decodeInt(bytesCount: 5)
         let rawMessageType = try decoder.decodeUInt8()

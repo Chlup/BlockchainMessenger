@@ -74,7 +74,7 @@ struct ChatProtocol {
     }
 
     private static func encode(_ message: Message) throws -> Data {
-        let encoder = BitEncoder()
+        let encoder = BinaryEncoder()
         encoder.encode(byte: Constants.zcashMemoByte)
         encoder.encode(string: Constants.prefix)
         encoder.encode(byte: Version.v1.rawValue)
@@ -83,7 +83,7 @@ struct ChatProtocol {
     }
 
     private static func decode(_ data: Data) throws -> Message {
-        let decoder = BitDecoder(data: data)
+        let decoder = BinaryDecoder(data: data)
 
         do {
             let firstByte = try decoder.decodeUInt8()
@@ -106,10 +106,10 @@ struct ChatProtocol {
                 return try ChatProtocolV1.decode(decoder: decoder)
             }
 
-        } catch BitDecoder.Errors.bytesRangeOutOfBounds {
-            throw Errors.invalidMessage(BitDecoder.Errors.bytesRangeOutOfBounds)
-        } catch BitDecoder.Errors.cantDecodeString {
-            throw Errors.invalidMessage(BitDecoder.Errors.cantDecodeString)
+        } catch BinaryDecoder.Errors.bytesRangeOutOfBounds {
+            throw Errors.invalidMessage(BinaryDecoder.Errors.bytesRangeOutOfBounds)
+        } catch BinaryDecoder.Errors.cantDecodeString {
+            throw Errors.invalidMessage(BinaryDecoder.Errors.cantDecodeString)
         } catch {
             throw error
         }

@@ -10,7 +10,7 @@ import ZcashLightClientKit
 import MnemonicSwift
 import Combine
 import Dependencies
-//import SDKSynchronizer
+import SDKSynchronizer
 
 protocol SDKManager: AnyObject {
     var transactionsStream: AnyPublisher<[Transaction], Never> { get }
