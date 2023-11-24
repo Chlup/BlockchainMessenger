@@ -68,7 +68,13 @@ actor TransactionsProcessorImpl {
 
         switch decodedMessage.content {
         case let .initialisation(fromAddress, toAddress, verificationText):
-            try await processInitialisationMessage(decodedMessage, fromAddress: fromAddress, toAddress: toAddress, verificationText: verificationText)
+            try await processInitialisationMessage(
+                decodedMessage,
+                alias: nil,
+                fromAddress: fromAddress,
+                toAddress: toAddress,
+                verificationText: verificationText
+            )
         case let .text(text):
             try await processTextMessage(decodedMessage, text: text, transaction: transaction)
         }
@@ -76,6 +82,7 @@ actor TransactionsProcessorImpl {
 
     private func processInitialisationMessage(
         _ message: ChatProtocol.ChatMessage,
+        alias: String?,
         fromAddress: String,
         toAddress: String,
         verificationText: String
@@ -87,6 +94,7 @@ actor TransactionsProcessorImpl {
         }
 
         let newChat = Chat(
+            alias: alias,
             chatID: message.chatID,
             timestamp: message.timestmap,
             fromAddress: fromAddress,

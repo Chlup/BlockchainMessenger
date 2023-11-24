@@ -26,11 +26,21 @@ public struct NewChatView: View {
                     .background {
                         Color.black
                     }
+                    .padding(.bottom, 10)
                 
+                TextField("alias", text: viewStore.$alias)
+                    .padding(5)
+                    .background {
+                        Rectangle()
+                            .stroke()
+                            
+                    }
+                    .padding(.bottom, 10)
+
                 Button("Start chat") {
                     viewStore.send(.startChatButtonTapped)
                 }
-                .disabled(!viewStore.isValidAddress)
+                .disabled(!viewStore.isValidForm)
                 
                 Spacer()
             }

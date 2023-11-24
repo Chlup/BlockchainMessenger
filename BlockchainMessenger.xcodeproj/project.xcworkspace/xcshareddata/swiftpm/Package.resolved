@@ -239,6 +239,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Chlup/ZcashLightClientKit.git",
       "state" : {
+        "branch" : "blockchainmessenger",
         "revision" : "d75142ae2ef5b9a8c264dafe8c1907d3615b6d0a"
       }
     }

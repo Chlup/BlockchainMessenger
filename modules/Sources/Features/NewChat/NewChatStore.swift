@@ -15,10 +15,12 @@ public struct NewChatReducer: Reducer {
 
     public struct State: Equatable {
         var isValidAddress = false
+        var isValidAlias = false
+        var isValidForm = false
         @BindingState public var uAddress = ""
-        
-        public init() {
-        }
+        @BindingState public var alias = ""
+
+        public init() {}
     }
     
     public enum Action: BindableAction, Equatable {
@@ -39,6 +41,8 @@ public struct NewChatReducer: Reducer {
             switch action {
             case .binding:
                 state.isValidAddress = derivationTool.isUnifiedAddress(state.uAddress, networkType)
+                state.isValidAlias = !state.alias.isEmpty
+                state.isValidForm = state.isValidAddress && state.isValidAlias
                 return .none
                 
             case .startChatButtonTapped:

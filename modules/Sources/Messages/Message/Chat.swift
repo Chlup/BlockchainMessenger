@@ -9,7 +9,14 @@ import Foundation
 import SQLite
 import Dependencies
 
-public struct Chat: Codable, Equatable {
+public struct Chat: Codable, Equatable, Identifiable {
+    public var id: Int {
+        chatID
+    }
+    
+    // TODO: not sure if this must be optional, I will force users to put some alias otherwise new chat won't be created
+    // but it might be required for some initial state in the DB?
+    public let alias: String?
     public let chatID: Int
     public let timestamp: Int
     public let fromAddress: String
@@ -18,6 +25,7 @@ public struct Chat: Codable, Equatable {
     public let verified: Bool
 
     enum Column {
+        static let alias = Expression<String?>("alias")
         static let chatID = Expression<Int>("chat_id")
         static let timestamp = Expression<Int>("timestamp")
         static let fromAddress = Expression<String>("from_address")
@@ -26,7 +34,16 @@ public struct Chat: Codable, Equatable {
         static let verified = Expression<Bool>("verified")
     }
 
-    init(chatID: Int, timestamp: Int, fromAddress: String, toAddress: String, verificationText: String, verified: Bool) {
+    public init(
+        alias: String?,
+        chatID: Int,
+        timestamp: Int,
+        fromAddress: String,
+        toAddress: String,
+        verificationText: String,
+        verified: Bool
+    ) {
+        self.alias = alias
         self.chatID = chatID
         self.timestamp = timestamp
         self.fromAddress = fromAddress
@@ -37,6 +54,7 @@ public struct Chat: Codable, Equatable {
 
     init(row: Row) throws {
         do {
+            alias = try row.get(Column.alias)
             chatID = try row.get(Column.chatID)
             timestamp = try row.get(Column.timestamp)
             fromAddress = try row.get(Column.fromAddress)
@@ -48,10 +66,18 @@ public struct Chat: Codable, Equatable {
         }
     }
 
-    static func createNew(fromAddress: String, toAddress: String, verificationText: String) -> Chat {
+    static func createNew(
+        alias: String?,
+        fromAddress: String,
+        toAddress: String,
+        verificationText: String
+    ) -> Chat {
         @Dependency(\.chatProtocol) var chatProtocol
+        
         let timestamp = Int(Date().timeIntervalSince1970)
+        
         return Chat(
+            alias: alias,
             chatID: chatProtocol.generateIDFor(timestamp),
             timestamp: timestamp,
             fromAddress: fromAddress,

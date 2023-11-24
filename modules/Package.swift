@@ -38,6 +38,7 @@ let package = Package(
         .target(
             name: "ChatsList",
             dependencies: [
+                "Messages",
                 "NewChat",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
