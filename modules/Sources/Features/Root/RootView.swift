@@ -25,23 +25,29 @@ public struct RootView: View {
         NavigationStackStore(
             store.scope(state: \.path, action: { .path($0) })
         ) {
-            VStack(spacing: 40) {
-                Button("create new account") {
-                    store.send(.createAccount)
+            WithViewStore(self.store, observe: \.isLoading) { viewStore in
+                VStack(spacing: 40) {
+                    if viewStore.state {
+                        Text("Loading...")
+                    } else {
+                        Button("create new account") {
+                            store.send(.createAccount)
+                        }
+                        Button("restore account") {
+                            store.send(.restoreAccount)
+                        }
+                    }
+                    //                NavigationLink(
+                    //                    state: RootReducer.Path.State.createAccount(CreateAccountReducer.State())
+                    //                ) {
+                    //                    Text("create new account")
+                    //                }
+                    //                NavigationLink(
+                    //                    state: RootReducer.Path.State.restoreAccount(RestoreAccountReducer.State())
+                    //                ) {
+                    //                    Text("restore account")
+                    //                }
                 }
-                Button("restore account") {
-                    store.send(.restoreAccount)
-                }
-                //                NavigationLink(
-                //                    state: RootReducer.Path.State.createAccount(CreateAccountReducer.State())
-                //                ) {
-                //                    Text("create new account")
-                //                }
-                //                NavigationLink(
-                //                    state: RootReducer.Path.State.restoreAccount(RestoreAccountReducer.State())
-                //                ) {
-                //                    Text("restore account")
-                //                }
             }
         } destination: { state in
             switch state {

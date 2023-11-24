@@ -27,6 +27,7 @@ public struct RootReducer: Reducer {
 
     public struct State: Equatable {
         public var appInitializationState: InitializationState = .uninitialized
+        var isLoading = true
         var path = StackState<Path.State>()
         public var storedWallet: StoredWallet?
 
@@ -43,13 +44,11 @@ public struct RootReducer: Reducer {
         }
         
         case appDelegate(AppDelegateAction)
-        case checkBackupPhraseValidation
-        case checkWalletInitialization
         case createAccount
-        case initializationSuccessfullyDone(UnifiedAddress?)
-        case initializeSDK(WalletInitMode)
+        case initiateAccount
+        case initializationFailed
+        case initializationSucceeded
         case path(StackAction<Path.State, Path.Action>)
-        case respondToWalletInitializationState(InitializationState)
         case restoreAccount
     }
     
@@ -99,31 +98,12 @@ public struct RootReducer: Reducer {
             case .appDelegate(.didFinishLaunching):
                 return .run { send in
                     try await mainQueue.sleep(for: .seconds(0.02))
-                    await send(.checkWalletInitialization)
+                    await send(.initiateAccount)
                 }
                 
             case .appDelegate:
                 return .none
             
-            case .checkBackupPhraseValidation:
-                guard let _ = state.storedWallet else {
-                    state.appInitializationState = .failed
-                    //state.alert = AlertState.cantLoadSeedPhrase()
-                    return .none
-                }
-
-                state.appInitializationState = .initialized
-                state.path.append(.chatsList(ChatsListReducer.State()))
-                return .none
-
-            case .checkWalletInitialization:
-                let walletState = RootReducer.walletInitializationState(
-                    databaseFiles: databaseFiles,
-                    walletStorage: walletStorage,
-                    zcashNetwork: zcashNetwork
-                )
-                return Effect.send(.respondToWalletInitializationState(walletState))
-
             case .createAccount:
                 do {
                     // get the random english mnemonic
@@ -135,45 +115,59 @@ public struct RootReducer: Reducer {
                     
                     state.path.append(.createAccount(CreateAccountReducer.State()))
                 } catch {
-//                    state.alert = AlertState.cantCreateNewWallet(error.toZcashError())
+                    // TODO: some error handling
                 }
                 return .none
+                
+            case .initiateAccount:
+                let walletState = RootReducer.walletInitializationState(
+                    databaseFiles: databaseFiles,
+                    walletStorage: walletStorage,
+                    zcashNetwork: zcashNetwork
+                )
+                state.appInitializationState = walletState
+                if  walletState == .initialized || walletState == .filesMissing {
+                    let walletMode = WalletInitMode.existingWallet
+                    do {
+                        state.storedWallet = try walletStorage.exportWallet()
 
-            case .initializationSuccessfullyDone(let uAddress):
-                return .none
-
-            case .initializeSDK(let walletMode):
-                do {
-                    state.storedWallet = try walletStorage.exportWallet()
-
-                    guard let storedWallet = state.storedWallet else {
-                        state.appInitializationState = .failed
-                        //state.alert = AlertState.cantLoadSeedPhrase()
-                        return .none
-                    }
-
-                    let birthday = state.storedWallet?.birthday?.value() ?? zcashSDKEnvironment.latestCheckpoint(zcashNetwork)
-
-                    try mnemonic.isValid(storedWallet.seedPhrase.value())
-                    let seedBytes = try mnemonic.toSeed(storedWallet.seedPhrase.value())
-                    
-                    return .run { send in
-                        do {
-                            // TODO: napojit pres messages a zahodit primy access na sdkSynchronizer
-                            try await messages.start(with: storedWallet.seedPhrase.value(), birthday: birthday, walletMode: walletMode)
-                            try await sdkSynchronizer.prepareWith(seedBytes, birthday, walletMode)
-                            try await sdkSynchronizer.start(false)
-
-                            let uAddress = try? await sdkSynchronizer.getUnifiedAddress(0)
-                            await send(.initializationSuccessfullyDone(uAddress))
-                        } catch {
-                            //await send(.initializationFailed(error.toZcashError()))
+                        guard let storedWallet = state.storedWallet else {
+                            state.appInitializationState = .failed
+                            return .send(.initializationFailed)
                         }
+
+                        let birthday = state.storedWallet?.birthday?.value() ?? zcashSDKEnvironment.latestCheckpoint(zcashNetwork)
+
+                        try mnemonic.isValid(storedWallet.seedPhrase.value())
+                        let seedBytes = try mnemonic.toSeed(storedWallet.seedPhrase.value())
+                        
+                        return .run { send in
+                            do {
+                                // TODO: napojit pres messages a zahodit primy access na sdkSynchronizer
+                                try await messages.start(with: storedWallet.seedPhrase.value(), birthday: birthday, walletMode: walletMode)
+                                try await sdkSynchronizer.prepareWith(seedBytes, birthday, walletMode)
+                                try await sdkSynchronizer.start(false)
+
+                                await send(.initializationSucceeded)
+                            } catch {
+                                await send(.initializationFailed)
+                            }
+                        }
+                    } catch {
+                        return .send(.initializationFailed)
                     }
-                } catch {
-                    //return Effect.send(.initializationFailed(error.toZcashError()))
-                    return .none
                 }
+                return .send(.initializationFailed)
+
+            case .initializationFailed:
+                // TODO: some error handling
+                state.isLoading = false
+                return .none
+
+            case .initializationSucceeded:
+                state.appInitializationState = .initialized
+                state.path.append(.chatsList(ChatsListReducer.State()))
+                return .none
             
             case .path(.element(id: _, action: .createAccount(.confirmationButtonTapped))):
                 state.path.append(.chatsList(ChatsListReducer.State()))
@@ -181,33 +175,9 @@ public struct RootReducer: Reducer {
                 
             case .path:
                 return .none
-
-            case .respondToWalletInitializationState(let walletState):
-                switch walletState {
-                case .failed:
-                    state.appInitializationState = .failed
-                    //state.alert = AlertState.walletStateFailed(walletState)
-                    return .none
-                case .keysMissing:
-                    state.appInitializationState = .keysMissing
-                    //state.alert = AlertState.walletStateFailed(walletState)
-                    return .none
-                case .initialized, .filesMissing:
-                    if walletState == .filesMissing {
-                        state.appInitializationState = .filesMissing
-                    }
-                    return .concatenate(
-                        Effect.send(.initializeSDK(.existingWallet)),
-                        Effect.send(.checkBackupPhraseValidation)
-                    )
-                case .uninitialized:
-                    state.appInitializationState = .uninitialized
-                    return .none
-                }
                 
             case .restoreAccount:
                 state.path.append(.restoreAccount(RestoreAccountReducer.State()))
-                //state.path = StackState([.restoreAccount(RestoreAccountReducer.State())])
                 return .none
             }
         }

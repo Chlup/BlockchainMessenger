@@ -16,7 +16,10 @@ public struct ChatsListView: View {
     }
     
     public var body: some View {
-        Text("ChatsListView")
+        VStack {
+            Text("ChatsListView")
+        }
+        .navigationBarBackButtonHidden()
     }
 }
 
