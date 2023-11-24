@@ -53,6 +53,8 @@ public struct RootReducer: Reducer {
     }
     
     public struct Path: Reducer {
+        let networkType: NetworkType
+
         public enum State: Equatable {
             case chatsList(ChatsListReducer.State)
             case createAccount(CreateAccountReducer.State)
@@ -65,11 +67,13 @@ public struct RootReducer: Reducer {
             case restoreAccount(RestoreAccountReducer.Action)
         }
         
-        public init() {}
+        public init(networkType: NetworkType) {
+            self.networkType = networkType
+        }
         
         public var body: some ReducerOf<Self> {
             Scope(state: /State.chatsList, action: /Action.chatsList) {
-                ChatsListReducer()
+                ChatsListReducer(networkType: networkType)
             }
             Scope(state: /State.createAccount, action: /Action.createAccount) {
                 CreateAccountReducer()
@@ -182,7 +186,7 @@ public struct RootReducer: Reducer {
             }
         }
         .forEach(\.path, action: /Action.path) {
-            Path()
+            Path(networkType: zcashNetwork.networkType)
         }
     }
 }

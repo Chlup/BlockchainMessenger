@@ -7,6 +7,9 @@
 
 import ComposableArchitecture
 import SwiftUI
+import ZcashLightClientKit
+
+import NewChat
 
 public struct ChatsListView: View {
     let store: StoreOf<ChatsListReducer>
@@ -16,21 +19,42 @@ public struct ChatsListView: View {
     }
     
     public var body: some View {
-        VStack {
-            Text("ChatsListView")
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            VStack {
+                
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewStore.send(.newChatButtonTapped)
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                }
+            }
+            .navigationBarBackButtonHidden()
+            .sheet(
+                store: self.store.scope(
+                    state: \.$newChat,
+                    action: { .newChat($0) }
+                )
+            ) { store in
+                NewChatView(store: store)
+            }
         }
-        .navigationBarBackButtonHidden()
     }
 }
 
 #Preview {
-    ChatsListView(
-        store:
-            Store(
-                initialState: ChatsListReducer.State()
-            ) {
-                ChatsListReducer()
-                    ._printChanges()
-            }
-    )
+    NavigationStack {
+        ChatsListView(
+            store:
+                Store(
+                    initialState: ChatsListReducer.State()
+                ) {
+                    ChatsListReducer(networkType: ZcashNetworkBuilder.network(for: .testnet).networkType)
+                        ._printChanges()
+                }
+        )
+    }
 }

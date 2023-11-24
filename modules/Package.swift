@@ -12,10 +12,12 @@ let package = Package(
         .library(name: "ChatsList", targets: ["ChatsList"]),
         .library(name: "CreateAccount", targets: ["CreateAccount"]),
         .library(name: "DatabaseFiles", targets: ["DatabaseFiles"]),
+        .library(name: "DerivationTool", targets: ["DerivationTool"]),
         .library(name: "FileManager", targets: ["FileManager"]),
         .library(name: "Messages", targets: ["Messages"]),
         .library(name: "MnemonicClient", targets: ["MnemonicClient"]),
         .library(name: "Models", targets: ["Models"]),
+        .library(name: "NewChat", targets: ["NewChat"]),
         .library(name: "RestoreAccount", targets: ["RestoreAccount"]),
         .library(name: "Root", targets: ["Root"]),
         .library(name: "SDKSynchronizer", targets: ["SDKSynchronizer"]),
@@ -36,6 +38,7 @@ let package = Package(
         .target(
             name: "ChatsList",
             dependencies: [
+                "NewChat",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Features/ChatsList"
@@ -71,6 +74,15 @@ let package = Package(
             path: "Sources/Dependencies/DatabaseFiles"
         ),
         .target(
+            name: "DerivationTool",
+            dependencies: [
+                "Utils",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
+            ],
+            path: "Sources/Dependencies/DerivationTool"
+        ),
+        .target(
             name: "FileManager",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
@@ -92,6 +104,14 @@ let package = Package(
                 .product(name: "MnemonicSwift", package: "MnemonicSwift")
             ],
             path: "Sources/Models"
+        ),
+        .target(
+            name: "NewChat",
+            dependencies: [
+                "DerivationTool",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+            ],
+            path: "Sources/Features/NewChat"
         ),
         .target(
             name: "RestoreAccount",
