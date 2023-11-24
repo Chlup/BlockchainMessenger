@@ -56,6 +56,7 @@ let package = Package(
         .target(
             name: "Messages",
             dependencies: [
+                "SDKSynchronizer",
                 .product(name: "MnemonicSwift", package: "MnemonicSwift"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
                 .product(name: "Dependencies", package: "swift-dependencies"),

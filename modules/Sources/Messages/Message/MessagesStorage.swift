@@ -9,6 +9,7 @@ import Foundation
 import ZcashLightClientKit
 import Dependencies
 import SQLite
+import SDKSynchronizer
 
 typealias TransactionID = String
 typealias MessageID = String
@@ -54,7 +55,7 @@ actor MessagesStorageImpl {
             logger.debug("Transaction doesn't have memos count")
             return
         }
-        let memos = try await synchronizer.getMemos(for: transaction.rawID)
+        let memos = try await synchronizer.getMemos(transaction.rawID)
         // Memo must be text and text of memo must be recognized as chat message.
         guard let memo = memos.first else {
             logger.debug("Transaction doesn't have memos")

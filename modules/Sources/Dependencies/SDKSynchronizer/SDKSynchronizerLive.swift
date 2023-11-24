@@ -77,6 +77,7 @@ extension SDKSynchronizerClient {
 //                
 //                return clearedTxs
 //            },
+            getMemos: { try await synchronizer.getMemos(for: $0) },
             getUnifiedAddress: { try await synchronizer.getUnifiedAddress(accountIndex: $0) },
             getTransparentAddress: { try await synchronizer.getTransparentAddress(accountIndex: $0) },
             getSaplingAddress: { try await synchronizer.getSaplingAddress(accountIndex: $0) },

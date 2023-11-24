@@ -7,17 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		343E4AA32B10999F000E26AE /* ChatsList in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AA22B10999F000E26AE /* ChatsList */; };
+		343E4AA52B10999F000E26AE /* CreateAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AA42B10999F000E26AE /* CreateAccount */; };
+		343E4AA72B10999F000E26AE /* DatabaseFiles in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AA62B10999F000E26AE /* DatabaseFiles */; };
+		343E4AA92B10999F000E26AE /* DerivationTool in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AA82B10999F000E26AE /* DerivationTool */; };
+		343E4AAB2B10999F000E26AE /* FileManager in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AAA2B10999F000E26AE /* FileManager */; };
+		343E4AAD2B10999F000E26AE /* Messages in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AAC2B10999F000E26AE /* Messages */; };
+		343E4AAF2B10999F000E26AE /* MnemonicClient in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AAE2B10999F000E26AE /* MnemonicClient */; };
+		343E4AB12B10999F000E26AE /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AB02B10999F000E26AE /* Models */; };
+		343E4AB32B10999F000E26AE /* NewChat in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AB22B10999F000E26AE /* NewChat */; };
+		343E4AB52B10999F000E26AE /* RestoreAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AB42B10999F000E26AE /* RestoreAccount */; };
+		343E4AB72B10999F000E26AE /* Root in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AB62B10999F000E26AE /* Root */; };
+		343E4AB92B10999F000E26AE /* SDKSynchronizer in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AB82B10999F000E26AE /* SDKSynchronizer */; };
+		343E4ABB2B10999F000E26AE /* SecItem in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4ABA2B10999F000E26AE /* SecItem */; };
+		343E4ABD2B10999F000E26AE /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4ABC2B10999F000E26AE /* Utils */; };
+		343E4ABF2B10999F000E26AE /* WalletStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4ABE2B10999F000E26AE /* WalletStorage */; };
+		343E4AC12B10999F000E26AE /* ZcashSDKEnvironment in Frameworks */ = {isa = PBXBuildFile; productRef = 343E4AC02B10999F000E26AE /* ZcashSDKEnvironment */; };
 		3457A7D22B07C91200216B3E /* BlockchainMessengerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7D12B07C91200216B3E /* BlockchainMessengerApp.swift */; };
 		3457A7D62B07C91300216B3E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3457A7D52B07C91300216B3E /* Assets.xcassets */; };
 		3457A7D92B07C91300216B3E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3457A7D82B07C91300216B3E /* Preview Assets.xcassets */; };
 		3457A7E32B07C91300216B3E /* BlockchainMessengerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7E22B07C91300216B3E /* BlockchainMessengerTests.swift */; };
 		3457A7ED2B07C91300216B3E /* BlockchainMessengerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EC2B07C91300216B3E /* BlockchainMessengerUITests.swift */; };
 		3457A7EF2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EE2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift */; };
-		3499D9F52B0BC7C40024DA08 /* CreateAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 3499D9F42B0BC7C40024DA08 /* CreateAccount */; };
-		3499D9F72B0BC7C40024DA08 /* Messages in Frameworks */ = {isa = PBXBuildFile; productRef = 3499D9F62B0BC7C40024DA08 /* Messages */; };
-		3499D9F92B0BC7C40024DA08 /* RestoreAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 3499D9F82B0BC7C40024DA08 /* RestoreAccount */; };
 		9E9C27052B0B3F1C00A588A8 /* modules in Resources */ = {isa = PBXBuildFile; fileRef = 9E9C27042B0B3F1C00A588A8 /* modules */; };
-		9EF840E12B0B544A007718D9 /* Root in Frameworks */ = {isa = PBXBuildFile; productRef = 9EF840E02B0B544A007718D9 /* Root */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,10 +67,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3499D9F72B0BC7C40024DA08 /* Messages in Frameworks */,
-				3499D9F52B0BC7C40024DA08 /* CreateAccount in Frameworks */,
-				9EF840E12B0B544A007718D9 /* Root in Frameworks */,
-				3499D9F92B0BC7C40024DA08 /* RestoreAccount in Frameworks */,
+				343E4AAD2B10999F000E26AE /* Messages in Frameworks */,
+				343E4AA52B10999F000E26AE /* CreateAccount in Frameworks */,
+				343E4AB12B10999F000E26AE /* Models in Frameworks */,
+				343E4AC12B10999F000E26AE /* ZcashSDKEnvironment in Frameworks */,
+				343E4AAB2B10999F000E26AE /* FileManager in Frameworks */,
+				343E4AA92B10999F000E26AE /* DerivationTool in Frameworks */,
+				343E4AB52B10999F000E26AE /* RestoreAccount in Frameworks */,
+				343E4AB72B10999F000E26AE /* Root in Frameworks */,
+				343E4AA32B10999F000E26AE /* ChatsList in Frameworks */,
+				343E4AB32B10999F000E26AE /* NewChat in Frameworks */,
+				343E4ABB2B10999F000E26AE /* SecItem in Frameworks */,
+				343E4AAF2B10999F000E26AE /* MnemonicClient in Frameworks */,
+				343E4ABF2B10999F000E26AE /* WalletStorage in Frameworks */,
+				343E4AA72B10999F000E26AE /* DatabaseFiles in Frameworks */,
+				343E4ABD2B10999F000E26AE /* Utils in Frameworks */,
+				343E4AB92B10999F000E26AE /* SDKSynchronizer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,10 +184,22 @@
 			);
 			name = BlockchainMessenger;
 			packageProductDependencies = (
-				9EF840E02B0B544A007718D9 /* Root */,
-				3499D9F42B0BC7C40024DA08 /* CreateAccount */,
-				3499D9F62B0BC7C40024DA08 /* Messages */,
-				3499D9F82B0BC7C40024DA08 /* RestoreAccount */,
+				343E4AA22B10999F000E26AE /* ChatsList */,
+				343E4AA42B10999F000E26AE /* CreateAccount */,
+				343E4AA62B10999F000E26AE /* DatabaseFiles */,
+				343E4AA82B10999F000E26AE /* DerivationTool */,
+				343E4AAA2B10999F000E26AE /* FileManager */,
+				343E4AAC2B10999F000E26AE /* Messages */,
+				343E4AAE2B10999F000E26AE /* MnemonicClient */,
+				343E4AB02B10999F000E26AE /* Models */,
+				343E4AB22B10999F000E26AE /* NewChat */,
+				343E4AB42B10999F000E26AE /* RestoreAccount */,
+				343E4AB62B10999F000E26AE /* Root */,
+				343E4AB82B10999F000E26AE /* SDKSynchronizer */,
+				343E4ABA2B10999F000E26AE /* SecItem */,
+				343E4ABC2B10999F000E26AE /* Utils */,
+				343E4ABE2B10999F000E26AE /* WalletStorage */,
+				343E4AC02B10999F000E26AE /* ZcashSDKEnvironment */,
 			);
 			productName = BlockchainMessenger;
 			productReference = 3457A7CE2B07C91200216B3E /* BlockchainMessenger.app */;
@@ -617,21 +653,69 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3499D9F42B0BC7C40024DA08 /* CreateAccount */ = {
+		343E4AA22B10999F000E26AE /* ChatsList */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ChatsList;
+		};
+		343E4AA42B10999F000E26AE /* CreateAccount */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CreateAccount;
 		};
-		3499D9F62B0BC7C40024DA08 /* Messages */ = {
+		343E4AA62B10999F000E26AE /* DatabaseFiles */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DatabaseFiles;
+		};
+		343E4AA82B10999F000E26AE /* DerivationTool */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DerivationTool;
+		};
+		343E4AAA2B10999F000E26AE /* FileManager */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FileManager;
+		};
+		343E4AAC2B10999F000E26AE /* Messages */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Messages;
 		};
-		3499D9F82B0BC7C40024DA08 /* RestoreAccount */ = {
+		343E4AAE2B10999F000E26AE /* MnemonicClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MnemonicClient;
+		};
+		343E4AB02B10999F000E26AE /* Models */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Models;
+		};
+		343E4AB22B10999F000E26AE /* NewChat */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NewChat;
+		};
+		343E4AB42B10999F000E26AE /* RestoreAccount */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RestoreAccount;
 		};
-		9EF840E02B0B544A007718D9 /* Root */ = {
+		343E4AB62B10999F000E26AE /* Root */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Root;
+		};
+		343E4AB82B10999F000E26AE /* SDKSynchronizer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDKSynchronizer;
+		};
+		343E4ABA2B10999F000E26AE /* SecItem */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SecItem;
+		};
+		343E4ABC2B10999F000E26AE /* Utils */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utils;
+		};
+		343E4ABE2B10999F000E26AE /* WalletStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WalletStorage;
+		};
+		343E4AC02B10999F000E26AE /* ZcashSDKEnvironment */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ZcashSDKEnvironment;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

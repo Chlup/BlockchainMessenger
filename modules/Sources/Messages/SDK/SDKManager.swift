@@ -10,16 +10,20 @@ import ZcashLightClientKit
 import MnemonicSwift
 import Combine
 import Dependencies
+//import SDKSynchronizer
 
 protocol SDKManager: AnyObject {
     var transactionsStream: AnyPublisher<[Transaction], Never> { get }
     
-    func start(with seed: String, birthday: BlockHeight, walletMode: WalletInitMode) async throws
+    func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
 }
 
 final class SDKManagerImpl {
+    @Dependency(\.sdkSynchronizer) var synchronizer
+    @Dependency(\.logger) var logger
+
     enum Errors: Error {
-        case synchronizerInitFailed(Initializer.InitializationResult)
+        case synchronizerInitFailed(Error)
     }
 
     private enum Constants {
@@ -28,7 +32,7 @@ final class SDKManagerImpl {
     private var cancellables: [AnyCancellable] = []
 
     var transactionsStream: AnyPublisher<[Transaction], Never> {
-        return synchronizer.eventStream
+        return synchronizer.eventStream()
             .compactMap { event in
                 switch event {
                 case let .foundTransactions(transactions, _):
@@ -41,9 +45,6 @@ final class SDKManagerImpl {
             .eraseToAnyPublisher()
     }
 
-    @Dependency(\.sdkSynchronizer) var synchronizer
-    @Dependency(\.logger) var logger
-
     init() {
     }
 
@@ -52,7 +53,7 @@ final class SDKManagerImpl {
     private func subscribeToSynchronizer() {
         cancellables.forEach { $0.cancel() }
         cancellables = []
-        synchronizer.stateStream
+        synchronizer.stateStream()
             .sink(
                 receiveValue: { [weak self] state in
                     self?.logger.debug("State:\n\(state)")
@@ -60,7 +61,7 @@ final class SDKManagerImpl {
             )
             .store(in: &cancellables)
 
-        synchronizer.eventStream
+        synchronizer.eventStream()
             .sink(
                 receiveValue: { [weak self] event in
                     switch event {
@@ -77,17 +78,17 @@ final class SDKManagerImpl {
 }
 
 extension SDKManagerImpl: SDKManager {
-    func start(with seed: String, birthday: BlockHeight, walletMode: WalletInitMode) async throws {
-        if synchronizer.latestState.syncStatus == .unprepared {
-            let seedBytes = try Mnemonic.deterministicSeedBytes(from: seed)
-            let result = try await synchronizer.prepare(with: seedBytes, walletBirthday: birthday, for: walletMode)
-            if result != .success {
-                throw Errors.synchronizerInitFailed(result)
+    func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws {
+        if synchronizer.latestState().syncStatus == .unprepared {
+            do {
+                try await synchronizer.prepareWith(seedBytes, birthday, walletMode)
+            } catch {
+                throw Errors.synchronizerInitFailed(error)
             }
         }
 
         subscribeToSynchronizer()
-        try await synchronizer.start(retry: false)
+        try await synchronizer.start(false)
     }
 }
 

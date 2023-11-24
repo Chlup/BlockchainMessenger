@@ -11,8 +11,14 @@ import ZcashLightClientKit
 import SDKSynchronizer
 import Utils
 import Root
+import Messages
+import MnemonicSwift
+import Dependencies
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
+    @Dependency(\.logger) var logger
+    @Dependency(\.messages) var messages
+
     let rootStore = StoreOf<RootReducer>(
         initialState: RootReducer.State()
     ) {
@@ -25,6 +31,20 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         rootStore.send(.appDelegate(.didFinishLaunching))
+
+//        Task {
+//            do {
+//                let seed = """
+//                burden help grit wheat sustain exit text radar ready wide tribe august post century suspect seminar relax mixed brother old enrich recycle \
+//                turtle dice
+//                """
+//                let seedBytes = try Mnemonic.deterministicSeedBytes(from: seed)
+//                try await messages.start(with: seedBytes, birthday: 2550000, walletMode: .existingWallet)
+//            } catch {
+//                logger.debug("Failed to init SDK: \(error)")
+//            }
+//        }
+
         return true
     }
 
@@ -77,59 +97,3 @@ public enum TargetConstants {
 extension SDKSynchronizerClient: DependencyKey {
     public static let liveValue: SDKSynchronizerClient = Self.live(network: TargetConstants.zcashNetwork)
 }
-
-
-/*
-
-
-import SwiftUI
-import ComposableArchitecture
-import Chlup
-import Root
-import Dependencies
-import Messages
-
-final class AppDelegate: NSObject, UIApplicationDelegate {
-    @Dependency(\.messages) var messages
-    @Dependency(\.logger) var logger
-
-    func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
-    ) -> Bool {
-        Task {
-            let seed = """
-            vault stage draft bomb sport actor phrase sunset filter yellow coral jealous loan exact spot announce dragon federal congress false \
-            link either frown economy
-            """
-
-            do {
-                try await messages.start(with: seed, birthday: 2115000, walletMode: .existingWallet)
-            } catch {
-                logger.debug("Init or sync failed with error: \(error)")
-            }
-        }
-
-        return true
-    }
-}
-
-@main
-struct BlockchainMessengerApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-
-    var body: some Scene {
-        WindowGroup {
-            RootView(
-                store:
-                    Store(
-                        initialState: RootReducer.State()
-                    ) {
-                        RootReducer()
-                            ._printChanges()
-                    }
-            )
-        }
-    }
-}
-*/

@@ -16,7 +16,6 @@ import DatabaseFiles
 import Messages
 import MnemonicClient
 import Models
-import SDKSynchronizer
 import WalletStorage
 import ZcashSDKEnvironment
 
@@ -92,7 +91,6 @@ public struct RootReducer: Reducer {
     @Dependency(\.messages) var messages
     @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.mnemonic) var mnemonic
-    @Dependency(\.sdkSynchronizer) var sdkSynchronizer
     @Dependency(\.walletStorage) var walletStorage
     @Dependency(\.zcashSDKEnvironment) var zcashSDKEnvironment
 
@@ -147,11 +145,7 @@ public struct RootReducer: Reducer {
                         
                         return .run { send in
                             do {
-                                // TODO: napojit pres messages a zahodit primy access na sdkSynchronizer
-                                try await messages.start(with: storedWallet.seedPhrase.value(), birthday: birthday, walletMode: walletMode)
-                                try await sdkSynchronizer.prepareWith(seedBytes, birthday, walletMode)
-                                try await sdkSynchronizer.start(false)
-
+                                try await messages.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
                                 await send(.initializationSucceeded)
                             } catch {
                                 await send(.initializationFailed)

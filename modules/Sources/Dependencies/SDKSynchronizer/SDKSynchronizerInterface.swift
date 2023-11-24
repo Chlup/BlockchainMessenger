@@ -35,6 +35,8 @@ public struct SDKSynchronizerClient {
     public let getTransparentBalance: () -> WalletBalance?
 //    public var getAllTransactions: () async throws -> [TransactionState]
 
+    public let getMemos: (_ transactionRawID: Data) async throws -> [Memo]
+
     public let getUnifiedAddress: (_ account: Int) async throws -> UnifiedAddress?
     public let getTransparentAddress: (_ account: Int) async throws -> TransparentAddress?
     public let getSaplingAddress: (_ accountIndex: Int) async throws -> SaplingAddress?
