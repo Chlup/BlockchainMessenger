@@ -9,13 +9,15 @@ import Foundation
 import ZcashLightClientKit
 
 struct Transaction {
-    let id: TransactionID
+    typealias ID = String
+
+    let id: ID
     let rawID: Data
     let isSentTransaction: Bool
     let minedHeight: BlockHeight?
     let memoCount: Int
 
-    init(id: TransactionID, rawID: Data, isSentTransaction: Bool, minedHeight: BlockHeight?, memoCount: Int) {
+    init(id: ID, rawID: Data, isSentTransaction: Bool, minedHeight: BlockHeight?, memoCount: Int) {
         self.id = id
         self.rawID = rawID
         self.isSentTransaction = isSentTransaction

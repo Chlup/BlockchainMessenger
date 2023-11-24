@@ -9,6 +9,11 @@ import Foundation
 import Dependencies
 import ZcashLightClientKit
 
+public enum MessagesError: Error {
+    case chatEntityInit(Error)
+    case messageEntityInit(Error)
+}
+
 public protocol Messages {
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
 }

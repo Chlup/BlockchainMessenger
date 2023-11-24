@@ -23,27 +23,27 @@ struct ChatProtocol {
         case v1 = 1
     }
 
-    struct Message {
+    struct ChatMessage {
+        enum Content {
+            case initialisation(_ fromAddress: String)
+            case text(String)
+
+            var messageType: ChatProtocol.MessageType {
+                switch self {
+                case .initialisation: return .initialisation
+                case .text: return .text
+                }
+            }
+        }
+
         let chatID: Int
         let timestmap: Int
-        let content: MessageContent
+        let content: Content
     }
 
     enum MessageType: UInt8 {
         case initialisation = 1
         case text = 2
-    }
-
-    enum MessageContent {
-        case initialisation(_ fromAddress: String)
-        case text(String)
-
-        var messageType: MessageType {
-            switch self {
-            case .initialisation: return .initialisation
-            case .text: return .text
-            }
-        }
     }
 
     enum Errors: Error {
@@ -63,9 +63,9 @@ struct ChatProtocol {
     }
 
     // Encode message with latest version.
-    var encode: (_ message: Message) throws -> Data
+    var encode: (_ message: ChatMessage) throws -> Data
     // Decode message
-    var decode: (_ message: Data) throws -> Message
+    var decode: (_ message: Data) throws -> ChatMessage
 
     enum Constants {
         static let maxEncodedMessageLength = 512
@@ -73,7 +73,7 @@ struct ChatProtocol {
         static let prefix = "}b}"
     }
 
-    private static func encode(_ message: Message) throws -> Data {
+    private static func encode(_ message: ChatMessage) throws -> Data {
         let encoder = BinaryEncoder()
         encoder.encode(byte: Constants.zcashMemoByte)
         encoder.encode(string: Constants.prefix)
@@ -82,7 +82,7 @@ struct ChatProtocol {
         return try ChatProtocolV1.encode(encoder: encoder, message: message)
     }
 
-    private static func decode(_ data: Data) throws -> Message {
+    private static func decode(_ data: Data) throws -> ChatMessage {
         let decoder = BinaryDecoder(data: data)
 
         do {
