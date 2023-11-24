@@ -39,7 +39,8 @@ extension DatabaseFilesClient: DependencyKey {
             },
             areDbFilesPresentFor: { network in
                 databaseFiles.areDbFilesPresent(for: network)
-            }
+            },
+            messagesDBURL: { databaseFiles.messagesDBURL() }
         )
     }
 }

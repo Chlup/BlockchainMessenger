@@ -81,4 +81,12 @@ public struct DatabaseFiles {
         let dataDbURL = dataDbURL(for: network)
         return fileManager.fileExists(dataDbURL.path)
     }
+
+    func messagesDBURL() -> URL {
+        return documentsDirectory()
+            .appendingPathComponent(
+                "messages.db",
+                isDirectory: false
+            )
+    }
 }

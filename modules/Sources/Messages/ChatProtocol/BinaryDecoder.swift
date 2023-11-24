@@ -13,24 +13,25 @@ final class BinaryDecoder {
         case cantDecodeString
     }
 
-    let data: Data
+    let bytes: [UInt8]
     private var offset: Int
-    init(data: Data) {
-        self.data = data
+    init(bytes: [UInt8]) {
+        self.bytes = bytes
         offset = 0
     }
 
     var unreadBytesCount: Int {
-        return data.count - offset
+        return bytes.count - offset
     }
 
-    private func get(bytesCount count: Int) throws -> [UInt8] {
-        guard offset + count <= data.count else {
+    private func get(bytesCount count: Int) throws -> ArraySlice<UInt8> {
+        guard offset + count <= bytes.count else {
             throw Errors.bytesRangeOutOfBounds
         }
 
         defer { offset += count }
-        return [UInt8](data.subdata(in: offset..<(offset + count)))
+        let bts = bytes[offset..<(offset + count)]
+        return bts
     }
 
     func decodeString(bytesCount: Int) throws -> String {

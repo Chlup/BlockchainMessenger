@@ -65,7 +65,7 @@ struct ChatProtocol {
     // Encode message with latest version.
     var encode: (_ message: ChatMessage) throws -> Data
     // Decode message
-    var decode: (_ message: Data) throws -> ChatMessage
+    var decode: (_ message: [UInt8]) throws -> ChatMessage
 
     enum Constants {
         static let maxEncodedMessageLength = 512
@@ -82,8 +82,8 @@ struct ChatProtocol {
         return try ChatProtocolV1.encode(encoder: encoder, message: message)
     }
 
-    private static func decode(_ data: Data) throws -> ChatMessage {
-        let decoder = BinaryDecoder(data: data)
+    private static func decode(_ bytes: [UInt8]) throws -> ChatMessage {
+        let decoder = BinaryDecoder(bytes: bytes)
 
         do {
             let firstByte = try decoder.decodeUInt8()

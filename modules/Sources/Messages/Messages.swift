@@ -12,9 +12,14 @@ import ZcashLightClientKit
 public enum MessagesError: Error {
     case chatEntityInit(Error)
     case messageEntityInit(Error)
+    case simpleConnectionProvider(Error)
+    case synchronizerInitFailed(Error)
+    case messagesStorageQueryExecute(Error)
+    case messagesStorageEntityNotFound
 }
 
 public protocol Messages {
+    func initialize() async throws
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
 }
 
@@ -25,9 +30,14 @@ struct MessagesImpl {
     @Dependency(\.chatProtocol) var chatProtocol
     @Dependency(\.chatIDBuilder) var chatIDBuilder
     @Dependency(\.timestampBuilder) var timestampBuilder
+    @Dependency(\.messagesStorage) var messagesStorage
 }
 
 extension MessagesImpl: Messages {
+    func initialize() async throws {
+        try await messagesStorage.initialize()
+    }
+
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws {
 //        do {
 //            let message = ChatProtocol.Message(
@@ -45,7 +55,7 @@ extension MessagesImpl: Messages {
 //            logger.debug("Error while encoding/decoding message: \(error)")
 //        }
 
-        transactionsProcessor.start()
+        await transactionsProcessor.start()
         try await sdkManager.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
     }
 }

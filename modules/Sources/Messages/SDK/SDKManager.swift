@@ -22,13 +22,6 @@ final class SDKManagerImpl {
     @Dependency(\.sdkSynchronizer) var synchronizer
     @Dependency(\.logger) var logger
 
-    enum Errors: Error {
-        case synchronizerInitFailed(Error)
-    }
-
-    private enum Constants {
-    }
-
     private var cancellables: [AnyCancellable] = []
 
     var transactionsStream: AnyPublisher<[Transaction], Never> {
@@ -43,9 +36,6 @@ final class SDKManagerImpl {
             }
             .share()
             .eraseToAnyPublisher()
-    }
-
-    init() {
     }
 
     // MARK: - Subscribe to SDK combine API
@@ -83,7 +73,7 @@ extension SDKManagerImpl: SDKManager {
             do {
                 try await synchronizer.prepareWith(seedBytes, birthday, walletMode)
             } catch {
-                throw Errors.synchronizerInitFailed(error)
+                throw MessagesError.synchronizerInitFailed(error)
             }
         }
 

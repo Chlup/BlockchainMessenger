@@ -9,7 +9,7 @@ import Foundation
 import ZcashLightClientKit
 import SQLite
 
-public struct Message {
+public struct Message: Codable {
     public typealias ID = String
 
     public let id: ID
@@ -25,7 +25,16 @@ public struct Message {
         static let timestamp = Expression<Int>("timestamp")
         static let text = Expression<String>("text")
         static let isSent = Expression<Bool>("is_sent")
-        static let transactionID = Expression<String>("transaction_id")
+        static let transactionID = Expression<Transaction.ID>("transaction_id")
+    }
+
+    init(id: ID, chatID: Int, timestamp: Int, text: String, isSent: Bool, transactionID: Transaction.ID) {
+        self.id = id
+        self.chatID = chatID
+        self.timestamp = timestamp
+        self.text = text
+        self.isSent = isSent
+        self.transactionID = transactionID
     }
 
     init(row: Row) throws {

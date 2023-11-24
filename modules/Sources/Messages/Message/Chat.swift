@@ -8,10 +8,7 @@
 import Foundation
 import SQLite
 
-public struct Chat {
-    public typealias ID = String
-
-    public let id: ID
+public struct Chat: Codable {
     public let chatID: Int
     public let timestamp: Int
     public let fromAddress: String
@@ -20,7 +17,6 @@ public struct Chat {
     public let verified: Bool
 
     enum Column {
-        static let id = Expression<ID>("id")
         static let chatID = Expression<Int>("chat_id")
         static let timestamp = Expression<Int>("timestamp")
         static let fromAddress = Expression<String>("from_address")
@@ -29,9 +25,17 @@ public struct Chat {
         static let verified = Expression<Bool>("verified")
     }
 
+    init(chatID: Int, timestamp: Int, fromAddress: String, toAddress: String, verificationText: String, verified: Bool) {
+        self.chatID = chatID
+        self.timestamp = timestamp
+        self.fromAddress = fromAddress
+        self.toAddress = toAddress
+        self.verificationText = verificationText
+        self.verified = verified
+    }
+
     init(row: Row) throws {
         do {
-            id = try row.get(Column.id)
             chatID = try row.get(Column.chatID)
             timestamp = try row.get(Column.timestamp)
             fromAddress = try row.get(Column.fromAddress)

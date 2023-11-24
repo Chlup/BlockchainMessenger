@@ -34,12 +34,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
 //        Task {
 //            do {
+//                try await messages.initialize()
 //                let seed = """
 //                burden help grit wheat sustain exit text radar ready wide tribe august post century suspect seminar relax mixed brother old enrich recycle \
 //                turtle dice
 //                """
 //                let seedBytes = try Mnemonic.deterministicSeedBytes(from: seed)
-//                try await messages.start(with: seedBytes, birthday: 2550000, walletMode: .existingWallet)
+//                try await messages.start(with: seedBytes, birthday: 2604585, walletMode: .existingWallet)
 //            } catch {
 //                logger.debug("Failed to init SDK: \(error)")
 //            }

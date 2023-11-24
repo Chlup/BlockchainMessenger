@@ -16,24 +16,19 @@ enum Whatever {
     }
 }
 
-protocol TransactionsProcessor {
-    func start()
+protocol TransactionsProcessor: Actor {
+    func start() async
 }
 
-final class TransactionsProcessorImpl {
+actor TransactionsProcessorImpl {
     private var cancellables: [AnyCancellable] = []
     @Dependency(\.messagesStorage) var storage
     @Dependency(\.sdkManager) var sdkManager
+    @Dependency(\.sdkSynchronizer) var synchronizer
     @Dependency(\.logger) var logger
+    @Dependency(\.chatProtocol) var chatProtokol
 
-    init() {
-    }
-
-    deinit {
-        cancel()
-    }
-
-    private func cancel() {
+    private func cancel() async {
         cancellables.forEach { $0.cancel() }
         cancellables = []
     }
@@ -43,21 +38,97 @@ final class TransactionsProcessorImpl {
         for transaction in transactions {
             logger.debug("processing transaction \(transaction)")
             do {
-                try await storage.store(transaction: transaction)
+                try await process(transaction: transaction)
             } catch {
                 logger.debug("Failed to store transaction: \(error) \(transaction)")
             }
         }
     }
+
+    private func process(transaction: Transaction) async throws {
+        // 1. check if transaction has memos
+        // 2. get first memo for transaction
+        // 3. check if memo contains chat messages
+        // 4.
+        //   - if transaction contains init message handle chat creation for that
+        //   - if transaction continas message handle message creation
+        logger.debug("\(transaction.id) Processing transaction")
+        guard transaction.memoCount > 0 else {
+            logger.debug("\(transaction.id) Transaction doesn't have any memo.")
+            return
+        }
+
+        guard let memo = try await synchronizer.getMemos(transaction.rawID).first else {
+            logger.debug("\(transaction.id) Can't get memo for transaction.")
+            return
+        }
+
+        let memoBytes = try memo.asMemoBytes().bytes
+        let decodedMessage = try chatProtokol.decode(memoBytes)
+
+        switch decodedMessage.content {
+        // TODO: add support for toAddress and verification text to protocol
+        case let .initialisation(fromAddress):
+            try await processInitialisationMessage(decodedMessage, fromAddress: fromAddress, toAddress: "", verificationText: "")
+        case let .text(text):
+            try await processTextMessage(decodedMessage, text: text, transaction: transaction)
+        }
+    }
+
+     private func processInitialisationMessage(
+        _ message: ChatProtocol.ChatMessage,
+        fromAddress: String,
+        toAddress: String,
+        verificationText: String
+     ) async throws {
+        let doestChatExists = try await storage.doesChatExists(for: message.chatID)
+        guard !doestChatExists else {
+            logger.debug("Chat already exists for this init message. \(message.content)")
+            return
+        }
+
+        let newChat = Chat(
+            chatID: message.chatID,
+            timestamp: message.timestmap,
+            fromAddress: fromAddress,
+            toAddress: toAddress,
+            verificationText: verificationText,
+            verified: false
+        )
+
+        // TODO: We must somehow builtin some recovery mode. Because now each found transacation is handled only once. When storing fails then
+        // it won't ever be handled and it is practically lost.
+        try await storage.storeChat(newChat)
+    }
+
+    private func processTextMessage(_ message: ChatProtocol.ChatMessage, text: String, transaction: Transaction) async throws {
+        let doesMessageExists = try await storage.doesMessageExists(for: transaction.id)
+        guard !doesMessageExists else {
+            logger.debug("Message already exists for this transaction. \(message.content) \(transaction.id)")
+            return
+        }
+
+        let newMessage = Message(
+            id: UUID().uuidString,
+            chatID: message.chatID,
+            timestamp: message.timestmap,
+            text: text,
+            isSent: transaction.isSentTransaction,
+            transactionID: transaction.id
+        )
+
+        // TODO: We must somehow builtin some recovery mode. Because now each found transacation is handled only once. When storing fails then
+        // it won't ever be handled and it is practically lost.
+        try await storage.storeMessage(newMessage)
+    }
 }
 
 extension TransactionsProcessorImpl: TransactionsProcessor {
-    func start() {
-        cancel()
+    func start() async {
+        await cancel()
         sdkManager.transactionsStream
             .sink(
                 receiveValue: { [weak self] transactions in
-                    self?.logger.debug("Found transactions !!! \(transactions.count)")
                     // Strange hack. If self?.process... is used then compiler throws:
                     // "Reference to captured var 'self' in concurrently-executing code" error.
                     let me = self
