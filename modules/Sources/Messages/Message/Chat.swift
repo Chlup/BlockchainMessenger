@@ -7,8 +7,9 @@
 
 import Foundation
 import SQLite
+import Dependencies
 
-public struct Chat: Codable {
+public struct Chat: Codable, Equatable {
     public let chatID: Int
     public let timestamp: Int
     public let fromAddress: String
@@ -45,5 +46,18 @@ public struct Chat: Codable {
         } catch {
             throw MessagesError.chatEntityInit(error)
         }
+    }
+
+    static func createNew(fromAddress: String, toAddress: String, verificationText: String) -> Chat {
+        @Dependency(\.chatProtocol) var chatProtocol
+        let timestamp = Int(Date().timeIntervalSince1970)
+        return Chat(
+            chatID: chatProtocol.generateIDFor(timestamp),
+            timestamp: timestamp,
+            fromAddress: fromAddress,
+            toAddress: toAddress,
+            verificationText: verificationText,
+            verified: false
+        )
     }
 }

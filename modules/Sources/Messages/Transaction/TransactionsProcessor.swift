@@ -67,20 +67,19 @@ actor TransactionsProcessorImpl {
         let decodedMessage = try chatProtokol.decode(memoBytes)
 
         switch decodedMessage.content {
-        // TODO: add support for toAddress and verification text to protocol
-        case let .initialisation(fromAddress):
-            try await processInitialisationMessage(decodedMessage, fromAddress: fromAddress, toAddress: "", verificationText: "")
+        case let .initialisation(fromAddress, toAddress, verificationText):
+            try await processInitialisationMessage(decodedMessage, fromAddress: fromAddress, toAddress: toAddress, verificationText: verificationText)
         case let .text(text):
             try await processTextMessage(decodedMessage, text: text, transaction: transaction)
         }
     }
 
-     private func processInitialisationMessage(
+    private func processInitialisationMessage(
         _ message: ChatProtocol.ChatMessage,
         fromAddress: String,
         toAddress: String,
         verificationText: String
-     ) async throws {
+    ) async throws {
         let doestChatExists = try await storage.doesChatExists(for: message.chatID)
         guard !doestChatExists else {
             logger.debug("Chat already exists for this init message. \(message.content)")
@@ -102,19 +101,18 @@ actor TransactionsProcessorImpl {
     }
 
     private func processTextMessage(_ message: ChatProtocol.ChatMessage, text: String, transaction: Transaction) async throws {
-        let doesMessageExists = try await storage.doesMessageExists(for: transaction.id)
+        let doesMessageExists = try await storage.doesMessageExists(for: message.messageID)
         guard !doesMessageExists else {
             logger.debug("Message already exists for this transaction. \(message.content) \(transaction.id)")
             return
         }
 
         let newMessage = Message(
-            id: UUID().uuidString,
+            id: message.messageID,
             chatID: message.chatID,
             timestamp: message.timestmap,
             text: text,
-            isSent: transaction.isSentTransaction,
-            transactionID: transaction.id
+            isSent: transaction.isSentTransaction
         )
 
         // TODO: We must somehow builtin some recovery mode. Because now each found transacation is handled only once. When storing fails then

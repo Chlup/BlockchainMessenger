@@ -15,7 +15,7 @@ protocol MessagesStorage: Actor {
     func initialize() async throws
     func doesChatExists(for chatID: Int) async throws -> Bool
     func storeChat(_ chat: Chat) async throws
-    func doesMessageExists(for transactionID: Transaction.ID) async throws -> Bool
+    func doesMessageExists(for messageID: Message.ID) async throws -> Bool
     func storeMessage(_ message: Message) async throws
 }
 
@@ -131,11 +131,9 @@ extension MessagesStorageImpl: MessagesStorage {
             table.column(Message.Column.timestamp)
             table.column(Message.Column.text)
             table.column(Message.Column.isSent)
-            table.column(Message.Column.transactionID)
         }
         let createMessagesChatIDIndex = messagesTable.createIndex(Message.Column.chatID, unique: true, ifNotExists: true)
         let createMessagesTimestampIndex = messagesTable.createIndex(Message.Column.timestamp, ifNotExists: true)
-        let createMessagesTransactionIDIndex = messagesTable.createIndex(Message.Column.transactionID, unique: true, ifNotExists: true)
 
         try db.transaction {
             try db.run(createChatsTable)
@@ -143,7 +141,6 @@ extension MessagesStorageImpl: MessagesStorage {
             try db.run(createMessagesTable)
             try db.run(createMessagesChatIDIndex)
             try db.run(createMessagesTimestampIndex)
-            try db.run(createMessagesTransactionIDIndex)
         }
     }
 
@@ -160,9 +157,9 @@ extension MessagesStorageImpl: MessagesStorage {
         try db.run(chatsTable.insert(chat))
     }
 
-    func doesMessageExists(for transactionID: Transaction.ID) async throws -> Bool {
+    func doesMessageExists(for messageID: Message.ID) async throws -> Bool {
         let query = messagesTable
-            .filter(Message.Column.transactionID == transactionID)
+            .filter(Message.Column.id == messageID)
 
         let messages: [Message] = try execute(query) { try Message(row: $0) }
         return !messages.isEmpty

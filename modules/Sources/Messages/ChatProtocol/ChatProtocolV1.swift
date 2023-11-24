@@ -8,24 +8,27 @@
 import Foundation
 
 /*
- chatID - 7 bytes (5 bytes timestamp + 2 bytes unique ID)
+ chatID - 7 bytes (5 bytes timestamp + 3 bytes unique ID)
  timestamp - 5 bytes
+ message ID - 3 bytes (final is timestamp + message ID)
  message type - 1 byte
- message content - max 494 bytes
+ message content - max 490 bytes
  */
 
 enum ChatProtocolV1 {
     static func encode(encoder: BinaryEncoder, message: ChatProtocol.ChatMessage) throws -> Data {
-        encoder.encode(value: message.chatID, bytesCount: 7)
+        encoder.encode(value: message.chatID, bytesCount: 8)
         encoder.encode(value: message.timestmap, bytesCount: 5)
+        encoder.encode(value: message.messageID, bytesCount: 3)
         encoder.encode(byte: message.content.messageType.rawValue)
 
         switch message.content {
-        case let .initialisation(fromAddress):
-            guard fromAddress.utf8.count + encoder.data.count <= ChatProtocol.Constants.maxEncodedMessageLength else {
+        case let .initialisation(fromAddress, toAddress, verificationText):
+            let finalText = "\(fromAddress):\(toAddress):\(verificationText)"
+            guard finalText.utf8.count + encoder.data.count <= ChatProtocol.Constants.maxEncodedMessageLength else {
                 throw ChatProtocol.Errors.messageContentTooLong
             }
-            encoder.encode(string: fromAddress)
+            encoder.encode(string: finalText)
 
         case let .text(text):
             guard text.utf8.count + encoder.data.count <= ChatProtocol.Constants.maxEncodedMessageLength else {
@@ -38,8 +41,12 @@ enum ChatProtocolV1 {
     }
 
     static func decode(decoder: BinaryDecoder) throws -> ChatProtocol.ChatMessage {
-        let chatID = try decoder.decodeInt(bytesCount: 7)
+        let chatID = try decoder.decodeInt(bytesCount: 8)
         let timestamp = try decoder.decodeInt(bytesCount: 5)
+
+        let messageIDPart = try decoder.decodeInt(bytesCount: 3)
+        let messageID = ChatProtocol.merge(timestamp: timestamp, andRestOfID: messageIDPart)
+
         let rawMessageType = try decoder.decodeUInt8()
         guard let messageType = ChatProtocol.MessageType(rawValue: rawMessageType) else {
             throw ChatProtocol.Errors.unknownMessageType(rawMessageType)
@@ -48,14 +55,18 @@ enum ChatProtocolV1 {
         let content: ChatProtocol.ChatMessage.Content
         switch messageType {
         case .initialisation:
-            let fromAddress = try decoder.decodeString(bytesCount: decoder.unreadBytesCount)
-            content = .initialisation(fromAddress)
+            let initText = try decoder.decodeString(bytesCount: decoder.unreadBytesCount)
+            let parts = initText.split(separator: ":").map { String($0) }
+            guard parts.count == 3 else {
+                throw ChatProtocol.Errors.invalidInitMessageContent(initText)
+            }
+            content = .initialisation(parts[0], parts[1], parts[2])
 
         case .text:
             let text = try decoder.decodeString(bytesCount: decoder.unreadBytesCount)
             content = .text(text)
         }
 
-        return ChatProtocol.ChatMessage(chatID: chatID, timestmap: timestamp, content: content)
+        return ChatProtocol.ChatMessage(chatID: chatID, timestmap: timestamp, messageID: messageID, content: content)
     }
 }

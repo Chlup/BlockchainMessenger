@@ -8,16 +8,16 @@
 import Foundation
 import ZcashLightClientKit
 import SQLite
+import Dependencies
 
-public struct Message: Codable {
-    public typealias ID = String
+public struct Message: Codable, Equatable {
+    public typealias ID = Int
 
     public let id: ID
     public let chatID: Int
     public let timestamp: Int
     public let text: String
     public let isSent: Bool
-    let transactionID: Transaction.ID
 
     enum Column {
         static let id = Expression<ID>("id")
@@ -25,16 +25,14 @@ public struct Message: Codable {
         static let timestamp = Expression<Int>("timestamp")
         static let text = Expression<String>("text")
         static let isSent = Expression<Bool>("is_sent")
-        static let transactionID = Expression<Transaction.ID>("transaction_id")
     }
 
-    init(id: ID, chatID: Int, timestamp: Int, text: String, isSent: Bool, transactionID: Transaction.ID) {
+    init(id: ID, chatID: Int, timestamp: Int, text: String, isSent: Bool) {
         self.id = id
         self.chatID = chatID
         self.timestamp = timestamp
         self.text = text
         self.isSent = isSent
-        self.transactionID = transactionID
     }
 
     init(row: Row) throws {
@@ -44,15 +42,14 @@ public struct Message: Codable {
             timestamp = try row.get(Column.timestamp)
             text = try row.get(Column.text)
             isSent = try row.get(Column.isSent)
-            transactionID = try row.get(Column.transactionID)
         } catch {
             throw MessagesError.messageEntityInit(error)
         }
     }
-}
 
-extension Message: Equatable {
-    static public func == (lhs: Message, rhs: Message) -> Bool {
-        return lhs.id == rhs.id
+    static func createSent(chatID: Int, text: String) -> Message {
+        @Dependency(\.chatProtocol) var chatProtocol
+        let timestamp = Int(Date().timeIntervalSince1970)
+        return Message(id: chatProtocol.generateIDFor(timestamp), chatID: chatID, timestamp: timestamp, text: text, isSent: true)
     }
 }

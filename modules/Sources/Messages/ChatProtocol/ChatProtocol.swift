@@ -12,10 +12,11 @@ import Dependencies
  zcash arbitrary memo byte - 0xff - 1 byte
  prefix - "}b." - 3 bytes
  version - 1 byte
- chatID - 7 bytes (5 bytes timestamp + 2 bytes unique ID)
+ chatID - 8 bytes (5 bytes timestamp + 3 bytes unique ID)
  timestamp - 5 bytes
+ message ID - 3 bytes (final is timestamp + message ID)
  message type - 1 byte
- message content - max 494 bytes
+ message content - max 490 bytes
  */
 
 struct ChatProtocol {
@@ -25,7 +26,7 @@ struct ChatProtocol {
 
     struct ChatMessage {
         enum Content {
-            case initialisation(_ fromAddress: String)
+            case initialisation(_ fromAddress: String, _ toAddress: String, _ verificationText: String)
             case text(String)
 
             var messageType: ChatProtocol.MessageType {
@@ -38,6 +39,7 @@ struct ChatProtocol {
 
         let chatID: Int
         let timestmap: Int
+        let messageID: Int
         let content: Content
     }
 
@@ -60,12 +62,16 @@ struct ChatProtocol {
         // Decoding. Can't decode message because it doesn't contain all the expected data.
         // Provided Data probably don't contain correctly encoded message.
         case invalidMessage(Error)
+        // Decoding. Decoded content of init message and it doesn't contain expected parts.
+        case invalidInitMessageContent(String)
     }
 
     // Encode message with latest version.
     var encode: (_ message: ChatMessage) throws -> Data
     // Decode message
     var decode: (_ message: [UInt8]) throws -> ChatMessage
+    // Generate new message ID or chat ID for some timestamp.
+    var generateIDFor: (_ timestamp: Int) -> Int
 
     enum Constants {
         static let maxEncodedMessageLength = 512
@@ -115,6 +121,18 @@ struct ChatProtocol {
         }
     }
 
+    private static func random3BytesNumber() -> Int {
+        let maxValue = Int(truncating: NSDecimalNumber(decimal: pow(2, 24) - 1))
+        return Int.random(in: 0...maxValue)
+    }
+
+    static func merge(timestamp: Int, andRestOfID rest: Int) -> Int {
+        var id = timestamp
+        id <<= 24
+        id |= rest
+        return id
+    }
+
     static var live: ChatProtocol {
         return Self(
             encode: { message in
@@ -122,6 +140,9 @@ struct ChatProtocol {
             },
             decode: { data in
                 return try Self.decode(data)
+            },
+            generateIDFor: { timestamp in
+                Self.merge(timestamp: timestamp, andRestOfID: Self.random3BytesNumber())
             }
         )
     }

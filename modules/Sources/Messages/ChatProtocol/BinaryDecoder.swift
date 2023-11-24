@@ -30,8 +30,7 @@ final class BinaryDecoder {
         }
 
         defer { offset += count }
-        let bts = bytes[offset..<(offset + count)]
-        return bts
+        return bytes[offset..<(offset + count)]
     }
 
     func decodeString(bytesCount: Int) throws -> String {
@@ -43,7 +42,8 @@ final class BinaryDecoder {
     }
 
     func decodeUInt8() throws -> UInt8 {
-        return try get(bytesCount: 1)[0]
+        // This index is super strange but get() returns ArraySlice and that preserves indexes of the original array.
+        return try get(bytesCount: 1)[offset - 1]
     }
 
     func decodeInt(bytesCount: Int) throws -> Int {
