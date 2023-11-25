@@ -77,6 +77,7 @@ struct BlockchainMessengerApp: App {
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                 appDelegate.rootStore.send(.appDelegate(.didEnterBackground))
             }
+            .preferredColorScheme(.dark)
         }
     }
 }

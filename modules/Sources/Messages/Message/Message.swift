@@ -10,7 +10,7 @@ import ZcashLightClientKit
 import SQLite
 import Dependencies
 
-public struct Message: Codable, Equatable {
+public struct Message: Codable, Equatable, Identifiable {
     public typealias ID = Int
 
     public let id: ID
@@ -27,7 +27,13 @@ public struct Message: Codable, Equatable {
         static let isSent = Expression<Bool>("is_sent")
     }
 
-    init(id: ID, chatID: Int, timestamp: Int, text: String, isSent: Bool) {
+    public init(
+        id: ID,
+        chatID: Int,
+        timestamp: Int,
+        text: String,
+        isSent: Bool
+    ) {
         self.id = id
         self.chatID = chatID
         self.timestamp = timestamp

@@ -19,7 +19,9 @@ public struct ChatsListReducer: Reducer {
         public var incomingChats: IdentifiedArrayOf<Chat>
         public var verifiedChats: IdentifiedArrayOf<Chat>
 
-        public init(chats: IdentifiedArrayOf<Chat> = []) {
+        public init() {
+            let chats = Chat.mockedChats
+            
             self.incomingChats = IdentifiedArrayOf(
                 uniqueElements:
                     chats.compactMap {
@@ -39,6 +41,7 @@ public struct ChatsListReducer: Reducer {
     }
     
     public enum Action: Equatable {
+        case chatButtonTapped(Int)
         case newChat(PresentationAction<NewChatReducer.Action>)
         case newChatButtonTapped
     }
@@ -52,6 +55,9 @@ public struct ChatsListReducer: Reducer {
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .chatButtonTapped:
+                return .none
+
             case .newChat(.presented(.startChatButtonTapped)):
                 if let uAddress = state.newChat?.uAddress, let alias = state.newChat?.alias {
                     // TODO: here we know what UA user wants to initiate chat with

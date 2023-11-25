@@ -9,6 +9,7 @@ import ComposableArchitecture
 import SwiftUI
 import ZcashLightClientKit
 
+import ChatDetail
 import ChatsList
 import CreateAccount
 import RestoreAccount
@@ -51,6 +52,12 @@ public struct RootView: View {
             }
         } destination: { state in
             switch state {
+            case .chatsDetail:
+                CaseLet(
+                    /RootReducer.Path.State.chatsDetail,
+                     action: RootReducer.Path.Action.chatsDetail,
+                     then: ChatDetailView.init(store:)
+                )
             case .chatsList:
                 CaseLet(
                     /RootReducer.Path.State.chatsList,

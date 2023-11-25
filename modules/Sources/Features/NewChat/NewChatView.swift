@@ -66,5 +66,6 @@ public struct NewChatView: View {
                         ._printChanges()
                 }
         )
+        .preferredColorScheme(.dark)
     }
 }

@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import ZcashLightClientKit
 
+import ChatDetail
 import ChatsList
 import CreateAccount
 import RestoreAccount
@@ -55,12 +56,14 @@ public struct RootReducer: Reducer {
         let networkType: NetworkType
 
         public enum State: Equatable {
+            case chatsDetail(ChatDetailReducer.State)
             case chatsList(ChatsListReducer.State)
             case createAccount(CreateAccountReducer.State)
             case restoreAccount(RestoreAccountReducer.State)
         }
         
         public enum Action: Equatable {
+            case chatsDetail(ChatDetailReducer.Action)
             case chatsList(ChatsListReducer.Action)
             case createAccount(CreateAccountReducer.Action)
             case restoreAccount(RestoreAccountReducer.Action)
@@ -71,6 +74,9 @@ public struct RootReducer: Reducer {
         }
         
         public var body: some ReducerOf<Self> {
+            Scope(state: /State.chatsDetail, action: /Action.chatsDetail) {
+                ChatDetailReducer(networkType: networkType)
+            }
             Scope(state: /State.chatsList, action: /Action.chatsList) {
                 ChatsListReducer(networkType: networkType)
             }
@@ -167,7 +173,11 @@ public struct RootReducer: Reducer {
                 state.appInitializationState = .initialized
                 state.path.append(.chatsList(ChatsListReducer.State()))
                 return .none
-            
+
+            case .path(.element(id: _, action: .chatsList(.chatButtonTapped(let chatId)))):
+                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
+                return .none
+
             case .path(.element(id: _, action: .createAccount(.confirmationButtonTapped))):
                 state.path.append(.chatsList(ChatsListReducer.State()))
                 return .none

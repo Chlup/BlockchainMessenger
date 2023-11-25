@@ -9,6 +9,7 @@ let package = Package(
         .iOS(.v16)
     ],
     products: [
+        .library(name: "ChatDetail", targets: ["ChatDetail"]),
         .library(name: "ChatsList", targets: ["ChatsList"]),
         .library(name: "CreateAccount", targets: ["CreateAccount"]),
         .library(name: "DatabaseFiles", targets: ["DatabaseFiles"]),
@@ -36,11 +37,21 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "ChatDetail",
+            dependencies: [
+                "Messages",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
+            ],
+            path: "Sources/Features/ChatDetail"
+        ),
+        .target(
             name: "ChatsList",
             dependencies: [
                 "Messages",
                 "NewChat",
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
             path: "Sources/Features/ChatsList"
         ),
@@ -125,6 +136,7 @@ let package = Package(
         .target(
             name: "Root",
             dependencies: [
+                "ChatDetail",
                 "ChatsList",
                 "CreateAccount",
                 "DatabaseFiles",

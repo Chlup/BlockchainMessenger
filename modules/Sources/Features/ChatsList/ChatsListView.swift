@@ -39,7 +39,8 @@ public struct ChatsListView: View {
                     .padding()
                     .background {
                         Capsule()
-                            .foregroundStyle(.black)
+                            .stroke()
+                            .foregroundStyle(.white)
                     }
                 }
                 
@@ -63,16 +64,20 @@ public struct ChatsListView: View {
 
                 ForEach(viewStore.verifiedChats) { chat in
                     if let alias = chat.alias {
-                        Text(alias)
-                            .font(.system(size: 16))
-                            .foregroundStyle(.white)
-                            .frame(height: 25)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background {
-                                Capsule()
-                                    .foregroundStyle(.blue)
-                            }
+                        Button {
+                            viewStore.send(.chatButtonTapped(chat.chatID))
+                        } label: {
+                            Text(alias)
+                                .font(.system(size: 16))
+                                .foregroundStyle(.white)
+                                .frame(height: 25)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background {
+                                    Capsule()
+                                        .foregroundStyle(.blue)
+                                }
+                        }
                     }
                 }
             }
@@ -104,11 +109,12 @@ public struct ChatsListView: View {
         ChatsListView(
             store:
                 Store(
-                    initialState: ChatsListReducer.State(chats: Chat.mockedChats)
+                    initialState: ChatsListReducer.State()
                 ) {
                     ChatsListReducer(networkType: ZcashNetworkBuilder.network(for: .testnet).networkType)
                         ._printChanges()
                 }
         )
     }
+    .preferredColorScheme(.dark)
 }
