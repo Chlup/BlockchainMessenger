@@ -29,6 +29,7 @@
 		3457A7E32B07C91300216B3E /* BlockchainMessengerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7E22B07C91300216B3E /* BlockchainMessengerTests.swift */; };
 		3457A7ED2B07C91300216B3E /* BlockchainMessengerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EC2B07C91300216B3E /* BlockchainMessengerUITests.swift */; };
 		3457A7EF2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3457A7EE2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift */; };
+		9E77CAB32B12733200806CAC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9E77CAB22B12733200806CAC /* Launch Screen.storyboard */; };
 		9E9C27052B0B3F1C00A588A8 /* modules in Resources */ = {isa = PBXBuildFile; fileRef = 9E9C27042B0B3F1C00A588A8 /* modules */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 		3457A7E82B07C91300216B3E /* BlockchainMessengerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlockchainMessengerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3457A7EC2B07C91300216B3E /* BlockchainMessengerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainMessengerUITests.swift; sourceTree = "<group>"; };
 		3457A7EE2B07C91300216B3E /* BlockchainMessengerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainMessengerUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		9E77CAB22B12733200806CAC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		9E9C27042B0B3F1C00A588A8 /* modules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = modules; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -131,6 +133,7 @@
 				3457A7D12B07C91200216B3E /* BlockchainMessengerApp.swift */,
 				3457A7D52B07C91300216B3E /* Assets.xcassets */,
 				3457A7D72B07C91300216B3E /* Preview Content */,
+				9E77CAB22B12733200806CAC /* Launch Screen.storyboard */,
 			);
 			path = BlockchainMessenger;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 			files = (
 				9E9C27052B0B3F1C00A588A8 /* modules in Resources */,
 				3457A7D92B07C91300216B3E /* Preview Assets.xcassets in Resources */,
+				9E77CAB32B12733200806CAC /* Launch Screen.storyboard in Resources */,
 				3457A7D62B07C91300216B3E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -488,6 +492,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -519,6 +524,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;

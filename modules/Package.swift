@@ -40,6 +40,7 @@ let package = Package(
         .target(
             name: "ChatDetail",
             dependencies: [
+                "DerivationTool",
                 "Generated",
                 "Messages",
                 "Utils",

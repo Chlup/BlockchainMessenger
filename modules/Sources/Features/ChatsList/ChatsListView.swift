@@ -88,7 +88,6 @@ public struct ChatsListView: View {
                     }
                 }
             }
-            .navigationBarBackButtonHidden()
             .sheet(
                 store: self.store.scope(
                     state: \.$newChat,

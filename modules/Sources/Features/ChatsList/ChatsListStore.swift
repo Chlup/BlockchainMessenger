@@ -45,7 +45,7 @@ public struct ChatsListReducer: Reducer {
         case newChat(PresentationAction<NewChatReducer.Action>)
         case newChatButtonTapped
     }
-      
+    
     public init(networkType: NetworkType) {
         self.networkType = networkType
     }

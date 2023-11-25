@@ -29,11 +29,14 @@ public struct RootReducer: Reducer {
     public struct State: Equatable {
         public var appInitializationState: InitializationState = .uninitialized
         var isLoading = true
-        var path = StackState<Path.State>()
+        @PresentationState public var path: Path.State?
+        //var path = StackState<Path.State>()
         public var storedWallet: StoredWallet?
 
-        public init(path: StackState<Path.State> = StackState<Path.State>()) {
-            self.path = path
+        public init(
+            //path: StackState<Path.State> = StackState<Path.State>()
+        ) {
+            //self.path = path
         }
     }
     
@@ -49,7 +52,8 @@ public struct RootReducer: Reducer {
         case initiateAccount
         case initializationFailed
         case initializationSucceeded
-        case path(StackAction<Path.State, Path.Action>)
+        case path(PresentationAction<Path.Action>)
+        //case path(StackAction<Path.State, Path.Action>)
         case restoreAccount
     }
     
@@ -122,7 +126,8 @@ public struct RootReducer: Reducer {
                     // store the wallet to the keychain
                     try walletStorage.importWallet(newRandomPhrase, birthday, .english, true)
                     
-                    state.path.append(.createAccount(CreateAccountReducer.State()))
+//                    state.path.append(.createAccount(CreateAccountReducer.State()))
+                    state.path = .createAccount(CreateAccountReducer.State())
                 } catch {
                     // TODO: some error handling
                 }
@@ -154,6 +159,9 @@ public struct RootReducer: Reducer {
                             do {
                                 try await messages.initialize(network: zcashNetwork.networkType)
                                 try await messages.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
+                                
+                                try await mainQueue.sleep(for: .seconds(1.5))
+                                
                                 await send(.initializationSucceeded)
                             } catch {
                                 await send(.initializationFailed)
@@ -172,28 +180,33 @@ public struct RootReducer: Reducer {
 
             case .initializationSucceeded:
                 state.appInitializationState = .initialized
-                state.path.append(.chatsList(ChatsListReducer.State()))
+//                state.path.append(.chatsList(ChatsListReducer.State()))
+                state.path = .chatsList(ChatsListReducer.State())
                 return .none
 
-            case .path(.element(id: _, action: .chatsList(.chatButtonTapped(let chatId)))):
-                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
-                return .none
-
-            case .path(.element(id: _, action: .createAccount(.confirmationButtonTapped))):
-                state.path.append(.chatsList(ChatsListReducer.State()))
-                return .none
-                
+//            case .path(.element(id: _, action: .chatsList(.chatButtonTapped(let chatId)))):
+//                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
+//                return .none
+//
+//            case .path(.element(id: _, action: .createAccount(.confirmationButtonTapped))):
+//                state.path.append(.chatsList(ChatsListReducer.State()))
+//                return .none
+//                
             case .path:
                 return .none
                 
             case .restoreAccount:
-                state.path.append(.restoreAccount(RestoreAccountReducer.State()))
+//                state.path.append(.restoreAccount(RestoreAccountReducer.State()))
+                state.path = .restoreAccount(RestoreAccountReducer.State())
                 return .none
             }
         }
-        .forEach(\.path, action: /Action.path) {
+        .ifLet(\.$path, action: /Action.path) {
             Path(networkType: zcashNetwork.networkType)
         }
+//        .forEach(\.path, action: /Action.path) {
+//            Path(networkType: zcashNetwork.networkType)
+//        }
     }
 }
 
