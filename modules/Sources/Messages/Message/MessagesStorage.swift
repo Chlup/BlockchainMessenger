@@ -117,6 +117,7 @@ extension MessagesStorageImpl: MessagesStorage {
 
         let createChatsTable = chatsTable.create(ifNotExists: true) { table in
             table.column(Chat.Column.chatID, primaryKey: true)
+            table.column(Chat.Column.alias)
             table.column(Chat.Column.timestamp)
             table.column(Chat.Column.fromAddress)
             table.column(Chat.Column.toAddress)
