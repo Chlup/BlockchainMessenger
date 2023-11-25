@@ -31,7 +31,7 @@ public struct ChatDetailView: View {
                         
                         Text(message.text)
                             .font(.system(size: 14))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Asset.Colors.fontPrimary.color)
                             .padding()
                             .background {
                                 UnevenRoundedRectangle(
@@ -42,7 +42,11 @@ public struct ChatDetailView: View {
                                         topTrailing: 15
                                     )
                                 )
-                                .foregroundColor(message.isSent ? .blue : .gray)
+                                .foregroundColor(
+                                    message.isSent 
+                                    ? Asset.Colors.buttonBackground.color
+                                    : Asset.Colors.buttonBackground.color.opacity(0.4)
+                                )
                             }
                         
                         if !message.isSent {

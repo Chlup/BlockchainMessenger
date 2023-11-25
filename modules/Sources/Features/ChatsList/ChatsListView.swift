@@ -9,6 +9,7 @@ import ComposableArchitecture
 import SwiftUI
 import ZcashLightClientKit
 
+import Generated
 import NewChat
 import Messages
 import Utils
@@ -25,24 +26,28 @@ public struct ChatsListView: View {
             ScrollView {
                 if !viewStore.incomingChats.isEmpty {
                     HStack {
+                        Text("Chats")
+                            .font(.system(size: 36))
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Asset.Colors.fontPrimary.color)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 30)
+                    
+                    HStack {
                         Text("Incoming chats")
                         
                         Text("\(viewStore.incomingChats.count)")
+                            .foregroundStyle(.white)
                             .padding(7)
                             .background {
                                 Circle()
                                     .foregroundStyle(.red)
                             }
                     }
-                    .foregroundStyle(.white)
-                    .frame(height: 25)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background {
-                        Capsule()
-                            .stroke()
-                            .foregroundStyle(.white)
-                    }
+                    .neumorphicButton()
+                    .padding(.horizontal, 30)
+                    .padding(.bottom, 15)
                 }
                 
 //                ForEach(viewStore.incomingChats) { chat in
@@ -58,37 +63,28 @@ public struct ChatsListView: View {
 //                        }
 //                }
 
-                if !viewStore.incomingChats.isEmpty {
-                    Text("Verified chats")
-                        .padding(.top)
-                }
-
                 ForEach(viewStore.verifiedChats) { chat in
                     if let alias = chat.alias {
                         Button {
                             viewStore.send(.chatButtonTapped(chat.chatID))
                         } label: {
                             Text(alias)
-                                .font(.system(size: 16))
-                                .foregroundStyle(.white)
-                                .frame(height: 25)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background {
-                                    Capsule()
-                                        .foregroundStyle(.blue)
-                                }
+                                .neumorphicButton()
                         }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 15)
                     }
                 }
             }
-            .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         viewStore.send(.newChatButtonTapped)
                     } label: {
                         Image(systemName: "square.and.pencil")
+                            .renderingMode(.template)
+                            .tint(Asset.Colors.fontPrimary.color)
+                            .neumorphicButton()
                     }
                 }
             }
