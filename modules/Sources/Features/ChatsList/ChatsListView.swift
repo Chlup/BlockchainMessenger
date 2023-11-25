@@ -11,6 +11,7 @@ import ZcashLightClientKit
 
 import NewChat
 import Messages
+import Utils
 
 public struct ChatsListView: View {
     let store: StoreOf<ChatsListReducer>
@@ -101,6 +102,7 @@ public struct ChatsListView: View {
                 NewChatView(store: store)
             }
         }
+        .applyScreenBackground()
     }
 }
 

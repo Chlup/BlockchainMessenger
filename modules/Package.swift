@@ -38,16 +38,11 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Generated",
-            resources: [.process("Resources")],
-            plugins: [
-                .plugin(name: "SwiftGenPlugin", package: "SwiftGenPlugin")
-            ]
-        ),
-        .target(
             name: "ChatDetail",
             dependencies: [
+                "Generated",
                 "Messages",
+                "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
@@ -58,6 +53,7 @@ let package = Package(
             dependencies: [
                 "Messages",
                 "NewChat",
+                "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
@@ -72,17 +68,6 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Features/CreateAccount"
-        ),
-        .target(
-            name: "Messages",
-            dependencies: [
-                "SDKSynchronizer",
-                .product(name: "MnemonicSwift", package: "MnemonicSwift"),
-                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
-                .product(name: "Dependencies", package: "swift-dependencies"),
-                .product(name: "SQLite", package: "SQLite.swift")
-            ],
-            path: "Sources/Messages"
         ),
         .target(
             name: "DatabaseFiles",
@@ -109,6 +94,24 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Dependencies/FileManager"
+        ),
+        .target(
+            name: "Generated",
+            resources: [.process("Resources")],
+            plugins: [
+                .plugin(name: "SwiftGenPlugin", package: "SwiftGenPlugin")
+            ]
+        ),
+        .target(
+            name: "Messages",
+            dependencies: [
+                "SDKSynchronizer",
+                .product(name: "MnemonicSwift", package: "MnemonicSwift"),
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "SQLite", package: "SQLite.swift")
+            ],
+            path: "Sources/Messages"
         ),
         .target(
             name: "MnemonicClient",
@@ -181,6 +184,7 @@ let package = Package(
         .target(
             name: "Utils",
             dependencies: [
+                "Generated",
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
                 .product(name: "CasePaths", package: "swift-case-paths"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")

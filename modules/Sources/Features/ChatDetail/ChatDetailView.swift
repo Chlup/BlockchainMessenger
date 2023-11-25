@@ -9,7 +9,9 @@ import ComposableArchitecture
 import SwiftUI
 import ZcashLightClientKit
 
+import Generated
 import Messages
+import Utils
 
 public struct ChatDetailView: View {
     let store: StoreOf<ChatDetailReducer>
@@ -51,7 +53,9 @@ public struct ChatDetailView: View {
                     .listRowSeparator(.hidden)
                 }
             }
+            .listStyle(.plain)
         }
+        .applyScreenBackground()
     }
 }
 
