@@ -9,6 +9,8 @@ import ComposableArchitecture
 import SwiftUI
 import ZcashLightClientKit
 
+import Utils
+
 public struct NewChatView: View {
     let store: StoreOf<NewChatReducer>
     
@@ -52,6 +54,7 @@ public struct NewChatView: View {
             }
             .navigationBarBackButtonHidden()
         }
+        .applyScreenBackground()
     }
 }
 

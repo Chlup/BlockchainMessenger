@@ -134,6 +134,7 @@ let package = Package(
             name: "NewChat",
             dependencies: [
                 "DerivationTool",
+                "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Features/NewChat"

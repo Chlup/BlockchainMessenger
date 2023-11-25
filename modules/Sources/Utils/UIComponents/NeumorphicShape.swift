@@ -9,28 +9,29 @@ import SwiftUI
 
 import Generated
 
-public struct NeumorphicShapeModifier: ViewModifier {
+public struct NeumorphicShapeModifier<S>: ViewModifier where S: ShapeStyle {
     let cornerRadius: CGFloat
+    let shapeStyle: S
     
     public func body(content: Content) -> some View {
         content
             .background {
                 Rectangle()
                     .foregroundStyle(
-                        Asset.Colors.buttonBackground.color
+                        shapeStyle
                     )
                     .cornerRadius(cornerRadius)
                     .shadow(
-                        color: .black.opacity(0.33),
-                        radius: 6,
-                        x: 6,
-                        y: 6
+                        color: .black.opacity(0.7),
+                        radius: 4,
+                        x: 4,
+                        y: 4
                     )
                     .shadow(
-                        color: Asset.Colors.screenBackgroundTopLeading.color.opacity(0.8),
-                        radius: 6,
-                        x: -6,
-                        y: -6
+                        color: .white.opacity(0.15),
+                        radius: 4,
+                        x: -4,
+                        y: -4
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius)
@@ -59,16 +60,23 @@ public struct NeumorphicShapeModifier: ViewModifier {
 }
 
 extension View {
-    public func neumorphicShape(cornerRadius: CGFloat = 43) -> some View {
+    public func neumorphicShape<S>(
+        cornerRadius: CGFloat = 43,
+        style: S = Asset.Colors.buttonBackground.color
+    ) -> some View where S: ShapeStyle {
         self.modifier(
-            NeumorphicShapeModifier(cornerRadius: cornerRadius)
+            NeumorphicShapeModifier(
+                cornerRadius: cornerRadius,
+                shapeStyle: style
+            )
         )
     }
 }
 
-public struct NeumorphicButtonModifier: ViewModifier {
+public struct NeumorphicButtonModifier<S>: ViewModifier where S: ShapeStyle {
     let cornerRadius: CGFloat
-    
+    let shapeStyle: S
+
     public func body(content: Content) -> some View {
         content
             .font(.system(size: 16))
@@ -76,14 +84,20 @@ public struct NeumorphicButtonModifier: ViewModifier {
             .frame(height: 25)
             .frame(maxWidth: .infinity)
             .padding()
-            .neumorphicShape()
+            .neumorphicShape(style: shapeStyle)
     }
 }
 
 extension View {
-    public func neumorphicButton(cornerRadius: CGFloat = 43) -> some View {
+    public func neumorphicButton<S>(
+        cornerRadius: CGFloat = 43,
+        style: S = Asset.Colors.buttonBackground.color
+    ) -> some View where S: ShapeStyle {
         self.modifier(
-            NeumorphicButtonModifier(cornerRadius: cornerRadius)
+            NeumorphicButtonModifier(
+                cornerRadius: cornerRadius,
+                shapeStyle: style
+            )
         )
     }
 }
