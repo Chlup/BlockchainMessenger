@@ -81,19 +81,14 @@ extension SDKSynchronizerClient {
             getUnifiedAddress: { try await synchronizer.getUnifiedAddress(accountIndex: $0) },
             getTransparentAddress: { try await synchronizer.getTransparentAddress(accountIndex: $0) },
             getSaplingAddress: { try await synchronizer.getSaplingAddress(accountIndex: $0) },
-//            sendTransaction: { spendingKey, amount, recipient, memo in
-//                let pendingTransaction = try await synchronizer.sendToAddress(
-//                    spendingKey: spendingKey,
-//                    zatoshi: amount,
-//                    toAddress: recipient,
-//                    memo: memo
-//                )
-//                
-//                return TransactionState(
-//                    transaction: pendingTransaction,
-//                    latestBlockHeight: try await SDKSynchronizerClient.latestBlockHeight(synchronizer: synchronizer)
-//                )
-//            },
+            sendTransaction: { spendingKey, amount, recipient, memo in
+                _ = try await synchronizer.sendToAddress(
+                    spendingKey: spendingKey,
+                    zatoshi: amount,
+                    toAddress: recipient,
+                    memo: memo
+                )
+            },
 //            shieldFunds: { spendingKey, memo, shieldingThreshold in
 //                let pendingTransaction = try await synchronizer.shieldFunds(
 //                    spendingKey: spendingKey,

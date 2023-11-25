@@ -8,31 +8,26 @@
 import Foundation
 
 final class BinaryEncoder {
-    private(set) var data: Data
-    init() {
-        data = Data()
-    }
+    private(set) var bytes: [UInt8] = []
 
     func encode(byte: UInt8) {
-        data.append(byte)
+        bytes.append(byte)
     }
 
     func encode(byte: Int8) {
-        data.append(UInt8(bitPattern: byte))
+        bytes.append(UInt8(bitPattern: byte))
     }
 
     func encode(string: String) {
-        data.append(contentsOf: Array(string.utf8))
+        bytes.append(contentsOf: Array(string.utf8))
     }
 
     func encode(value: Int, bytesCount: Int) {
-        var bytesToEncode: [UInt8] = []
         for i in 0..<bytesCount {
             let mask = Int(255 << (i*8))
             let byte = UInt8((value & mask) >> (i*8))
-            bytesToEncode.append(byte)
+            bytes.append(byte)
         }
-        data.append(contentsOf: bytesToEncode)
     }
 }
 

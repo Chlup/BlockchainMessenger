@@ -41,7 +41,7 @@ public struct SDKSynchronizerClient {
     public let getTransparentAddress: (_ account: Int) async throws -> TransparentAddress?
     public let getSaplingAddress: (_ accountIndex: Int) async throws -> SaplingAddress?
 
-//    public var sendTransaction: (UnifiedSpendingKey, Zatoshi, Recipient, Memo?) async throws -> TransactionState
+    public var sendTransaction: (UnifiedSpendingKey, Zatoshi, Recipient, Memo?) async throws -> Void
 //    public let shieldFunds: (UnifiedSpendingKey, Memo, Zatoshi) async throws -> TransactionState
 
     public var wipe: () -> AnyPublisher<Void, Error>?

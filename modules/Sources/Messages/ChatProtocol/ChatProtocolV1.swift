@@ -16,7 +16,7 @@ import Foundation
  */
 
 enum ChatProtocolV1 {
-    static func encode(encoder: BinaryEncoder, message: ChatProtocol.ChatMessage) throws -> Data {
+    static func encode(encoder: BinaryEncoder, message: ChatProtocol.ChatMessage) throws -> [UInt8] {
         encoder.encode(value: message.chatID, bytesCount: 8)
         encoder.encode(value: message.timestmap, bytesCount: 5)
         encoder.encode(value: message.messageID, bytesCount: 3)
@@ -25,19 +25,19 @@ enum ChatProtocolV1 {
         switch message.content {
         case let .initialisation(fromAddress, toAddress, verificationText):
             let finalText = "\(fromAddress):\(toAddress):\(verificationText)"
-            guard finalText.utf8.count + encoder.data.count <= ChatProtocol.Constants.maxEncodedMessageLength else {
+            guard finalText.utf8.count + encoder.bytes.count <= ChatProtocol.Constants.maxEncodedMessageLength else {
                 throw ChatProtocol.Errors.messageContentTooLong
             }
             encoder.encode(string: finalText)
 
         case let .text(text):
-            guard text.utf8.count + encoder.data.count <= ChatProtocol.Constants.maxEncodedMessageLength else {
+            guard text.utf8.count + encoder.bytes.count <= ChatProtocol.Constants.maxEncodedMessageLength else {
                 throw ChatProtocol.Errors.messageContentTooLong
             }
             encoder.encode(string: text)
         }
 
-        return encoder.data
+        return encoder.bytes
     }
 
     static func decode(decoder: BinaryDecoder) throws -> ChatProtocol.ChatMessage {

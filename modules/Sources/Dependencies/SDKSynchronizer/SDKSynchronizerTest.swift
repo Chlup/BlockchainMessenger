@@ -30,7 +30,7 @@ extension SDKSynchronizerClient: TestDependencyKey {
         getUnifiedAddress: XCTUnimplemented("\(Self.self).getUnifiedAddress", placeholder: nil),
         getTransparentAddress: XCTUnimplemented("\(Self.self).getTransparentAddress", placeholder: nil),
         getSaplingAddress: XCTUnimplemented("\(Self.self).getSaplingAddress", placeholder: nil),
-//        sendTransaction: XCTUnimplemented("\(Self.self).sendTransaction", placeholder: .placeholder()),
+        sendTransaction: XCTUnimplemented("\(Self.self).sendTransaction"),
 //        shieldFunds: XCTUnimplemented("\(Self.self).shieldFunds", placeholder: .placeholder()),
         wipe: XCTUnimplemented("\(Self.self).wipe")
     )
@@ -54,7 +54,7 @@ extension SDKSynchronizerClient {
         getUnifiedAddress: { _ in return nil },
         getTransparentAddress: { _ in return nil },
         getSaplingAddress: { _ in return nil },
-//        sendTransaction: { _, _, _, _ in return .placeholder() },
+        sendTransaction: { _, _, _, _ in },
 //        shieldFunds: { _, _, _ in return .placeholder() },
         wipe: { Empty<Void, Error>().eraseToAnyPublisher() }
     )
@@ -146,24 +146,9 @@ extension SDKSynchronizerClient {
                 network: .testnet
             )
         },
-//        sendTransaction:
-//        @escaping (UnifiedSpendingKey, Zatoshi, Recipient, Memo?) async throws -> TransactionState = { _, _, _, memo in
-//            var memos: [Memo]? = []
-//            if let memo { memos?.append(memo) }
-//
-//            return TransactionState(
-//                expiryHeight: 40,
-//                memos: memos,
-//                minedHeight: 50,
-//                shielded: true,
-//                zAddress: "tteafadlamnelkqe",
-//                fee: Zatoshi(10),
-//                id: "id",
-//                status: .paid,
-//                timestamp: 1234567,
-//                zecAmount: Zatoshi(10)
-//            )
-//        },
+        sendTransaction:
+        @escaping (UnifiedSpendingKey, Zatoshi, Recipient, Memo?) async throws -> Void = { _, _, _, _ in
+        },
 //        shieldFunds: @escaping (UnifiedSpendingKey, Memo, Zatoshi) async throws -> TransactionState = { _, memo, _  in
 //            TransactionState(
 //                expiryHeight: 40,
@@ -197,7 +182,7 @@ extension SDKSynchronizerClient {
             getUnifiedAddress: getUnifiedAddress,
             getTransparentAddress: getTransparentAddress,
             getSaplingAddress: getSaplingAddress,
-//            sendTransaction: sendTransaction,
+            sendTransaction: sendTransaction,
 //            shieldFunds: shieldFunds,
             wipe: wipe
         )

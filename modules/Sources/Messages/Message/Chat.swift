@@ -26,11 +26,11 @@ public struct Chat: Codable, Equatable, Identifiable {
 
     enum Column {
         static let alias = Expression<String?>("alias")
-        static let chatID = Expression<Int>("chat_id")
+        static let chatID = Expression<Int>("chatID")
         static let timestamp = Expression<Int>("timestamp")
-        static let fromAddress = Expression<String>("from_address")
-        static let toAddress = Expression<String>("to_address")
-        static let verificationText = Expression<String>("verification_text")
+        static let fromAddress = Expression<String>("fromAddress")
+        static let toAddress = Expression<String>("toAddress")
+        static let verificationText = Expression<String>("verificationText")
         static let verified = Expression<Bool>("verified")
     }
 

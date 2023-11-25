@@ -152,7 +152,7 @@ public struct RootReducer: Reducer {
                         
                         return .run { send in
                             do {
-                                try await messages.initialize()
+                                try await messages.initialize(network: zcashNetwork.networkType)
                                 try await messages.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
                                 await send(.initializationSucceeded)
                             } catch {

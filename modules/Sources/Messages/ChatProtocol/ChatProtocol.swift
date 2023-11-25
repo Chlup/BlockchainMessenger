@@ -67,7 +67,7 @@ struct ChatProtocol {
     }
 
     // Encode message with latest version.
-    var encode: (_ message: ChatMessage) throws -> Data
+    var encode: (_ message: ChatMessage) throws -> [UInt8]
     // Decode message
     var decode: (_ message: [UInt8]) throws -> ChatMessage
     // Generate new message ID or chat ID for some timestamp.
@@ -79,7 +79,7 @@ struct ChatProtocol {
         static let prefix = "}b}"
     }
 
-    private static func encode(_ message: ChatMessage) throws -> Data {
+    private static func encode(_ message: ChatMessage) throws -> [UInt8] {
         let encoder = BinaryEncoder()
         encoder.encode(byte: Constants.zcashMemoByte)
         encoder.encode(string: Constants.prefix)
@@ -89,6 +89,9 @@ struct ChatProtocol {
     }
 
     private static func decode(_ bytes: [UInt8]) throws -> ChatMessage {
+        @Dependency(\.logger) var logger
+
+        logger.debug("Decoding: \(bytes)")
         let decoder = BinaryDecoder(bytes: bytes)
 
         do {

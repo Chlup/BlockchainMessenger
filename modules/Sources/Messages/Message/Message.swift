@@ -21,10 +21,10 @@ public struct Message: Codable, Equatable, Identifiable {
 
     enum Column {
         static let id = Expression<ID>("id")
-        static let chatID = Expression<Int>("chat_id")
+        static let chatID = Expression<Int>("chatID")
         static let timestamp = Expression<Int>("timestamp")
         static let text = Expression<String>("text")
-        static let isSent = Expression<Bool>("is_sent")
+        static let isSent = Expression<Bool>("isSent")
     }
 
     public init(
