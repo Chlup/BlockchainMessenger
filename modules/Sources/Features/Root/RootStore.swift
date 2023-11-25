@@ -19,6 +19,7 @@ import MnemonicClient
 import Models
 import WalletStorage
 import ZcashSDKEnvironment
+import Generated
 
 public struct RootReducer: Reducer {
     enum CancelId { case timer }
