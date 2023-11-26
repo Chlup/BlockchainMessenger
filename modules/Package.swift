@@ -52,6 +52,7 @@ let package = Package(
         .target(
             name: "ChatsList",
             dependencies: [
+                "ChatDetail",
                 "Messages",
                 "NewChat",
                 "Utils",
@@ -150,7 +151,6 @@ let package = Package(
             name: "Root",
             dependencies: [
                 "Generated",
-                "ChatDetail",
                 "ChatsList",
                 "CreateAccount",
                 "DatabaseFiles",

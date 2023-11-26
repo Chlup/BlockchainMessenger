@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import ZcashLightClientKit
 
+import ChatDetail
 import NewChat
 import Messages
 
@@ -15,11 +16,14 @@ public struct ChatsListReducer: Reducer {
     let networkType: NetworkType
 
     public struct State: Equatable {
-        @PresentationState public var newChat: NewChatReducer.State?
         public var incomingChats: IdentifiedArrayOf<Chat>
+        @PresentationState public var newChat: NewChatReducer.State?
+        var path = StackState<Path.State>()
         public var verifiedChats: IdentifiedArrayOf<Chat>
 
-        public init() {
+        public init(path: StackState<Path.State> = StackState<Path.State>()) {
+            self.path = path
+            
             let chats = Chat.mockedChats
             
             self.incomingChats = IdentifiedArrayOf(
@@ -44,6 +48,29 @@ public struct ChatsListReducer: Reducer {
         case chatButtonTapped(Int)
         case newChat(PresentationAction<NewChatReducer.Action>)
         case newChatButtonTapped
+        case path(StackAction<Path.State, Path.Action>)
+    }
+    
+    public struct Path: Reducer {
+        let networkType: NetworkType
+
+        public enum State: Equatable {
+            case chatsDetail(ChatDetailReducer.State)
+        }
+        
+        public enum Action: Equatable {
+            case chatsDetail(ChatDetailReducer.Action)
+        }
+        
+        public init(networkType: NetworkType) {
+            self.networkType = networkType
+        }
+        
+        public var body: some ReducerOf<Self> {
+            Scope(state: /State.chatsDetail, action: /Action.chatsDetail) {
+                ChatDetailReducer(networkType: networkType)
+            }
+        }
     }
     
     public init(networkType: NetworkType) {
@@ -55,7 +82,8 @@ public struct ChatsListReducer: Reducer {
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .chatButtonTapped:
+            case .chatButtonTapped(let chatId):
+                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
                 return .none
 
             case .newChat(.presented(.startChatButtonTapped)):
@@ -74,10 +102,16 @@ public struct ChatsListReducer: Reducer {
             case .newChatButtonTapped:
                 state.newChat = NewChatReducer.State()
                 return .none
+                
+            case .path:
+                return .none
             }
         }
         .ifLet(\.$newChat, action: /Action.newChat) {
             NewChatReducer(networkType: networkType)
+        }
+        .forEach(\.path, action: /Action.path) {
+            Path(networkType: networkType)
         }
     }
 }

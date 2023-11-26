@@ -9,6 +9,7 @@ import ComposableArchitecture
 import SwiftUI
 import ZcashLightClientKit
 
+import ChatDetail
 import Generated
 import NewChat
 import Messages
@@ -22,7 +23,9 @@ public struct ChatsListView: View {
     }
     
     public var body: some View {
-        NavigationStack {
+        NavigationStackStore(
+            store.scope(state: \.path, action: { .path($0) })
+        ) {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 ScrollView {
                     if !viewStore.incomingChats.isEmpty {
@@ -86,8 +89,8 @@ public struct ChatsListView: View {
                                 .renderingMode(.template)
                                 .tint(Asset.Colors.fontPrimary.color)
                                 .neumorphicButton(
-//                                    style: .blue
-//                                        Asset.Colors.ChatDetail.sent2.color
+                                    // style: .blue
+                                    // Asset.Colors.ChatDetail.sent2.color
                                 )
                                 .tint(.white)
                         }
@@ -103,6 +106,15 @@ public struct ChatsListView: View {
                 }
             }
             .applyScreenBackground()
+        } destination: { state in
+            switch state {
+            case .chatsDetail:
+                CaseLet(
+                    /ChatsListReducer.Path.State.chatsDetail,
+                     action: ChatsListReducer.Path.Action.chatsDetail,
+                     then: ChatDetailView.init(store:)
+                )
+            }
         }
     }
 }

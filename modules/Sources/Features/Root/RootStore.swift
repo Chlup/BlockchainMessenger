@@ -8,7 +8,6 @@
 import ComposableArchitecture
 import ZcashLightClientKit
 
-import ChatDetail
 import ChatsList
 import CreateAccount
 import RestoreAccount
@@ -30,14 +29,9 @@ public struct RootReducer: Reducer {
         public var appInitializationState: InitializationState = .uninitialized
         var isLoading = true
         @PresentationState public var path: Path.State?
-        //var path = StackState<Path.State>()
         public var storedWallet: StoredWallet?
 
-        public init(
-            //path: StackState<Path.State> = StackState<Path.State>()
-        ) {
-            //self.path = path
-        }
+        public init() { }
     }
     
     public enum Action: Equatable {
@@ -53,7 +47,6 @@ public struct RootReducer: Reducer {
         case initializationFailed
         case initializationSucceeded
         case path(PresentationAction<Path.Action>)
-        //case path(StackAction<Path.State, Path.Action>)
         case restoreAccount
     }
     
@@ -61,14 +54,12 @@ public struct RootReducer: Reducer {
         let networkType: NetworkType
 
         public enum State: Equatable {
-            case chatsDetail(ChatDetailReducer.State)
             case chatsList(ChatsListReducer.State)
             case createAccount(CreateAccountReducer.State)
             case restoreAccount(RestoreAccountReducer.State)
         }
         
         public enum Action: Equatable {
-            case chatsDetail(ChatDetailReducer.Action)
             case chatsList(ChatsListReducer.Action)
             case createAccount(CreateAccountReducer.Action)
             case restoreAccount(RestoreAccountReducer.Action)
@@ -79,9 +70,6 @@ public struct RootReducer: Reducer {
         }
         
         public var body: some ReducerOf<Self> {
-            Scope(state: /State.chatsDetail, action: /Action.chatsDetail) {
-                ChatDetailReducer(networkType: networkType)
-            }
             Scope(state: /State.chatsList, action: /Action.chatsList) {
                 ChatsListReducer(networkType: networkType)
             }
@@ -126,7 +114,6 @@ public struct RootReducer: Reducer {
                     // store the wallet to the keychain
                     try walletStorage.importWallet(newRandomPhrase, birthday, .english, true)
                     
-//                    state.path.append(.createAccount(CreateAccountReducer.State()))
                     state.path = .createAccount(CreateAccountReducer.State())
                 } catch {
                     // TODO: some error handling
@@ -180,23 +167,13 @@ public struct RootReducer: Reducer {
 
             case .initializationSucceeded:
                 state.appInitializationState = .initialized
-//                state.path.append(.chatsList(ChatsListReducer.State()))
                 state.path = .chatsList(ChatsListReducer.State())
                 return .none
 
-//            case .path(.element(id: _, action: .chatsList(.chatButtonTapped(let chatId)))):
-//                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
-//                return .none
-//
-//            case .path(.element(id: _, action: .createAccount(.confirmationButtonTapped))):
-//                state.path.append(.chatsList(ChatsListReducer.State()))
-//                return .none
-//                
             case .path:
                 return .none
                 
             case .restoreAccount:
-//                state.path.append(.restoreAccount(RestoreAccountReducer.State()))
                 state.path = .restoreAccount(RestoreAccountReducer.State())
                 return .none
             }
@@ -204,9 +181,6 @@ public struct RootReducer: Reducer {
         .ifLet(\.$path, action: /Action.path) {
             Path(networkType: zcashNetwork.networkType)
         }
-//        .forEach(\.path, action: /Action.path) {
-//            Path(networkType: zcashNetwork.networkType)
-//        }
     }
 }
 
