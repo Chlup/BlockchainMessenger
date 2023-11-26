@@ -88,11 +88,10 @@ public struct ChatsListView: View {
                             Image(systemName: "square.and.pencil")
                                 .renderingMode(.template)
                                 .tint(Asset.Colors.fontPrimary.color)
-                                .neumorphicButton(
-                                    // style: .blue
-                                    // Asset.Colors.ChatDetail.sent2.color
-                                )
-                                .tint(.white)
+//                                .neumorphicButton(
+//                                    // style: .blue
+//                                    // Asset.Colors.ChatDetail.sent2.color
+//                                )
                         }
                     }
                 }
