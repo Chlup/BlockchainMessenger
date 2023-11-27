@@ -10,9 +10,10 @@ import SwiftUI
 import ZcashLightClientKit
 
 import ChatDetail
+import Funds
 import Generated
-import NewChat
 import Messages
+import NewChat
 import Utils
 
 public struct ChatsListView: View {
@@ -81,6 +82,23 @@ public struct ChatsListView: View {
                     }
                 }
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            viewStore.send(.fundsButtonTapped)
+                        } label: {
+                            Group {
+                                Text("Funds for")
+                                    .foregroundColor(Asset.Colors.fontPrimary.color)
+                                + Text(" \(viewStore.availableMessagesCount)/\(viewStore.possibleMessagesCount) messages")
+                                    .foregroundColor(.white)
+                            }
+                            .font(.system(size: 15))
+                        }
+                        .padding(.leading, 5)
+                        .padding(.horizontal, 5)
+                        .neumorphicShape()
+                        .padding(.leading, 15)
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             viewStore.send(.newChatButtonTapped)
@@ -97,11 +115,32 @@ public struct ChatsListView: View {
                 }
                 .sheet(
                     store: self.store.scope(
-                        state: \.$newChat,
-                        action: { .newChat($0) }
+                        state: \.$sheetPath,
+                        action: { .sheetPath($0) }
                     )
                 ) { store in
-                    NewChatView(store: store)
+                    SwitchStore(store) {
+                        switch $0 {
+                        case .funds:
+                            CaseLet(
+                                /ChatsListReducer.SheetPath.State.funds,
+                                 action: ChatsListReducer.SheetPath.Action.funds,
+                                 then: FundsView.init(store:)
+                            )
+                        case .newChat:
+                            CaseLet(
+                                /ChatsListReducer.SheetPath.State.newChat,
+                                 action: ChatsListReducer.SheetPath.Action.newChat,
+                                 then: NewChatView.init(store:)
+                            )
+                        }
+                    }
+                }
+                .onAppear {
+                    viewStore.send(.onAppear)
+                }
+                .onDisappear {
+                    viewStore.send(.onDisappear)
                 }
             }
             .applyScreenBackground()
@@ -119,16 +158,13 @@ public struct ChatsListView: View {
 }
 
 #Preview {
-    NavigationStack {
-        ChatsListView(
-            store:
-                Store(
-                    initialState: ChatsListReducer.State()
-                ) {
-                    ChatsListReducer(networkType: ZcashNetworkBuilder.network(for: .testnet).networkType)
-                        ._printChanges()
-                }
-        )
-    }
-    .preferredColorScheme(.dark)
+    ChatsListView(
+        store:
+            Store(
+                initialState: ChatsListReducer.State()
+            ) {
+                ChatsListReducer(networkType: ZcashNetworkBuilder.network(for: .testnet).networkType)
+                    ._printChanges()
+            }
+    )
 }

@@ -15,10 +15,12 @@ let package = Package(
         .library(name: "DatabaseFiles", targets: ["DatabaseFiles"]),
         .library(name: "DerivationTool", targets: ["DerivationTool"]),
         .library(name: "FileManager", targets: ["FileManager"]),
+        .library(name: "Funds", targets: ["Funds"]),
         .library(name: "Messages", targets: ["Messages"]),
         .library(name: "MnemonicClient", targets: ["MnemonicClient"]),
         .library(name: "Models", targets: ["Models"]),
         .library(name: "NewChat", targets: ["NewChat"]),
+        .library(name: "Pasteboard", targets: ["Pasteboard"]),
         .library(name: "RestoreAccount", targets: ["RestoreAccount"]),
         .library(name: "Root", targets: ["Root"]),
         .library(name: "SDKSynchronizer", targets: ["SDKSynchronizer"]),
@@ -53,8 +55,10 @@ let package = Package(
             name: "ChatsList",
             dependencies: [
                 "ChatDetail",
+                "Funds",
                 "Messages",
                 "NewChat",
+                "SDKSynchronizer",
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
@@ -98,6 +102,20 @@ let package = Package(
             path: "Sources/Dependencies/FileManager"
         ),
         .target(
+            name: "Funds",
+            dependencies: [
+                "DerivationTool",
+                "Generated",
+                "Messages",
+                "Pasteboard",
+                "SDKSynchronizer",
+                "Utils",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
+            ],
+            path: "Sources/Features/Funds"
+        ),
+        .target(
             name: "Generated",
             resources: [.process("Resources")],
             plugins: [
@@ -139,6 +157,14 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Features/NewChat"
+        ),
+        .target(
+            name: "Pasteboard",
+            dependencies: [
+                "Utils",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+            ],
+            path: "Sources/Dependencies/Pasteboard"
         ),
         .target(
             name: "RestoreAccount",

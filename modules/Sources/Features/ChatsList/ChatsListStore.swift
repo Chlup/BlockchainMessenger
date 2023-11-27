@@ -5,21 +5,34 @@
 //  Created by Lukáš Korba on 23.11.2023.
 //
 
+import Foundation
 import ComposableArchitecture
 import ZcashLightClientKit
 
 import ChatDetail
-import NewChat
+import Funds
 import Messages
+import NewChat
+import Utils
 
 public struct ChatsListReducer: Reducer {
+    private enum CancelId { case timer }
     let networkType: NetworkType
 
     public struct State: Equatable {
         public var incomingChats: IdentifiedArrayOf<Chat>
-        @PresentationState public var newChat: NewChatReducer.State?
+        @PresentationState public var sheetPath: SheetPath.State?
         var path = StackState<Path.State>()
+        public var shieldedBalance = Balance.zero
         public var verifiedChats: IdentifiedArrayOf<Chat>
+
+        public var availableMessagesCount: UInt {
+            UInt(floor(Double(shieldedBalance.data.verified.amount) / 10_001))
+        }
+
+        public var possibleMessagesCount: UInt {
+            UInt(floor(Double(shieldedBalance.data.total.amount) / 10_001))
+        }
 
         public init(path: StackState<Path.State> = StackState<Path.State>()) {
             self.path = path
@@ -46,9 +59,13 @@ public struct ChatsListReducer: Reducer {
     
     public enum Action: Equatable {
         case chatButtonTapped(Int)
-        case newChat(PresentationAction<NewChatReducer.Action>)
+        case fundsButtonTapped
         case newChatButtonTapped
+        case onAppear
+        case onDisappear
         case path(StackAction<Path.State, Path.Action>)
+        case sheetPath(PresentationAction<SheetPath.Action>)
+        case synchronizerStateChanged(SynchronizerState)
     }
     
     public struct Path: Reducer {
@@ -73,42 +90,93 @@ public struct ChatsListReducer: Reducer {
         }
     }
     
+    public struct SheetPath: Reducer {
+        let networkType: NetworkType
+
+        public enum State: Equatable {
+            case funds(FundsReducer.State)
+            case newChat(NewChatReducer.State)
+        }
+        
+        public enum Action: Equatable {
+            case funds(FundsReducer.Action)
+            case newChat(NewChatReducer.Action)
+        }
+        
+        public init(networkType: NetworkType) {
+            self.networkType = networkType
+        }
+        
+        public var body: some ReducerOf<Self> {
+            Scope(state: /State.funds, action: /Action.funds) {
+                FundsReducer(networkType: networkType)
+            }
+            Scope(state: /State.newChat, action: /Action.newChat) {
+                NewChatReducer(networkType: networkType)
+            }
+        }
+    }
+    
     public init(networkType: NetworkType) {
         self.networkType = networkType
     }
     
+    @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.messages) var messages
+    @Dependency(\.sdkSynchronizer) var synchronizer
     
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .onAppear:
+                return Effect.publisher {
+                    synchronizer.stateStream()
+                        .throttle(for: .seconds(0.2), scheduler: mainQueue, latest: true)
+                        .map(ChatsListReducer.Action.synchronizerStateChanged)
+                }
+                .cancellable(id: CancelId.timer, cancelInFlight: true)
+
+            case .onDisappear:
+                return .cancel(id: CancelId.timer)
+
             case .chatButtonTapped(let chatId):
                 state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
                 return .none
 
-            case .newChat(.presented(.startChatButtonTapped)):
-                if let uAddress = state.newChat?.uAddress, let alias = state.newChat?.alias {
+            case .fundsButtonTapped:
+                state.sheetPath = .funds(FundsReducer.State())
+                return .none
+
+            case .newChatButtonTapped:
+                state.sheetPath = .newChat(NewChatReducer.State())
+                return .none
+                
+            case .path:
+                return .none
+
+            case .sheetPath(.presented(.newChat(.startChatButtonTapped))):
+                if case .newChat(let newChatState) = state.sheetPath.optional {
+                    let uAddress = newChatState.uAddress
+                    let alias = newChatState.alias
                     // TODO: here we know what UA user wants to initiate chat with
                     print("uAddress: \(uAddress), alias: \(alias)")
                     // TODO: some messages.createChat is needed
                     // messages.createChat(for: uAddress, alias: alias)
                 }
-                state.newChat = nil
+                state.sheetPath = nil
+                return .none
+
+            case .sheetPath:
                 return .none
                 
-            case .newChat:
-                return .none
-            
-            case .newChatButtonTapped:
-                state.newChat = NewChatReducer.State()
-                return .none
-                
-            case .path:
+            case .synchronizerStateChanged(let latestState):
+                let shieldedBalance = latestState.shieldedBalance
+                state.shieldedBalance = shieldedBalance.redacted
                 return .none
             }
         }
-        .ifLet(\.$newChat, action: /Action.newChat) {
-            NewChatReducer(networkType: networkType)
+        .ifLet(\.$sheetPath, action: /Action.sheetPath) {
+            SheetPath(networkType: networkType)
         }
         .forEach(\.path, action: /Action.path) {
             Path(networkType: networkType)
