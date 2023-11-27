@@ -55,7 +55,7 @@ public struct Message: Codable, Equatable, Identifiable {
 
     static func createSent(chatID: Int, text: String) -> Message {
         @Dependency(\.chatProtocol) var chatProtocol
-        let timestamp = Int(Date().timeIntervalSince1970)
+        let timestamp = chatProtocol.getTimestampForNow()
         return Message(id: chatProtocol.generateIDFor(timestamp), chatID: chatID, timestamp: timestamp, text: text, isSent: true)
     }
 }

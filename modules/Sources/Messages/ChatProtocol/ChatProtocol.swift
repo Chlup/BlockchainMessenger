@@ -70,6 +70,7 @@ struct ChatProtocol {
     var encode: (_ message: ChatMessage) throws -> [UInt8]
     // Decode message
     var decode: (_ message: [UInt8]) throws -> ChatMessage
+    var getTimestampForNow: () -> Int
     // Generate new message ID or chat ID for some timestamp.
     var generateIDFor: (_ timestamp: Int) -> Int
 
@@ -144,6 +145,7 @@ struct ChatProtocol {
             decode: { data in
                 return try Self.decode(data)
             },
+            getTimestampForNow: { Int(Date().timeIntervalSince1970) },
             generateIDFor: { timestamp in
                 Self.merge(timestamp: timestamp, andRestOfID: Self.random3BytesNumber())
             }

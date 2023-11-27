@@ -13,8 +13,13 @@ import SDKSynchronizer
 
 protocol MessagesStorage: Actor {
     func initialize() async throws
+
+    func allChats() async throws -> [Chat]
+    func chat(for chatID: Int) async throws -> Chat
     func doesChatExists(for chatID: Int) async throws -> Bool
     func storeChat(_ chat: Chat) async throws
+
+    func allMessages(for chatID: Int) async throws -> [Message]
     func doesMessageExists(for messageID: Message.ID) async throws -> Bool
     func storeMessage(_ message: Message) async throws
 }
@@ -100,6 +105,18 @@ extension MessagesStorageImpl: MessagesStorage {
         }
     }
 
+    func allChats() async throws -> [Chat] {
+        let query = chatsTable
+            .order(Chat.Column.timestamp.desc)
+        return try execute(query) { try Chat(row: $0) }
+    }
+
+    func chat(for chatID: Int) async throws -> Chat {
+        let query = chatsTable
+            .filter(Chat.Column.chatID == chatID)
+        return try execute(query) { try Chat(row: $0) }
+    }
+
     func doesChatExists(for chatID: Int) async throws -> Bool {
         let query = chatsTable
             .filter(Chat.Column.chatID == chatID)
@@ -111,6 +128,13 @@ extension MessagesStorageImpl: MessagesStorage {
     func storeChat(_ chat: Chat) async throws {
         let db = try dbConnection.connection()
         try db.run(chatsTable.insert(chat))
+    }
+
+    func allMessages(for chatID: Int) async throws -> [Message] {
+        let query = messagesTable
+            .filter(Message.Column.chatID == chatID)
+            .order(Message.Column.timestamp.desc)
+        return try execute(query) { try Message(row: $0) }
     }
 
     func doesMessageExists(for messageID: Message.ID) async throws -> Bool {

@@ -20,14 +20,16 @@ public enum MessagesError: Error {
     case invalidToAddressWhenCreatingChat
     case cantCreateMemoFromMessageWhenCreatingChat(Error)
     case cantCreateRecipientWhenCreatingChat(Error)
+    case chatDoesntExistWhenSendingMessage(Error)
 }
 
 public protocol Messages {
+    func allChats() async throws -> [Chat]
+    func allMessages(for chatID: Int) async throws -> [Message]
     func initialize(network: NetworkType) async throws
-    func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
-
     func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws
     func sendMessage(chatID: Int, text: String) async throws
+    func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
 }
 
 struct MessagesImpl {
@@ -40,31 +42,17 @@ struct MessagesImpl {
 }
 
 extension MessagesImpl: Messages {
+    func allChats() async throws -> [Chat] {
+        return try await messagesStorage.allChats()
+    }
+
+    func allMessages(for chatID: Int) async throws -> [Message] {
+        return try await messagesStorage.allMessages(for: chatID)
+    }
+
     func initialize(network: NetworkType) async throws {
         await messagesSender.setNetwork(network)
         try await messagesStorage.initialize()
-    }
-
-    func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws {
-//        do {
-//            let message = Message.createSent(chatID: 123, text: "Hello 🐞world")
-//            logger.debug("Input message \(message)")
-//            logger.debug(message.id.binaryDescription)
-//            logger.debug(message.timestamp.binaryDescription)
-//            let protocolMessage = ChatProtocol.ChatMessage(chatID: message.chatID, timestmap: message.timestamp, messageID: message.id, content: .text(message.text))
-//
-//            let encoded = try chatProtocol.encode(protocolMessage)
-//
-//            let decoded = try chatProtocol.decode(Array(encoded))
-//            logger.debug("Decoded message \(decoded)")
-//
-//        } catch {
-//            logger.debug("Error while encoding/decoding message: \(error)")
-//        }
-
-        await messagesSender.setSeedBytes(seedBytes)
-        await transactionsProcessor.start()
-        try await sdkManager.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
     }
 
     func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws {
@@ -73,6 +61,28 @@ extension MessagesImpl: Messages {
 
     func sendMessage(chatID: Int, text: String) async throws {
         try await messagesSender.sendMessage(chatID: chatID, text: text)
+    }
+
+    func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws {
+        //        do {
+        //            let message = Message.createSent(chatID: 123, text: "Hello 🐞world")
+        //            logger.debug("Input message \(message)")
+        //            logger.debug(message.id.binaryDescription)
+        //            logger.debug(message.timestamp.binaryDescription)
+        //            let protocolMessage = ChatProtocol.ChatMessage(chatID: message.chatID, timestmap: message.timestamp, messageID: message.id, content: .text(message.text))
+        //
+        //            let encoded = try chatProtocol.encode(protocolMessage)
+        //
+        //            let decoded = try chatProtocol.decode(Array(encoded))
+        //            logger.debug("Decoded message \(decoded)")
+        //
+        //        } catch {
+        //            logger.debug("Error while encoding/decoding message: \(error)")
+        //        }
+
+        await messagesSender.setSeedBytes(seedBytes)
+        await transactionsProcessor.start()
+        try await sdkManager.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
     }
 }
 

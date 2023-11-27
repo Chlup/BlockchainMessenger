@@ -74,7 +74,7 @@ public struct Chat: Codable, Equatable, Identifiable {
     ) -> Chat {
         @Dependency(\.chatProtocol) var chatProtocol
         
-        let timestamp = Int(Date().timeIntervalSince1970)
+        let timestamp = chatProtocol.getTimestampForNow()
         
         return Chat(
             alias: alias,

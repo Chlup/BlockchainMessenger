@@ -87,7 +87,23 @@ extension MessagesSenderImpl: MessagesSender {
     }
     
     func sendMessage(chatID: Int, text: String) async throws {
+        let chat: Chat
+        do {
+            chat = try await storage.chat(for: chatID)
+        } catch {
+            throw MessagesError.chatDoesntExistWhenSendingMessage(error)
+        }
 
+        let newMessage = Message.createSent(chatID: chatID, text: text)
+        let protocolMessage = ChatProtocol.ChatMessage(
+            chatID: newMessage.chatID,
+            timestmap: newMessage.timestamp,
+            messageID: chatProtocol.generateIDFor(newMessage.timestamp),
+            content: .text(text)
+        )
+
+        try await send(message: protocolMessage, toAddress: chat.toAddress)
+        try await storage.storeMessage(newMessage)
     }
 }
 
