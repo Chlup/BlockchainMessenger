@@ -24,7 +24,7 @@ public struct RootView: View {
     
     public var body: some View {
         IfLetStore(
-            store.scope(state: \.$path, action: { .path($0) })
+            store.scope(state: \.$path, action: \.path)
         ) { store in
             SwitchStore(store) {
                 switch $0 {

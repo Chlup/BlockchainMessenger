@@ -20,7 +20,8 @@ import Models
 import WalletStorage
 import ZcashSDKEnvironment
 
-public struct RootReducer: Reducer {
+@Reducer
+public struct RootReducer {
     enum CancelId { case timer }
 
     let zcashNetwork: ZcashNetwork
@@ -178,7 +179,7 @@ public struct RootReducer: Reducer {
                 return .none
             }
         }
-        .ifLet(\.$path, action: /Action.path) {
+        .ifLet(\.$path, action: \.path) {
             Path(networkType: zcashNetwork.networkType)
         }
     }

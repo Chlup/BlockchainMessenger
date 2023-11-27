@@ -15,7 +15,8 @@ import Messages
 import NewChat
 import Utils
 
-public struct ChatsListReducer: Reducer {
+@Reducer
+public struct ChatsListReducer {
     private enum CancelId { case timer }
     let networkType: NetworkType
 
@@ -175,10 +176,10 @@ public struct ChatsListReducer: Reducer {
                 return .none
             }
         }
-        .ifLet(\.$sheetPath, action: /Action.sheetPath) {
+        .ifLet(\.$sheetPath, action: \.sheetPath) {
             SheetPath(networkType: networkType)
         }
-        .forEach(\.path, action: /Action.path) {
+        .forEach(\.path, action: \.path) {
             Path(networkType: networkType)
         }
     }

@@ -11,7 +11,8 @@ import Models
 import Utils
 import WalletStorage
 
-public struct CreateAccountReducer: Reducer {
+@Reducer
+public struct CreateAccountReducer {
     public struct State: Equatable {
         public var birthday: Birthday?
         public var birthdayValue: String?

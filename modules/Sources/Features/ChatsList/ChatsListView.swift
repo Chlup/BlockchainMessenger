@@ -25,7 +25,7 @@ public struct ChatsListView: View {
     
     public var body: some View {
         NavigationStackStore(
-            store.scope(state: \.path, action: { .path($0) })
+            store.scope(state: \.path, action: \.path)
         ) {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 ScrollView {
@@ -116,7 +116,7 @@ public struct ChatsListView: View {
                 .sheet(
                     store: self.store.scope(
                         state: \.$sheetPath,
-                        action: { .sheetPath($0) }
+                        action: \.sheetPath
                     )
                 ) { store in
                     SwitchStore(store) {

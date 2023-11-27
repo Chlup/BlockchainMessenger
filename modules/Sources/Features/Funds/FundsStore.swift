@@ -12,7 +12,8 @@ import Pasteboard
 import SDKSynchronizer
 import Utils
 
-public struct FundsReducer: Reducer {
+@Reducer
+public struct FundsReducer {
     let networkType: NetworkType
 
     public struct State: Equatable {

@@ -10,7 +10,8 @@ import ZcashLightClientKit
 
 import DerivationTool
 
-public struct NewChatReducer: Reducer {
+@Reducer
+public struct NewChatReducer {
     let networkType: NetworkType
 
     public struct State: Equatable {

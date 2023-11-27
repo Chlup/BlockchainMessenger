@@ -30,11 +30,11 @@ let package = Package(
         .library(name: "ZcashSDKEnvironment", targets: ["ZcashSDKEnvironment"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.4.0"),
-        .package(url: "https://github.com/pointfreeco/swift-case-paths", from: "1.1.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.5.0"),
+        .package(url: "https://github.com/pointfreeco/swift-case-paths", from: "1.1.1"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.1"),
         .package(url: "https://github.com/zcash-hackworks/MnemonicSwift", exact: "2.2.4"),
         .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", revision: "d75142ae2ef5b9a8c264dafe8c1907d3615b6d0a"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.1"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.14.1"),
         .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2")
     ],

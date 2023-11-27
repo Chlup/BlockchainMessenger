@@ -7,7 +7,8 @@
 
 import ComposableArchitecture
 
-public struct RestoreAccountReducer: Reducer {
+@Reducer
+public struct RestoreAccountReducer {
     public struct State: Equatable {
         public init() {}
     }
