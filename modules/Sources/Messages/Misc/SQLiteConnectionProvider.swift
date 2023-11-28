@@ -32,6 +32,7 @@ import DatabaseFiles
 import Dependencies
 
 protocol ConnectionProvider {
+    var path: String { get }
     func connection() throws -> Connection
     func close()
 }

@@ -196,6 +196,7 @@ public struct ChatsListReducer {
 //                    .cancellable(id: WipeCancelId.timer, cancelInFlight: true),
 //                    .run { _ in
 //                        walletStorage.nukeWallet()
+//                        try await messages.wipe()
 //                    }
 //                )
                 

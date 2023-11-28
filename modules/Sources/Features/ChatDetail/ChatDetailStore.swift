@@ -29,6 +29,7 @@
 import ComposableArchitecture
 import ZcashLightClientKit
 
+import Logger
 import Messages
 
 @Reducer
@@ -56,7 +57,8 @@ public struct ChatDetailReducer {
     }
     
     @Dependency(\.messages) var messages
-    
+    @Dependency(\.logger) var logger
+
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
@@ -78,12 +80,12 @@ public struct ChatDetailReducer {
             case .send(let text):
                 return .run { [chatId = state.chatId] send in
                     do {
-                        try await messages.sendMessage(chatID: chatId, text: text)
+                        _ = try await messages.sendMessage(chatID: chatId, text: text)
                         let messages = try await messages.allMessages(for: chatId)
                         await send(.messagesLoaded(IdentifiedArrayOf(uniqueElements: messages)))
                     } catch {
                         // TODO: error handling
-                        print("oh no :(")
+                        self.logger.debug("oh no :(")
                     }
                 }
             }

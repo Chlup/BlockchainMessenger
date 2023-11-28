@@ -43,6 +43,8 @@ protocol MessagesStorage: Actor {
     func allMessages(for chatID: Int) async throws -> [Message]
     func doesMessageExists(for messageID: Message.ID) async throws -> Bool
     func storeMessage(_ message: Message) async throws
+
+    func wipe() async throws
 }
 
 actor MessagesStorageImpl {
@@ -172,6 +174,11 @@ extension MessagesStorageImpl: MessagesStorage {
         let db = try dbConnection.connection()
         try db.run(messagesTable.insert(message))
         eventsSender.send(event: .newMessage(message))
+    }
+
+    func wipe() async throws {
+        dbConnection.close()
+        try FileManager.default.removeItem(atPath: dbConnection.path)
     }
 }
 

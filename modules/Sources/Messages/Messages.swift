@@ -60,6 +60,7 @@ public protocol Messages {
     func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws
     func sendMessage(chatID: Int, text: String) async throws -> Message
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
+    func wipe() async throws
 }
 
 struct MessagesImpl {
@@ -116,6 +117,10 @@ extension MessagesImpl: Messages {
         await messagesSender.setSeedBytes(seedBytes)
         await transactionsProcessor.start()
         try await sdkManager.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
+    }
+
+    func wipe() async throws {
+        try await messagesStorage.wipe()
     }
 }
 
