@@ -114,7 +114,7 @@ extension MessagesStorageImpl: MessagesStorage {
             table.column(Message.Column.text)
             table.column(Message.Column.isSent)
         }
-        let createMessagesChatIDIndex = messagesTable.createIndex(Message.Column.chatID, unique: true, ifNotExists: true)
+        let createMessagesChatIDIndex = messagesTable.createIndex(Message.Column.chatID, ifNotExists: true)
         let createMessagesTimestampIndex = messagesTable.createIndex(Message.Column.timestamp, ifNotExists: true)
 
         try db.transaction {
