@@ -29,6 +29,9 @@
 import ComposableArchitecture
 import SwiftUI
 
+import Generated
+import Utils
+
 public struct CreateAccountView: View {
     let store: StoreOf<CreateAccountReducer>
     
@@ -38,44 +41,66 @@ public struct CreateAccountView: View {
     
     public var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            VStack {
-                Text(viewStore.birthdayValue ?? "")
-                
-                if let groups = viewStore.phrase?.toGroups() {
-                    HStack {
-                        ForEach(groups, id: \.startIndex) { group in
-                            VStack(alignment: .leading) {
-                                HStack(spacing: 2) {
-                                    VStack(alignment: .trailing, spacing: 2) {
-                                        ForEach(Array(group.words.enumerated()), id: \.offset) { seedWord in
-                                            Text("\(seedWord.offset + group.startIndex + 1).")
+            NavigationStack {
+                VStack(spacing: 50) {
+                    Group {
+                        Text("Birthday ")
+                        + Text(viewStore.birthdayValue ?? "")
+                    }
+                    .foregroundStyle(Asset.Colors.fontPrimary.color)
+                    
+                    if let groups = viewStore.phrase?.toGroups() {
+                        HStack {
+                            ForEach(groups, id: \.startIndex) { group in
+                                VStack(alignment: .leading) {
+                                    HStack(spacing: 2) {
+                                        VStack(alignment: .trailing, spacing: 2) {
+                                            ForEach(Array(group.words.enumerated()), id: \.offset) { seedWord in
+                                                Text("\(seedWord.offset + group.startIndex + 1).")
+                                            }
                                         }
-                                    }
-                                    
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        ForEach(Array(group.words.enumerated()), id: \.offset) { seedWord in
-                                            Text("\(seedWord.element.data)")
-                                                .minimumScaleFactor(0.5)
+                                        
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            ForEach(Array(group.words.enumerated()), id: \.offset) { seedWord in
+                                                Text("\(seedWord.element.data)")
+                                                    .minimumScaleFactor(0.5)
+                                            }
                                         }
-                                    }
-                                    
-                                    if group.startIndex == 0 {
-                                        Spacer()
+                                        
+                                        if group.startIndex == 0 {
+                                            Spacer()
+                                        }
                                     }
                                 }
                             }
                         }
+                        .foregroundStyle(Asset.Colors.fontPrimary.color)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 15)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 15)
+                    
+                    Button("I wrote it down") {
+                        viewStore.send(.confirmationButtonTapped)
+                    }
+                    .neumorphicButton()
                 }
-
-                Button("I wrote it down") {
-                    viewStore.send(.confirmationButtonTapped)
+                
+                .padding(.horizontal, 35)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            viewStore.send(.tapToCopyTapped)
+                        } label: {
+                            Text("Tap to copy")
+                                .foregroundStyle(Asset.Colors.fontPrimary.color)
+                                .underline()
+                        }
+                    }
                 }
-            }
-            .onAppear {
-                viewStore.send(.onAppear)
+                .onAppear {
+                    viewStore.send(.onAppear)
+                }
+                .applyScreenBackground()
             }
         }
     }

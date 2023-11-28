@@ -62,6 +62,7 @@ let package = Package(
                 "NewChat",
                 "SDKSynchronizer",
                 "Utils",
+                "WalletStorage",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
@@ -72,6 +73,7 @@ let package = Package(
             name: "CreateAccount",
             dependencies: [
                 "Models",
+                "Pasteboard",
                 "Utils",
                 "WalletStorage",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")

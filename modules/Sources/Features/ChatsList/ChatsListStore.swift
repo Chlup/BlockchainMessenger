@@ -35,10 +35,12 @@ import Funds
 import Messages
 import NewChat
 import Utils
+import WalletStorage
 
 @Reducer
 public struct ChatsListReducer {
     private enum CancelId { case timer }
+    private enum WipeCancelId { case timer }
     let networkType: NetworkType
 
     public struct State: Equatable {
@@ -88,6 +90,8 @@ public struct ChatsListReducer {
         case path(StackAction<Path.State, Path.Action>)
         case sheetPath(PresentationAction<SheetPath.Action>)
         case synchronizerStateChanged(SynchronizerState)
+        case wipeFailed
+        case wipeSucceeded
     }
     
     public struct Path: Reducer {
@@ -143,15 +147,34 @@ public struct ChatsListReducer {
         self.networkType = networkType
     }
     
+    @Dependency(\.logger) var logger
     @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.messages) var messages
     @Dependency(\.sdkSynchronizer) var synchronizer
-    @Dependency(\.logger) var logger
+    @Dependency(\.walletStorage) var walletStorage
 
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .onAppear:
+                // TODO: here is the option to wipe the wallet until it's properly implemented
+//                guard let wipePublisher = synchronizer.wipe() else {
+//                    return .none
+//                }
+//                return .concatenate(
+//                    .publisher {
+//                        wipePublisher
+//                            .replaceEmpty(with: Void())
+//                            .map { _ in return ChatsListReducer.Action.wipeSucceeded }
+//                            .replaceError(with: ChatsListReducer.Action.wipeFailed)
+//                            .receive(on: mainQueue)
+//                    }
+//                    .cancellable(id: WipeCancelId.timer, cancelInFlight: true),
+//                    .run { _ in
+//                        walletStorage.nukeWallet()
+//                    }
+//                )
+                
                 return Effect.publisher {
                     synchronizer.stateStream()
                         .throttle(for: .seconds(0.2), scheduler: mainQueue, latest: true)
@@ -195,6 +218,12 @@ public struct ChatsListReducer {
             case .synchronizerStateChanged(let latestState):
                 let shieldedBalance = latestState.shieldedBalance
                 state.shieldedBalance = shieldedBalance.redacted
+                return .none
+                
+            case .wipeFailed:
+                return .none
+
+            case .wipeSucceeded:
                 return .none
             }
         }

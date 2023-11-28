@@ -128,7 +128,7 @@ public struct RootReducer {
                 
             case .appDelegate:
                 return .none
-            
+        
             case .createAccount:
                 do {
                     // get the random english mnemonic
@@ -194,6 +194,9 @@ public struct RootReducer {
                 state.path = .chatsList(ChatsListReducer.State())
                 return .none
 
+            case .path(.presented(.chatsList(.wipeSucceeded))):
+                return .none
+                
             case .path:
                 return .none
                 
