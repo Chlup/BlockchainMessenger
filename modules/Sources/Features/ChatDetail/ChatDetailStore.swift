@@ -85,7 +85,7 @@ public struct ChatDetailReducer {
                         await send(.messagesLoaded(IdentifiedArrayOf(uniqueElements: messages)))
                     } catch {
                         // TODO: error handling
-                        self.logger.debug("oh no :(")
+                        self.logger.debug("oh no :( \(error)")
                     }
                 }
             }

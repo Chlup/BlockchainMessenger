@@ -44,6 +44,7 @@ public enum MessagesError: Error {
     case createRecipientWhenCreatingChat(Error)
     case storeNewChat(Error)
     case chatDoesntExistWhenSendingMessage(Error)
+    case getUnifiedAddressWhenSendingMessage
 }
 
 public enum MessagesEvent: Equatable {

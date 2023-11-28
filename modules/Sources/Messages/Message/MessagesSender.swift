@@ -128,7 +128,27 @@ extension MessagesSenderImpl: MessagesSender {
             content: .text(text)
         )
 
-        let transactionRawID = try await send(message: protocolMessage, toAddress: chat.toAddress)
+        let unifiedAddress: UnifiedAddress
+        do {
+            guard let possibleUnifiedAddress = try await synchronizer.getUnifiedAddress(account: 0) else {
+                throw MessagesError.getUnifiedAddressWhenSendingMessage
+            }
+            unifiedAddress = possibleUnifiedAddress
+        } catch {
+            throw MessagesError.getUnifiedAddressWhenSendingMessage
+        }
+
+        // There are two sides chatting. When side A creates chat it sends init message with `fromAddress` and `toAddress`. Side A's address is
+        // `fromAddress`. And B's side address is `toAddress`. So when side B is sending message it must choose `chat.fromAddress` as to adress to
+        // send message to side A and not to itself.
+        let toAddress: String
+        if unifiedAddress.stringEncoded == chat.toAddress {
+            toAddress = chat.fromAddress
+        } else {
+            toAddress = chat.toAddress
+        }
+
+        let transactionRawID = try await send(message: protocolMessage, toAddress: toAddress)
         do {
             try await storage.storeMessage(newMessage)
         } catch {
