@@ -46,6 +46,10 @@ actor MessagesSenderImpl {
     @Dependency(\.chatProtocol) var chatProtocol
     @Dependency(\.logger) var logger
 
+    private enum Constants {
+        static let messagePrice = Zatoshi(0)
+    }
+
     var network: NetworkType = .testnet
     var seedBytes: [UInt8] = []
 
@@ -77,10 +81,6 @@ actor MessagesSenderImpl {
 }
 
 extension MessagesSenderImpl: MessagesSender {
-    private enum Constants {
-        static let messagePrice = Zatoshi(1)
-    }
-
     func setSeedBytes(_ seedBytes: [UInt8]) async {
         self.seedBytes = seedBytes
     }

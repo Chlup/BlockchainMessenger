@@ -64,8 +64,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             // Debugging stuff to test stuff
 //            do {
 //                let seed = """
-//                dinner agree envelope cannon process base interest allow mansion magnet hat harvest life capital pyramid clarify type offer leisure \
-//                picture section tribe shove hair
+//                burden help grit wheat sustain exit text radar ready wide tribe august post century suspect seminar relax mixed brother old enrich \
+//                recycle turtle dice
 //                """
 //                let seedBytes = try Mnemonic.deterministicSeedBytes(from: seed)
 //                try await messages.start(with: seedBytes, birthday: 2604585, walletMode: .existingWallet)
@@ -73,9 +73,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 //                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) { [weak self] in
 //                    guard let self = self else { return }
 //                    Task {
-////                        try? await self.listAllChatsAndMessages()
-////                        try? await sendMessageToFirstChat()
-////                        try? await createNewChat()
+//                        try? await self.listAllChatsAndMessages()
+////                        try? await self.sendMessageToFirstChat()
+////                        try? await self.createNewChat()
 //                    }
 //                }
 //            } catch {
