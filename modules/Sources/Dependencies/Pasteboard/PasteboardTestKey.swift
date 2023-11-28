@@ -10,10 +10,7 @@ import XCTestDynamicOverlay
 import Utils
 
 extension PasteboardClient: TestDependencyKey {
-    public static let testValue = Self(
-        setString: XCTUnimplemented("\(Self.self).setString"),
-        getString: XCTUnimplemented("\(Self.self).getString", placeholder: "".redacted)
-    )
+    public static let testValue = Self()
     
     private struct TestPasteboard {
         static var general = TestPasteboard()

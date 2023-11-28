@@ -11,17 +11,8 @@ import XCTestDynamicOverlay
 import Utils
 
 extension DatabaseFilesClient: TestDependencyKey {
-    public static let testValue = Self(
-        documentsDirectory: XCTUnimplemented("\(Self.self).documentsDirectory", placeholder: .emptyURL),
-        fsBlockDbRootFor: XCTUnimplemented("\(Self.self).fsBlockDbRootFor", placeholder: .emptyURL),
-        cacheDbURLFor: XCTUnimplemented("\(Self.self).cacheDbURLFor", placeholder: .emptyURL),
-        dataDbURLFor: XCTUnimplemented("\(Self.self).dataDbURLFor", placeholder: .emptyURL),
-        outputParamsURLFor: XCTUnimplemented("\(Self.self).outputParamsURLFor", placeholder: .emptyURL),
-        pendingDbURLFor: XCTUnimplemented("\(Self.self).pendingDbURLFor", placeholder: .emptyURL),
-        spendParamsURLFor: XCTUnimplemented("\(Self.self).spendParamsURLFor", placeholder: .emptyURL),
-        areDbFilesPresentFor: XCTUnimplemented("\(Self.self).areDbFilesPresentFor", placeholder: false),
-        messagesDBURL: XCTUnimplemented("\(Self.self).messagesDBURLFor", placeholder: .emptyURL)
-    )
+    public static let previewValue = Self.noOp
+    public static let testValue = Self()
 }
 
 extension DatabaseFilesClient {
@@ -34,6 +25,6 @@ extension DatabaseFilesClient {
         pendingDbURLFor: { _ in .emptyURL },
         spendParamsURLFor: { _ in .emptyURL },
         areDbFilesPresentFor: { _ in false },
-        messagesDBURL: { .emptyURL }
+        messagesDBURL: {.emptyURL }
     )
 }

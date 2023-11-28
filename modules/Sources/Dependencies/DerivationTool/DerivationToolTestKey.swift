@@ -11,14 +11,7 @@ import ZcashLightClientKit
 import Utils
 
 extension DerivationToolClient: TestDependencyKey {
-    public static let testValue = Self(
-        deriveSpendingKey: XCTUnimplemented("\(Self.self).deriveSpendingKey"),
-        deriveUnifiedFullViewingKey: XCTUnimplemented("\(Self.self).deriveUnifiedFullViewingKey"),
-        isUnifiedAddress: XCTUnimplemented("\(Self.self).isUnifiedAddress", placeholder: false),
-        isSaplingAddress: XCTUnimplemented("\(Self.self).isSaplingAddress", placeholder: false),
-        isTransparentAddress: XCTUnimplemented("\(Self.self).isTransparentAddress", placeholder: false),
-        isZcashAddress: XCTUnimplemented("\(Self.self).isZcashAddress", placeholder: false)
-    )
+    public static let testValue = Self()
 }
 
 extension DerivationToolClient {

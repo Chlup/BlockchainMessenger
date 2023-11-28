@@ -16,14 +16,15 @@ extension DependencyValues {
     }
 }
 
+@DependencyClient
 public struct DatabaseFilesClient {
-    public let documentsDirectory: () -> URL
-    public let fsBlockDbRootFor: (ZcashNetwork) -> URL
-    public let cacheDbURLFor: (ZcashNetwork) -> URL
-    public var dataDbURLFor: (ZcashNetwork) -> URL
-    public let outputParamsURLFor: (ZcashNetwork) -> URL
-    public let pendingDbURLFor: (ZcashNetwork) -> URL
-    public let spendParamsURLFor: (ZcashNetwork) -> URL
-    public var areDbFilesPresentFor: (ZcashNetwork) -> Bool
-    public let messagesDBURL: () -> URL
+    public var documentsDirectory: () -> URL = { .emptyURL }
+    public var fsBlockDbRootFor: (ZcashNetwork) -> URL = { _ in .emptyURL }
+    public var cacheDbURLFor: (ZcashNetwork) -> URL = { _ in .emptyURL }
+    public var dataDbURLFor: (ZcashNetwork) -> URL = { _ in .emptyURL }
+    public var outputParamsURLFor: (ZcashNetwork) -> URL = { _ in .emptyURL }
+    public var pendingDbURLFor: (ZcashNetwork) -> URL = { _ in .emptyURL }
+    public var spendParamsURLFor: (ZcashNetwork) -> URL = { _ in .emptyURL }
+    public var areDbFilesPresentFor: (ZcashNetwork) -> Bool = { _ in false }
+    public var messagesDBURL: () -> URL = { .emptyURL }
 }

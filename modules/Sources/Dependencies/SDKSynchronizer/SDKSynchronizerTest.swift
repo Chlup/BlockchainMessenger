@@ -13,27 +13,8 @@ import Models
 import Utils
 
 extension SDKSynchronizerClient: TestDependencyKey {
-    public static let testValue = Self(
-        stateStream: XCTUnimplemented("\(Self.self).stateStream", placeholder: Empty().eraseToAnyPublisher()),
-        eventStream: XCTUnimplemented("\(Self.self).eventStream", placeholder: Empty().eraseToAnyPublisher()),
-        latestState: XCTUnimplemented("\(Self.self).latestState", placeholder: .zero),
-        prepareWith: XCTUnimplemented("\(Self.self).prepareWith"),
-        start: XCTUnimplemented("\(Self.self).start"),
-        stop: XCTUnimplemented("\(Self.self).stop"),
-        isSyncing: XCTUnimplemented("\(Self.self).isSyncing", placeholder: false),
-        isInitialized: XCTUnimplemented("\(Self.self).isInitialized", placeholder: false),
-        rewind: XCTUnimplemented("\(Self.self).rewind", placeholder: Fail(error: "Error").eraseToAnyPublisher()),
-        getShieldedBalance: XCTUnimplemented("\(Self.self).getShieldedBalance", placeholder: WalletBalance.zero),
-        getTransparentBalance: XCTUnimplemented("\(Self.self).getTransparentBalance", placeholder: WalletBalance.zero),
-//        getAllTransactions: XCTUnimplemented("\(Self.self).getAllTransactions", placeholder: []),
-        getMemos: XCTUnimplemented("\(Self.self).getMemos", placeholder: []),
-        getUnifiedAddress: XCTUnimplemented("\(Self.self).getUnifiedAddress", placeholder: nil),
-        getTransparentAddress: XCTUnimplemented("\(Self.self).getTransparentAddress", placeholder: nil),
-        getSaplingAddress: XCTUnimplemented("\(Self.self).getSaplingAddress", placeholder: nil),
-        sendTransaction: XCTUnimplemented("\(Self.self).sendTransaction"),
-//        shieldFunds: XCTUnimplemented("\(Self.self).shieldFunds", placeholder: .placeholder()),
-        wipe: XCTUnimplemented("\(Self.self).wipe")
-    )
+    public static let previewValue = Self.noOp
+    public static let testValue = Self()
 }
 
 extension SDKSynchronizerClient {
@@ -46,14 +27,14 @@ extension SDKSynchronizerClient {
         stop: { },
         isSyncing: { false },
         isInitialized: { false },
-        rewind: { _ in return Empty<Void, Error>().eraseToAnyPublisher() },
+        rewind: { _ in Empty<Void, Error>().eraseToAnyPublisher() },
         getShieldedBalance: { .zero },
         getTransparentBalance: { .zero },
 //        getAllTransactions: { [] },
-        getMemos: { _ in return [] },
-        getUnifiedAddress: { _ in return nil },
-        getTransparentAddress: { _ in return nil },
-        getSaplingAddress: { _ in return nil },
+        getMemos: { _ in [] },
+        getUnifiedAddress: { _ in nil },
+        getTransparentAddress: { _ in nil },
+        getSaplingAddress: { _ in nil },
         sendTransaction: { _, _, _, _ in },
 //        shieldFunds: { _, _, _ in return .placeholder() },
         wipe: { Empty<Void, Error>().eraseToAnyPublisher() }
