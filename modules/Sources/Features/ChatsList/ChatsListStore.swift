@@ -49,11 +49,11 @@ public struct ChatsListReducer {
         public var verifiedChats: IdentifiedArrayOf<Chat>
 
         public var availableMessagesCount: UInt {
-            UInt(floor(Double(shieldedBalance.data.verified.amount) / 10_001))
+            UInt(floor(Double(shieldedBalance.data.verified.amount) / 10_000))
         }
 
         public var possibleMessagesCount: UInt {
-            UInt(floor(Double(shieldedBalance.data.total.amount) / 10_001))
+            UInt(floor(Double(shieldedBalance.data.total.amount) / 10_000))
         }
 
         public init(path: StackState<Path.State> = StackState<Path.State>()) {

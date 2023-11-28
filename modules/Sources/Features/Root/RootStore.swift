@@ -53,7 +53,9 @@ public struct RootReducer {
         @PresentationState public var path: Path.State?
         public var storedWallet: StoredWallet?
 
-        public init() { }
+        public init(isLoading: Bool = true) {
+            self.isLoading = isLoading
+        }
     }
     
     public enum Action: Equatable {

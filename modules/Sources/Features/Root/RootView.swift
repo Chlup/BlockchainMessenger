@@ -44,38 +44,60 @@ public struct RootView: View {
     }
     
     public var body: some View {
-        IfLetStore(
-            store.scope(state: \.$path, action: \.path)
-        ) { store in
-            SwitchStore(store) {
-                switch $0 {
-                case .chatsList:
-                    CaseLet(
-                        /RootReducer.Path.State.chatsList,
-                        action: RootReducer.Path.Action.chatsList,
-                        then: ChatsListView.init(store:)
-                    )
-                case .createAccount:
-                    CaseLet(
-                        /RootReducer.Path.State.createAccount,
-                        action: RootReducer.Path.Action.createAccount,
-                        then: CreateAccountView.init(store:)
-                    )
-                case .restoreAccount:
-                    CaseLet(
-                        /RootReducer.Path.State.restoreAccount,
-                        action: RootReducer.Path.Action.restoreAccount,
-                        then: RestoreAccountView.init(store:)
-                    )
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            IfLetStore(
+                store.scope(state: \.$path, action: \.path)
+            ) { store in
+                SwitchStore(store) {
+                    switch $0 {
+                    case .chatsList:
+                        CaseLet(
+                            /RootReducer.Path.State.chatsList,
+                             action: RootReducer.Path.Action.chatsList,
+                             then: ChatsListView.init(store:)
+                        )
+                    case .createAccount:
+                        CaseLet(
+                            /RootReducer.Path.State.createAccount,
+                             action: RootReducer.Path.Action.createAccount,
+                             then: CreateAccountView.init(store:)
+                        )
+                    case .restoreAccount:
+                        CaseLet(
+                            /RootReducer.Path.State.restoreAccount,
+                             action: RootReducer.Path.Action.restoreAccount,
+                             then: RestoreAccountView.init(store:)
+                        )
+                    }
+                }
+            } else: {
+                if viewStore.isLoading {
+                    HStack(spacing: 10) {
+                        Text("Initializing")
+                            .foregroundStyle(Asset.Colors.fontPrimary.color)
+                        ProgressView()
+                    }
+                    .applyScreenBackground()
+                } else {
+                    VStack(spacing: 30) {
+                        Button {
+                            viewStore.send(.createAccount)
+                        } label: {
+                            Text("Create account")
+                        }
+                        .neumorphicButton()
+
+                        Button {
+                            viewStore.send(.restoreAccount)
+                        } label: {
+                            Text("Restore account")
+                        }
+                        .neumorphicButton()
+                    }
+                    .padding(.horizontal, 35)
+                    .applyScreenBackground()
                 }
             }
-        } else: {
-            HStack(spacing: 10) {
-                Text("Initializing")
-                    .foregroundStyle(Asset.Colors.fontPrimary.color)
-                ProgressView()
-            }
-            .applyScreenBackground()
         }
     }
 }
@@ -84,7 +106,7 @@ public struct RootView: View {
     RootView(
         store:
             Store(
-                initialState: RootReducer.State()
+                initialState: RootReducer.State(isLoading: false)
             ) {
                 RootReducer(zcashNetwork: ZcashNetworkBuilder.network(for: .testnet))
                     ._printChanges()
