@@ -156,7 +156,7 @@ extension MessagesStorageImpl: MessagesStorage {
     func allMessages(for chatID: Int) async throws -> [Message] {
         let query = messagesTable
             .filter(Message.Column.chatID == chatID)
-            .order(Message.Column.timestamp.desc)
+            .order(Message.Column.timestamp.asc)
         return try execute(query) { try Message(row: $0) }
     }
 

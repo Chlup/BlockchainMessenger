@@ -195,6 +195,7 @@ public struct RootReducer {
                 return .none
 
             case .path(.presented(.restoreAccount(.successfullyRecovered))):
+                // TODO: Here I want to pass .restore and act accordingly in the UI
                 return .send(.initiateAccount)
                 
             case .path(.presented(.restoreAccount(.backButtonTapped))):
