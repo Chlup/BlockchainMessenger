@@ -63,7 +63,8 @@ public struct SDKSynchronizerClient {
     public var getTransparentAddress: (_ account: Int) async throws -> TransparentAddress?
     public var getSaplingAddress: (_ accountIndex: Int) async throws -> SaplingAddress?
 
-    public var sendTransaction: (UnifiedSpendingKey, Zatoshi, Recipient, Memo?) async throws -> Void
+    public var getTransaction: (_ rawID: Data) async throws -> ZcashTransaction.Overview?
+    public var sendTransaction: (UnifiedSpendingKey, Zatoshi, Recipient, Memo?) async throws -> Data
 //    public let shieldFunds: (UnifiedSpendingKey, Memo, Zatoshi) async throws -> TransactionState
 
     public var wipe: () -> AnyPublisher<Void, Error>?

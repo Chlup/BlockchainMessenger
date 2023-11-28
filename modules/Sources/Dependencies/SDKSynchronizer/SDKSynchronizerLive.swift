@@ -102,13 +102,15 @@ extension SDKSynchronizerClient {
             getUnifiedAddress: { try await synchronizer.getUnifiedAddress(accountIndex: $0) },
             getTransparentAddress: { try await synchronizer.getTransparentAddress(accountIndex: $0) },
             getSaplingAddress: { try await synchronizer.getSaplingAddress(accountIndex: $0) },
+            getTransaction: { try await synchronizer.getTransaction(for: $0) },
             sendTransaction: { spendingKey, amount, recipient, memo in
-                _ = try await synchronizer.sendToAddress(
+                let transaction = try await synchronizer.sendToAddress(
                     spendingKey: spendingKey,
                     zatoshi: amount,
                     toAddress: recipient,
                     memo: memo
                 )
+                return transaction.rawID
             },
 //            shieldFunds: { spendingKey, memo, shieldingThreshold in
 //                let pendingTransaction = try await synchronizer.shieldFunds(

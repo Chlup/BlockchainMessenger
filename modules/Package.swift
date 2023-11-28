@@ -34,7 +34,7 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-case-paths", from: "1.1.1"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.1"),
         .package(url: "https://github.com/zcash-hackworks/MnemonicSwift", exact: "2.2.4"),
-        .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", revision: "d75142ae2ef5b9a8c264dafe8c1907d3615b6d0a"),
+        .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", revision: "e49d8e0c77c3b1b190c3310f6a9abe6d75cecf32"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.14.1"),
         .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
         .package(url: "https://github.com/realm/SwiftLint.git", exact: "0.54.0")

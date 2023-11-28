@@ -73,7 +73,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 //                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) { [weak self] in
 //                    guard let self = self else { return }
 //                    Task {
-//                        try? await self.listAllChatsAndMessages()
+////                        try? await self.listAllChatsAndMessages()
 ////                        try? await self.sendMessageToFirstChat()
 ////                        try? await self.createNewChat()
 //                    }
@@ -125,7 +125,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             }
 
             logger.debug("Sending message")
-            try await messages.sendMessage(chatID: firstChat.chatID, text: "Hello 🐞world")
+            _ = try await messages.sendMessage(chatID: firstChat.chatID, text: "Hello 🐞world")
         } catch {
             logger.debug("Failed to send message: \(error)")
             throw error

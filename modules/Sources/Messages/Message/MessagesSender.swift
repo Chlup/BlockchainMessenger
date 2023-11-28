@@ -36,7 +36,7 @@ protocol MessagesSender: Actor {
     func setNetwork(_ network: NetworkType) async
     func setSeedBytes(_ seedBytes: [UInt8]) async
     func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws
-    func sendMessage(chatID: Int, text: String) async throws
+    func sendMessage(chatID: Int, text: String) async throws -> Message
 }
 
 actor MessagesSenderImpl {
@@ -53,7 +53,7 @@ actor MessagesSenderImpl {
     var network: NetworkType = .testnet
     var seedBytes: [UInt8] = []
 
-    private func send(message: ChatProtocol.ChatMessage, toAddress: String) async throws {
+    private func send(message: ChatProtocol.ChatMessage, toAddress: String) async throws -> Data {
         let encodedMessage = try chatProtocol.encode(message)
         logger.debug("Encoded: \(encodedMessage)")
 
@@ -76,7 +76,7 @@ actor MessagesSenderImpl {
             throw MessagesError.createRecipientWhenCreatingChat(error)
         }
 
-        try await synchronizer.sendTransaction(spendingKey, Constants.messagePrice, recipient, memo)
+        return try await synchronizer.sendTransaction(spendingKey, Constants.messagePrice, recipient, memo)
     }
 }
 
@@ -102,11 +102,17 @@ extension MessagesSenderImpl: MessagesSender {
             throw MessagesError.invalidFromAddressWhenCreatingChat
         }
 
-        try await send(message: protocolMessage, toAddress: toAddress)
-        try await storage.storeChat(newChat)
+        let transactionRawID = try await send(message: protocolMessage, toAddress: toAddress)
+        do {
+            try await storage.storeChat(newChat)
+        } catch {
+            // TODO: Something happened with storing of the chat. We have to use transactionRawID and error handling to process created transaction
+            // to create chat.
+            throw MessagesError.storeNewChat(error)
+        }
     }
     
-    func sendMessage(chatID: Int, text: String) async throws {
+    func sendMessage(chatID: Int, text: String) async throws -> Message {
         let chat: Chat
         do {
             chat = try await storage.chat(for: chatID)
@@ -122,8 +128,15 @@ extension MessagesSenderImpl: MessagesSender {
             content: .text(text)
         )
 
-        try await send(message: protocolMessage, toAddress: chat.toAddress)
-        try await storage.storeMessage(newMessage)
+        let transactionRawID = try await send(message: protocolMessage, toAddress: chat.toAddress)
+        do {
+            try await storage.storeMessage(newMessage)
+        } catch {
+            // TODO: Something happened with storing of the chat. We have to use transactionRawID and error handling to process created transaction
+            // to create chat.
+        }
+
+        return newMessage
     }
 }
 
