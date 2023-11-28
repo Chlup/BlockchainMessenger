@@ -41,7 +41,7 @@ public struct ScreenBackgroundModifier: ViewModifier {
                     Gradient.Stop(
                         color: Asset.Colors.screenBackgroundBottomTrailing.color,
                         location: 1.00
-                    ),
+                    )
                 ],
                 startPoint: UnitPoint(x: 0, y: 0.01),
                 endPoint: UnitPoint(x: 1, y: 0.99)

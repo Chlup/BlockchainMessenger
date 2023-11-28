@@ -36,7 +36,8 @@ let package = Package(
         .package(url: "https://github.com/zcash-hackworks/MnemonicSwift", exact: "2.2.4"),
         .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", revision: "d75142ae2ef5b9a8c264dafe8c1907d3615b6d0a"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.14.1"),
-        .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2")
+        .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
+        .package(url: "https://github.com/realm/SwiftLint.git", exact: "0.54.0")
     ],
     targets: [
         .target(
@@ -49,7 +50,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
-            path: "Sources/Features/ChatDetail"
+            path: "Sources/Features/ChatDetail",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "ChatsList",
@@ -63,7 +65,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
-            path: "Sources/Features/ChatsList"
+            path: "Sources/Features/ChatsList",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "CreateAccount",
@@ -73,7 +76,8 @@ let package = Package(
                 "WalletStorage",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Features/CreateAccount"
+            path: "Sources/Features/CreateAccount",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "DatabaseFiles",
@@ -83,7 +87,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
-            path: "Sources/Dependencies/DatabaseFiles"
+            path: "Sources/Dependencies/DatabaseFiles",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "DerivationTool",
@@ -92,14 +97,16 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
-            path: "Sources/Dependencies/DerivationTool"
+            path: "Sources/Dependencies/DerivationTool",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "FileManager",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Dependencies/FileManager"
+            path: "Sources/Dependencies/FileManager",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "Funds",
@@ -113,7 +120,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
-            path: "Sources/Features/Funds"
+            path: "Sources/Features/Funds",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "Generated",
@@ -131,7 +139,8 @@ let package = Package(
                 .product(name: "Dependencies", package: "swift-dependencies"),
                 .product(name: "SQLite", package: "SQLite.swift")
             ],
-            path: "Sources/Messages"
+            path: "Sources/Messages",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "MnemonicClient",
@@ -139,7 +148,8 @@ let package = Package(
                 .product(name: "MnemonicSwift", package: "MnemonicSwift"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Dependencies/MnemonicClient"
+            path: "Sources/Dependencies/MnemonicClient",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "Models",
@@ -147,7 +157,8 @@ let package = Package(
                 "Utils",
                 .product(name: "MnemonicSwift", package: "MnemonicSwift")
             ],
-            path: "Sources/Models"
+            path: "Sources/Models",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "NewChat",
@@ -156,7 +167,8 @@ let package = Package(
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Features/NewChat"
+            path: "Sources/Features/NewChat",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "Pasteboard",
@@ -164,14 +176,16 @@ let package = Package(
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Dependencies/Pasteboard"
+            path: "Sources/Dependencies/Pasteboard",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "RestoreAccount",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Features/RestoreAccount"
+            path: "Sources/Features/RestoreAccount",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "Root",
@@ -189,7 +203,8 @@ let package = Package(
                 "ZcashSDKEnvironment",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Features/Root"
+            path: "Sources/Features/Root",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "SDKSynchronizer",
@@ -200,14 +215,16 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
-            path: "Sources/Dependencies/SDKSynchronizer"
+            path: "Sources/Dependencies/SDKSynchronizer",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "SecItem",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Dependencies/SecItem"
+            path: "Sources/Dependencies/SecItem",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "Utils",
@@ -217,7 +234,8 @@ let package = Package(
                 .product(name: "CasePaths", package: "swift-case-paths"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Utils"
+            path: "Sources/Utils",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "WalletStorage",
@@ -229,7 +247,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
-            path: "Sources/Dependencies/WalletStorage"
+            path: "Sources/Dependencies/WalletStorage",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
             name: "ZcashSDKEnvironment",
@@ -237,7 +256,8 @@ let package = Package(
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Dependencies/ZcashSDKEnvironment"
+            path: "Sources/Dependencies/ZcashSDKEnvironment",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         )
     ]
 )

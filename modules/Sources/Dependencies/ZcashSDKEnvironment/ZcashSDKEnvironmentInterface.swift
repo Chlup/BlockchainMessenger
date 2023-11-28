@@ -57,7 +57,7 @@ extension ZcashSDKEnvironment {
 }
 
 public struct ZcashSDKEnvironment {
-    public var latestCheckpoint: (ZcashNetwork) -> BlockHeight //{ BlockHeight.ofLatestCheckpoint(network: network()) }
+    public var latestCheckpoint: (ZcashNetwork) -> BlockHeight // { BlockHeight.ofLatestCheckpoint(network: network()) }
     public let endpoint: (ZcashNetwork) -> LightWalletEndpoint
     public let memoCharLimit: Int
     public let mnemonicWordsMaxCount: Int

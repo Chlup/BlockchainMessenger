@@ -146,7 +146,8 @@ public struct ChatsListReducer {
     @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.messages) var messages
     @Dependency(\.sdkSynchronizer) var synchronizer
-    
+    @Dependency(\.logger) var logger
+
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
@@ -181,7 +182,7 @@ public struct ChatsListReducer {
                     let uAddress = newChatState.uAddress
                     let alias = newChatState.alias
                     // TODO: here we know what UA user wants to initiate chat with
-                    print("uAddress: \(uAddress), alias: \(alias)")
+                    logger.debug("uAddress: \(uAddress), alias: \(alias)")
                     // TODO: some messages.createChat is needed
                     // messages.createChat(for: uAddress, alias: alias)
                 }
@@ -212,8 +213,14 @@ extension Chat {
             alias: nil,
             chatID: 0,
             timestamp: 1699290621,
-            fromAddress: "utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyzwtgnuc76h",
-            toAddress: "utest2zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyzwtgnuc76h",
+            fromAddress: """
+            utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyz\
+            wtgnuc76h
+            """,
+            toAddress: """
+            utest2zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyz\
+            wtgnuc76h
+            """,
             verificationText: "123456",
             verified: false
         ),
@@ -221,8 +228,14 @@ extension Chat {
             alias: nil,
             chatID: 1,
             timestamp: 1699290921,
-            fromAddress: "utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyzwtgnuc76h",
-            toAddress: "utest3zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyzwtgnuc76h",
+            fromAddress: """
+            utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwy\
+            zwtgnuc76h
+            """,
+            toAddress: """
+            utest3zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyz\
+            wtgnuc76h
+            """,
             verificationText: "123456",
             verified: false
         ),
@@ -230,8 +243,14 @@ extension Chat {
             alias: "Chlup",
             chatID: 2,
             timestamp: 1699295621,
-            fromAddress: "utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyzwtgnuc76h",
-            toAddress: "utest4zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyzwtgnuc76h",
+            fromAddress: """
+            utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyz\
+            wtgnuc76h
+            """,
+            toAddress: """
+            utest4zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyz\
+            wtgnuc76h
+            """,
             verificationText: "123456",
             verified: true
         ),
@@ -239,8 +258,14 @@ extension Chat {
             alias: "Janicka, zlaticko moje",
             chatID: 3,
             timestamp: 1699297621,
-            fromAddress: "utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyzwtgnuc76h",
-            toAddress: "utest4zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyzwtgnuc76h",
+            fromAddress: """
+            utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyz\
+            wtgnuc76h
+            """,
+            toAddress: """
+            utest4zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7dwyz\
+            wtgnuc76h
+            """,
             verificationText: "123456",
             verified: true
         )

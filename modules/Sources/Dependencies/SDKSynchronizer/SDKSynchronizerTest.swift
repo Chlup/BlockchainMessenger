@@ -131,7 +131,7 @@ extension SDKSynchronizerClient {
 //        },
         getMemos: @escaping (_ transactionRawID: Data) async throws -> [Memo] = { _ in return [] },
         getUnifiedAddress: @escaping (_ account: Int) -> UnifiedAddress? = { _ in
-            // swiftlint:disable force_try
+            // swiftlint:disable:next force_try
             try! UnifiedAddress(
                 encoding: """
                 utest1zkkkjfxkamagznjr6ayemffj2d2gacdwpzcyw669pvg06xevzqslpmm27zjsctlkstl2vsw62xrjktmzqcu4yu9zdhdxqz3kafa4j2q85y6mv74rzjcgjg8c0ytrg7d\

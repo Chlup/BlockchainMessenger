@@ -79,4 +79,3 @@ final class BinaryDecoder {
         return value
     }
 }
-

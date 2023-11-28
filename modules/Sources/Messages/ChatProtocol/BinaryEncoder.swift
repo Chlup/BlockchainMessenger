@@ -45,10 +45,9 @@ final class BinaryEncoder {
 
     func encode(value: Int, bytesCount: Int) {
         for i in 0..<bytesCount {
-            let mask = Int(255 << (i*8))
-            let byte = UInt8((value & mask) >> (i*8))
+            let mask = Int(255 << (i * 8))
+            let byte = UInt8((value & mask) >> (i * 8))
             bytes.append(byte)
         }
     }
 }
-

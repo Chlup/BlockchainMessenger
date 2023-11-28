@@ -64,7 +64,6 @@ class SimpleConnectionProvider: ConnectionProvider {
     }
 
     static func live(databaseFiles: DatabaseFilesClient = .liveValue) -> ConnectionProvider {
-        print("DB path: \(databaseFiles.messagesDBURL().path)")
         return SimpleConnectionProvider(path: databaseFiles.messagesDBURL().path, readonly: false)
     }
 }

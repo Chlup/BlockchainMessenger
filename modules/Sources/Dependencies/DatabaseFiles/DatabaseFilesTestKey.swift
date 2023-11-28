@@ -46,6 +46,6 @@ extension DatabaseFilesClient {
         pendingDbURLFor: { _ in .emptyURL },
         spendParamsURLFor: { _ in .emptyURL },
         areDbFilesPresentFor: { _ in false },
-        messagesDBURL: {.emptyURL }
+        messagesDBURL: { .emptyURL }
     )
 }

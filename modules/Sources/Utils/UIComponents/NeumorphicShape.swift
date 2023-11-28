@@ -67,14 +67,13 @@ public struct NeumorphicShapeModifier<S>: ViewModifier where S: ShapeStyle {
                                         Gradient.Stop(
                                             color: Asset.Colors.screenBackgroundBottomTrailing.color,
                                             location: 1.0
-                                        ),
+                                        )
                                     ],
                                     startPoint: UnitPoint(x: 0.49, y: 0.01),
                                     endPoint: UnitPoint(x: 0.51, y: 0.99)
                                 ),
                                 lineWidth: 1
                             )
-                        
                     )
             }
     }

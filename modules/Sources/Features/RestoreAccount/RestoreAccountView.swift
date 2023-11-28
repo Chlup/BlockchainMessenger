@@ -41,7 +41,6 @@ public struct RestoreAccountView: View {
     }
 }
 
-
 #Preview {
     RestoreAccountView(
         store:

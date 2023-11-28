@@ -76,9 +76,9 @@ public struct ChatDetailView: View {
                                     )
                                 )
                                 .foregroundColor(
-                                    message.isSent 
-                                    ? .blue//Asset.Colors.ChatDetail.sent2.color // .blue
-                                    : Asset.Colors.ChatDetail.received.color
+                                    message.isSent
+                                        ? .blue // Asset.Colors.ChatDetail.sent2.color // .blue
+                                        : Asset.Colors.ChatDetail.received.color
                                 )
                                 .shadow(
                                     color: .black.opacity(0.7),
@@ -112,7 +112,7 @@ public struct ChatDetailView: View {
                                                 Gradient.Stop(
                                                     color: .black.opacity(0.7),
                                                     location: 1.0
-                                                ),
+                                                )
                                             ],
                                             startPoint: UnitPoint(x: 0.49, y: 0.01),
                                             endPoint: UnitPoint(x: 0.51, y: 0.99)

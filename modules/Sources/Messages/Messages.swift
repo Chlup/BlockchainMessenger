@@ -39,8 +39,8 @@ public enum MessagesError: Error {
     case messagesStorageEntityNotFound
     case invalidFromAddressWhenCreatingChat
     case invalidToAddressWhenCreatingChat
-    case cantCreateMemoFromMessageWhenCreatingChat(Error)
-    case cantCreateRecipientWhenCreatingChat(Error)
+    case createMemoFromMessageWhenCreatingChat(Error)
+    case createRecipientWhenCreatingChat(Error)
     case chatDoesntExistWhenSendingMessage(Error)
 }
 

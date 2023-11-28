@@ -145,14 +145,14 @@ public struct ChatsListView: View {
                         case .funds:
                             CaseLet(
                                 /ChatsListReducer.SheetPath.State.funds,
-                                 action: ChatsListReducer.SheetPath.Action.funds,
-                                 then: FundsView.init(store:)
+                                action: ChatsListReducer.SheetPath.Action.funds,
+                                then: FundsView.init(store:)
                             )
                         case .newChat:
                             CaseLet(
                                 /ChatsListReducer.SheetPath.State.newChat,
-                                 action: ChatsListReducer.SheetPath.Action.newChat,
-                                 then: NewChatView.init(store:)
+                                action: ChatsListReducer.SheetPath.Action.newChat,
+                                then: NewChatView.init(store:)
                             )
                         }
                     }
@@ -170,8 +170,8 @@ public struct ChatsListView: View {
             case .chatsDetail:
                 CaseLet(
                     /ChatsListReducer.Path.State.chatsDetail,
-                     action: ChatsListReducer.Path.Action.chatsDetail,
-                     then: ChatDetailView.init(store:)
+                    action: ChatsListReducer.Path.Action.chatsDetail,
+                    then: ChatDetailView.init(store:)
                 )
             }
         }

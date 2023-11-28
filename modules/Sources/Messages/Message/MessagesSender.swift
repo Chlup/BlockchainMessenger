@@ -62,14 +62,14 @@ actor MessagesSenderImpl {
         do {
             memo = try Memo(bytes: encodedMessage)
         } catch {
-            throw MessagesError.cantCreateMemoFromMessageWhenCreatingChat(error)
+            throw MessagesError.createMemoFromMessageWhenCreatingChat(error)
         }
 
         let recipient: Recipient
         do {
             recipient = try Recipient(toAddress, network: network)
         } catch {
-            throw MessagesError.cantCreateRecipientWhenCreatingChat(error)
+            throw MessagesError.createRecipientWhenCreatingChat(error)
         }
 
         try await synchronizer.sendTransaction(spendingKey, Constants.messagePrice, recipient, memo)
@@ -138,4 +138,3 @@ extension DependencyValues {
         set { self[MessagesSenderClientKey.self] = newValue }
     }
 }
-

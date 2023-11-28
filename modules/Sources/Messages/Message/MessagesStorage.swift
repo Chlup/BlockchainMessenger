@@ -55,15 +55,15 @@ actor MessagesStorageImpl {
 
     init() {
         Task {
+            let logger = await logger
             do {
-                let logger = await logger
                 let connection = await dbConnection
                 let db = try connection.connection()
                 db.trace { trace in
                     logger.debug("DB: \(trace)")
                 }
             } catch {
-                print("ERrroroooooo \(error)")
+                logger.debug("ERrroroooooo \(error)")
             }
         }
     }

@@ -55,7 +55,7 @@ public struct ChatDetailReducer {
     @Dependency(\.messages) var messages
     
     public var body: some ReducerOf<Self> {
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
             }
         }

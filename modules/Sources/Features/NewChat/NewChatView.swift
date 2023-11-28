@@ -56,7 +56,6 @@ public struct NewChatView: View {
                     .background {
                         Rectangle()
                             .stroke()
-                            
                     }
                     .padding(.bottom, 10)
 

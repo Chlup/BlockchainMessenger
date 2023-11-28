@@ -136,7 +136,6 @@ struct ChatProtocol {
             case .v1:
                 return try ChatProtocolV1.decode(decoder: decoder)
             }
-
         } catch BinaryDecoder.Errors.bytesRangeOutOfBounds {
             throw Errors.invalidMessage(BinaryDecoder.Errors.bytesRangeOutOfBounds)
         } catch BinaryDecoder.Errors.cantDecodeString {
@@ -175,7 +174,7 @@ struct ChatProtocol {
 }
 
 private enum ChatProtocolClientKey: DependencyKey {
-    static let liveValue: ChatProtocol = ChatProtocol.live
+    static let liveValue = ChatProtocol.live
 }
 
 extension DependencyValues {
@@ -184,4 +183,3 @@ extension DependencyValues {
         set { self[ChatProtocolClientKey.self] = newValue }
     }
 }
-

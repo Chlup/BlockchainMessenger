@@ -64,7 +64,7 @@ public struct CreateAccountReducer {
                     let seedWords = storedWallet.seedPhrase.value().split(separator: " ").map { RedactableString(String($0)) }
                     state.phrase = RecoveryPhrase(words: seedWords)
                 } catch {
-                    //state.alert = AlertState.storedWalletFailure(error.toZcashError())
+                    // state.alert = AlertState.storedWalletFailure(error.toZcashError())
                 }
                 return .none
                 
