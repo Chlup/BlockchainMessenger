@@ -49,6 +49,7 @@ actor MessagesStorageImpl {
     @Dependency(\.sdkSynchronizer) var synchronizer
     @Dependency(\.logger) var logger
     @Dependency(\.messagesDBConnectionProvider) var dbConnection
+    @Dependency(\.eventsSender) var eventsSender
 
     let chatsTable = Table("chats")
     let messagesTable = Table("messages")
@@ -149,6 +150,7 @@ extension MessagesStorageImpl: MessagesStorage {
     func storeChat(_ chat: Chat) async throws {
         let db = try dbConnection.connection()
         try db.run(chatsTable.insert(chat))
+        eventsSender.send(event: .newChat(chat))
     }
 
     func allMessages(for chatID: Int) async throws -> [Message] {
@@ -169,6 +171,7 @@ extension MessagesStorageImpl: MessagesStorage {
     func storeMessage(_ message: Message) async throws {
         let db = try dbConnection.connection()
         try db.run(messagesTable.insert(message))
+        eventsSender.send(event: .newMessage(message))
     }
 }
 

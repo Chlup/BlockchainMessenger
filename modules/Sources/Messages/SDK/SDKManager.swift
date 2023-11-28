@@ -26,16 +26,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
-import ZcashLightClientKit
-import MnemonicSwift
 import Combine
 import Dependencies
+import Foundation
+import MnemonicSwift
 import SDKSynchronizer
+import ZcashLightClientKit
 
 protocol SDKManager: AnyObject {
     var transactionsStream: AnyPublisher<[Transaction], Never> { get }
-    
+
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
 }
 

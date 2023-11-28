@@ -137,7 +137,7 @@ public struct ChatsListView: View {
                         Button {
                             viewStore.send(.reloadChats)
                         } label: {
-                            Image(systemName: "arrow.clockwise.square")
+                            Image(systemName: "arrow.clockwise")
                                 .renderingMode(.template)
                                 .tint(Asset.Colors.fontPrimary.color)
                             //                                .neumorphicButton(

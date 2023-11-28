@@ -26,8 +26,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import Combine
 import Dependencies
+import Foundation
 import ZcashLightClientKit
 
 public enum MessagesError: Error {
@@ -44,7 +45,14 @@ public enum MessagesError: Error {
     case chatDoesntExistWhenSendingMessage(Error)
 }
 
+public enum MessagesEvent: Equatable {
+    case newChat(Chat)
+    case newMessage(Message)
+}
+
 public protocol Messages {
+    var eventsStream: AnyPublisher<MessagesEvent, Never> { get }
+
     func allChats() async throws -> [Chat]
     func allMessages(for chatID: Int) async throws -> [Message]
     func initialize(network: NetworkType) async throws
@@ -60,9 +68,12 @@ struct MessagesImpl {
     @Dependency(\.chatProtocol) var chatProtocol
     @Dependency(\.messagesStorage) var messagesStorage
     @Dependency(\.messagesSender) var messagesSender
+    @Dependency(\.eventsSender) var eventsSender
 }
 
 extension MessagesImpl: Messages {
+    var eventsStream: AnyPublisher<MessagesEvent, Never> { eventsSender.eventsStream }
+
     func allChats() async throws -> [Chat] {
         return try await messagesStorage.allChats()
     }
