@@ -184,7 +184,11 @@ let package = Package(
         .target(
             name: "RestoreAccount",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                "MnemonicClient",
+                "Utils",
+                "WalletStorage",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
             path: "Sources/Features/RestoreAccount",
             plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]

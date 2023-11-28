@@ -28,6 +28,10 @@
 
 import ComposableArchitecture
 import SwiftUI
+import ZcashLightClientKit
+
+import Generated
+import Utils
 
 public struct RestoreAccountView: View {
     let store: StoreOf<RestoreAccountReducer>
@@ -37,7 +41,39 @@ public struct RestoreAccountView: View {
     }
     
     public var body: some View {
-        Text("RestoreAccountView")
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            VStack {
+                HStack {
+                    Button {
+                        viewStore.send(.backButtonTapped)
+                    } label: {
+                        Text("Back")
+                            .foregroundStyle(Asset.Colors.fontPrimary.color)
+                    }
+                    
+                    Spacer()
+                }
+                
+                TextEditor(text: viewStore.$importedData)
+                    .frame(height: 150)
+                    .padding(1)
+                    .background {
+                        Color.black
+                    }
+                    .padding(.bottom, 10)
+
+                Button {
+                    viewStore.send(.restoreButtonTaped)
+                } label: {
+                    Text("Restore")
+                        .neumorphicButton()
+                }
+                
+                //Spacer()
+            }
+            .padding(.horizontal, 35)
+        }
+        .applyScreenBackground()
     }
 }
 
@@ -47,8 +83,10 @@ public struct RestoreAccountView: View {
             Store(
                 initialState: RestoreAccountReducer.State()
             ) {
-                RestoreAccountReducer()
-                    ._printChanges()
+                RestoreAccountReducer(
+                    networkType: ZcashNetworkBuilder.network(for: .testnet).networkType
+                )
+                ._printChanges()
             }
     )
 }

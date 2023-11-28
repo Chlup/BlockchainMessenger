@@ -101,7 +101,7 @@ public struct RootReducer {
                 CreateAccountReducer()
             }
             Scope(state: /State.restoreAccount, action: /Action.restoreAccount) {
-                RestoreAccountReducer()
+                RestoreAccountReducer(networkType: networkType)
             }
         }
     }
@@ -194,6 +194,13 @@ public struct RootReducer {
                 state.path = .chatsList(ChatsListReducer.State())
                 return .none
 
+            case .path(.presented(.restoreAccount(.successfullyRecovered))):
+                return .send(.initiateAccount)
+                
+            case .path(.presented(.restoreAccount(.backButtonTapped))):
+                state.path = nil
+                return .none
+                
             case .path(.presented(.chatsList(.wipeSucceeded))):
                 return .none
                 

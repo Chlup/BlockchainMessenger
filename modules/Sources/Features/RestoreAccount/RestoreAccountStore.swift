@@ -27,21 +27,77 @@
 //  SOFTWARE.
 
 import ComposableArchitecture
+import ZcashLightClientKit
+
+import MnemonicClient
+import Utils
+import WalletStorage
 
 @Reducer
 public struct RestoreAccountReducer {
+    let networkType: NetworkType
+
     public struct State: Equatable {
+        @BindingState public var importedData = ""
+        
+        public var importedSeedPhrase: RedactableString {
+            importedData.split(separator: " ").dropFirst().joined(separator: " ").redacted
+        }
+        
+        public var birthdayHeightValue: RedactableBlockHeight? {
+            if let bdAsString = importedData.split(separator: " ").first, let bdAsInt = Int(bdAsString) {
+                return RedactableBlockHeight(BlockHeight(bdAsInt))
+            }
+            
+            return nil
+        }
+        
         public init() {}
     }
     
-    public enum Action: Equatable {
+    public enum Action: Equatable, BindableAction {
+        case backButtonTapped
+        case binding(BindingAction<State>)
+        case restoreButtonTaped
+        case successfullyRecovered
     }
         
-    public init() {}
+    public init(networkType: NetworkType) {
+        self.networkType = networkType
+    }
+
+    @Dependency(\.mnemonic) var mnemonic
+    @Dependency(\.walletStorage) var walletStorage
 
     public var body: some ReducerOf<Self> {
-        Reduce { _, action in
+        BindingReducer()
+
+        Reduce { state, action in
             switch action {
+            case .backButtonTapped:
+                return .none
+
+            case .binding:
+                return .none
+                
+            case .restoreButtonTaped:
+                do {
+                    print("seed: \(state.importedSeedPhrase.data)")
+                    print("BD: \(state.birthdayHeightValue)")
+
+                    try mnemonic.isValid(state.importedSeedPhrase.data)
+                    let birthday = state.birthdayHeightValue ?? RedactableBlockHeight(networkType == .testnet ? 280_000 : 419_200)
+                    try walletStorage.importWallet(state.importedSeedPhrase.data, birthday.data, .english, false)
+                    state.importedData = ""
+                    
+                    return .send(.successfullyRecovered)
+                } catch {
+                    // TODO: error handling
+                }
+                return .none
+                
+            case .successfullyRecovered:
+                return .none
             }
         }
     }
