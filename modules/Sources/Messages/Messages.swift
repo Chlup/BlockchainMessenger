@@ -86,19 +86,6 @@ extension MessagesImpl: Messages {
     }
 
     func initialize(network: NetworkType) async throws {
-        await messagesSender.setNetwork(network)
-        try await messagesStorage.initialize()
-    }
-
-    func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws {
-        try await messagesSender.newChat(fromAddress: fromAddress, toAddress: toAddress, verificationText: verificationText)
-    }
-
-    func sendMessage(chatID: Int, text: String) async throws -> Message {
-        return try await messagesSender.sendMessage(chatID: chatID, text: text)
-    }
-
-    func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws {
         //        do {
         //            let message = Message.createSent(chatID: 123, text: "Hello 🐞world")
         //            logger.debug("Input message \(message)")
@@ -115,6 +102,19 @@ extension MessagesImpl: Messages {
         //            logger.debug("Error while encoding/decoding message: \(error)")
         //        }
 
+        await messagesSender.setNetwork(network)
+        try await messagesStorage.initialize()
+    }
+
+    func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws {
+        try await messagesSender.newChat(fromAddress: fromAddress, toAddress: toAddress, verificationText: verificationText)
+    }
+
+    func sendMessage(chatID: Int, text: String) async throws -> Message {
+        return try await messagesSender.sendMessage(chatID: chatID, text: text)
+    }
+
+    func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws {
         await messagesSender.setSeedBytes(seedBytes)
         await transactionsProcessor.start()
         try await sdkManager.start(with: seedBytes, birthday: birthday, walletMode: walletMode)

@@ -124,7 +124,7 @@ extension MessagesSenderImpl: MessagesSender {
         let protocolMessage = ChatProtocol.ChatMessage(
             chatID: newMessage.chatID,
             timestmap: newMessage.timestamp,
-            messageID: chatProtocol.generateIDFor(newMessage.timestamp),
+            messageID: newMessage.id,
             content: .text(text)
         )
 

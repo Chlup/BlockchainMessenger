@@ -29,7 +29,7 @@
 import Foundation
 
 /*
- chatID - 7 bytes (5 bytes timestamp + 3 bytes unique ID)
+ chatID - 8 bytes (5 bytes timestamp + 3 bytes unique ID)
  timestamp - 5 bytes
  message ID - 3 bytes (final is timestamp + message ID)
  message type - 1 byte
