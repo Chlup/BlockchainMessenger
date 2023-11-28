@@ -1,8 +1,8 @@
 //
-//  Logger.swift
+//  FailureHeightStorage.swift
 //  
 //
-//  Created by Michal Fousek on 20.11.2023.
+//  Created by Michal Fousek on 28.11.2023.
 //
 //  MIT License
 //
@@ -27,16 +27,15 @@
 //  SOFTWARE.
 
 import Foundation
-import Dependencies
 import ZcashLightClientKit
 
-private enum LoggerClientKey: DependencyKey {
-    static let liveValue: Logger = OSLogger(logLevel: .debug, category: "chat")
-}
+struct FailureHeightStorage {
+    var failureHeight: () -> BlockHeight?
+    var updateFailureHeight: (BlockHeight) -> Void
 
-extension DependencyValues {
-    public var logger: Logger {
-        get { self[LoggerClientKey.self] }
-        set { self[LoggerClientKey.self] = newValue }
-    }
+//    static var live: FailureHeightStorage {
+//        return Self(
+//            failureHeight: { UserDefaults.standard.integer(forKey: <#T##String#>)}, 
+//            updateFailureHeight: <#T##(BlockHeight) -> Void#>)
+//    }
 }

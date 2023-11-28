@@ -46,6 +46,8 @@ public struct ChatDetailReducer {
     }
     
     public enum Action: Equatable {
+        case onAppear
+        case messagesLoaded(IdentifiedArrayOf<Message>)
     }
       
     public init(networkType: NetworkType) {
@@ -55,8 +57,23 @@ public struct ChatDetailReducer {
     @Dependency(\.messages) var messages
     
     public var body: some ReducerOf<Self> {
-        Reduce { _, action in
+        Reduce { state, action in
             switch action {
+            case .onAppear:
+                let chatID = state.chatId
+                return .run { send in
+                    var messages = try await messages.allMessages(for: chatID)
+                    if messages.isEmpty {
+                        // TODO: This is just for now to let mocking for mocked chats work.
+                        messages = Array(Message.mockedMessages)
+                    }
+
+                    await send(.messagesLoaded(IdentifiedArrayOf(uniqueElements: messages)))
+                }
+
+            case .messagesLoaded(let messages):
+                state.messages = messages
+                return .none
             }
         }
     }

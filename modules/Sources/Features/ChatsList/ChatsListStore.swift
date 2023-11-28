@@ -62,7 +62,7 @@ public struct ChatsListReducer {
             self.path = path
             
             let chats = Chat.mockedChats
-            
+
             self.incomingChats = IdentifiedArrayOf(
                 uniqueElements:
                     chats.compactMap {
@@ -79,15 +79,39 @@ public struct ChatsListReducer {
                     }
             )
         }
+
+        public func processChats(_ chats: [Chat]) -> (IdentifiedArrayOf<Chat>, IdentifiedArrayOf<Chat>) {
+            let finalChats = Chat.mockedChats + chats
+
+            let incomingChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
+                uniqueElements:
+                    finalChats.compactMap {
+                        guard !$0.verified else { return nil }
+                        return $0
+                    }
+            )
+
+            let verifiedChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
+                uniqueElements:
+                    finalChats.compactMap {
+                        guard $0.verified else { return nil }
+                        return $0
+                    }
+            )
+
+            return (incomingChats, verifiedChats)
+        }
     }
     
     public enum Action: Equatable {
         case chatButtonTapped(Int)
+        case didLoadChats(IdentifiedArrayOf<Chat>, IdentifiedArrayOf<Chat>)
         case fundsButtonTapped
         case newChatButtonTapped
         case onAppear
         case onDisappear
         case path(StackAction<Path.State, Path.Action>)
+        case reloadChats
         case sheetPath(PresentationAction<SheetPath.Action>)
         case synchronizerStateChanged(SynchronizerState)
         case wipeFailed
@@ -189,6 +213,11 @@ public struct ChatsListReducer {
                 state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
                 return .none
 
+            case let .didLoadChats(incomingChats, verifiedChats):
+                state.incomingChats = incomingChats
+                state.verifiedChats = verifiedChats
+                return .none
+
             case .fundsButtonTapped:
                 state.sheetPath = .funds(FundsReducer.State())
                 return .none
@@ -199,6 +228,31 @@ public struct ChatsListReducer {
                 
             case .path:
                 return .none
+
+            case .reloadChats:
+                return .run { send in
+                    let chats = try await messages.allChats()
+                    let mockedChats = Chat.mockedChats
+
+                    let incomingChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
+                        uniqueElements:
+                            mockedChats.compactMap {
+                                guard !$0.verified else { return nil }
+                                return $0
+                            }
+                    )
+
+                    let verifiedChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
+                        uniqueElements:
+                            // TODO: Care about verified status of real chats. For now we don't have verification so these wouldn't be shown at all.
+                            chats + mockedChats.compactMap {
+                                guard $0.verified else { return nil }
+                                return $0
+                            }
+                    )
+
+                    await send(.didLoadChats(incomingChats, verifiedChats))
+                }
 
             case .sheetPath(.presented(.newChat(.startChatButtonTapped))):
                 if case .newChat(let newChatState) = state.sheetPath.optional {

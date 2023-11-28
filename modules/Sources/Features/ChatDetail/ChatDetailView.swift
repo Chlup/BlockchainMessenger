@@ -131,8 +131,12 @@ public struct ChatDetailView: View {
                 }
             }
             .listStyle(.plain)
+            .onAppear {
+                viewStore.send(.onAppear)
+            }
         }
         .applyScreenBackground()
+        
     }
 }
 

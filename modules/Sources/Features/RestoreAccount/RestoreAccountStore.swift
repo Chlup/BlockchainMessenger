@@ -29,6 +29,7 @@
 import ComposableArchitecture
 import ZcashLightClientKit
 
+import Logger
 import MnemonicClient
 import Utils
 import WalletStorage
@@ -68,6 +69,7 @@ public struct RestoreAccountReducer {
 
     @Dependency(\.mnemonic) var mnemonic
     @Dependency(\.walletStorage) var walletStorage
+    @Dependency(\.logger) var logger
 
     public var body: some ReducerOf<Self> {
         BindingReducer()
@@ -82,8 +84,8 @@ public struct RestoreAccountReducer {
                 
             case .restoreButtonTaped:
                 do {
-                    print("seed: \(state.importedSeedPhrase.data)")
-                    print("BD: \(state.birthdayHeightValue)")
+                    logger.debug("seed: \(state.importedSeedPhrase.data)")
+                    logger.debug("BD: \(state.birthdayHeightValue)")
 
                     try mnemonic.isValid(state.importedSeedPhrase.data)
                     let birthday = state.birthdayHeightValue ?? RedactableBlockHeight(networkType == .testnet ? 280_000 : 419_200)

@@ -53,20 +53,20 @@ public struct RootView: View {
                     case .chatsList:
                         CaseLet(
                             /RootReducer.Path.State.chatsList,
-                             action: RootReducer.Path.Action.chatsList,
-                             then: ChatsListView.init(store:)
+                            action: RootReducer.Path.Action.chatsList,
+                            then: ChatsListView.init(store:)
                         )
                     case .createAccount:
                         CaseLet(
                             /RootReducer.Path.State.createAccount,
-                             action: RootReducer.Path.Action.createAccount,
-                             then: CreateAccountView.init(store:)
+                            action: RootReducer.Path.Action.createAccount,
+                            then: CreateAccountView.init(store:)
                         )
                     case .restoreAccount:
                         CaseLet(
                             /RootReducer.Path.State.restoreAccount,
-                             action: RootReducer.Path.Action.restoreAccount,
-                             then: RestoreAccountView.init(store:)
+                            action: RootReducer.Path.Action.restoreAccount,
+                            then: RestoreAccountView.init(store:)
                         )
                     }
                 }

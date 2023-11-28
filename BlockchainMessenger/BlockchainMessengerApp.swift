@@ -61,7 +61,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
                 logger.error("Failed to initialize messages module!!!! This is fatal error. \(error)")
             }
 
-            // Debugging stuff to test stuff
+//            // Debugging stuff to test stuff
 //            do {
 //                let seed = """
 //                burden help grit wheat sustain exit text radar ready wide tribe august post century suspect seminar relax mixed brother old enrich \

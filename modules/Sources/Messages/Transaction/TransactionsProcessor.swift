@@ -26,16 +26,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 import Combine
-import ZcashLightClientKit
 import Dependencies
-
-enum Whatever {
-    static func doSomething() {
-        @Dependency(\.logger) var logger
-    }
-}
+import Logger
+import Foundation
+import ZcashLightClientKit
 
 protocol TransactionsProcessor: Actor {
     func start() async

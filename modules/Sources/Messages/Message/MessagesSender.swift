@@ -103,7 +103,6 @@ extension MessagesSenderImpl: MessagesSender {
         }
 
         try await send(message: protocolMessage, toAddress: toAddress)
-
         try await storage.storeChat(newChat)
     }
     

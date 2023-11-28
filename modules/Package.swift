@@ -45,6 +45,7 @@ let package = Package(
             dependencies: [
                 "DerivationTool",
                 "Generated",
+                "Logger",
                 "Messages",
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
@@ -58,6 +59,7 @@ let package = Package(
             dependencies: [
                 "ChatDetail",
                 "Funds",
+                "Logger",
                 "Messages",
                 "NewChat",
                 "SDKSynchronizer",
@@ -72,6 +74,7 @@ let package = Package(
         .target(
             name: "CreateAccount",
             dependencies: [
+                "Logger",
                 "Models",
                 "Pasteboard",
                 "Utils",
@@ -85,6 +88,7 @@ let package = Package(
             name: "DatabaseFiles",
             dependencies: [
                 "FileManager",
+                "Logger",
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
@@ -95,6 +99,7 @@ let package = Package(
         .target(
             name: "DerivationTool",
             dependencies: [
+                "Logger",
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
@@ -105,6 +110,7 @@ let package = Package(
         .target(
             name: "FileManager",
             dependencies: [
+                "Logger",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Dependencies/FileManager",
@@ -115,6 +121,7 @@ let package = Package(
             dependencies: [
                 "DerivationTool",
                 "Generated",
+                "Logger",
                 "Messages",
                 "Pasteboard",
                 "SDKSynchronizer",
@@ -123,6 +130,14 @@ let package = Package(
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
             path: "Sources/Features/Funds",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+        ),
+        .target(
+            name: "Logger",
+            dependencies: [
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
+            ],
+            path: "Sources/Dependencies/Logger",
             plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
@@ -135,6 +150,7 @@ let package = Package(
         .target(
             name: "Messages",
             dependencies: [
+                "Logger",
                 "SDKSynchronizer",
                 .product(name: "MnemonicSwift", package: "MnemonicSwift"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
@@ -147,6 +163,7 @@ let package = Package(
         .target(
             name: "MnemonicClient",
             dependencies: [
+                "Logger",
                 .product(name: "MnemonicSwift", package: "MnemonicSwift"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
@@ -156,6 +173,7 @@ let package = Package(
         .target(
             name: "Models",
             dependencies: [
+                "Logger",
                 "Utils",
                 .product(name: "MnemonicSwift", package: "MnemonicSwift")
             ],
@@ -166,6 +184,7 @@ let package = Package(
             name: "NewChat",
             dependencies: [
                 "DerivationTool",
+                "Logger",
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
@@ -175,6 +194,7 @@ let package = Package(
         .target(
             name: "Pasteboard",
             dependencies: [
+                "Logger",
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
@@ -184,6 +204,7 @@ let package = Package(
         .target(
             name: "RestoreAccount",
             dependencies: [
+                "Logger",
                 "MnemonicClient",
                 "Utils",
                 "WalletStorage",
@@ -196,10 +217,11 @@ let package = Package(
         .target(
             name: "Root",
             dependencies: [
-                "Generated",
                 "ChatsList",
                 "CreateAccount",
                 "DatabaseFiles",
+                "Generated",
+                "Logger",
                 "Messages",
                 "MnemonicClient",
                 "Models",
@@ -216,6 +238,7 @@ let package = Package(
             name: "SDKSynchronizer",
             dependencies: [
                 "DatabaseFiles",
+                "Logger",
                 "Models",
                 "ZcashSDKEnvironment",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
@@ -236,6 +259,7 @@ let package = Package(
             name: "Utils",
             dependencies: [
                 "Generated",
+                "Logger",
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
                 .product(name: "CasePaths", package: "swift-case-paths"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
@@ -246,10 +270,11 @@ let package = Package(
         .target(
             name: "WalletStorage",
             dependencies: [
-                "Utils",
-                "SecItem",
+                "Logger",
                 "MnemonicClient",
                 "Models",
+                "SecItem",
+                "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
@@ -259,6 +284,7 @@ let package = Package(
         .target(
             name: "ZcashSDKEnvironment",
             dependencies: [
+                "Logger",
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],

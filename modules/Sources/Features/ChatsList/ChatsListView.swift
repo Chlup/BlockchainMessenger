@@ -90,16 +90,16 @@ public struct ChatsListView: View {
                     //                }
                     
                     ForEach(viewStore.verifiedChats) { chat in
-                        if let alias = chat.alias {
-                            Button {
-                                viewStore.send(.chatButtonTapped(chat.chatID))
-                            } label: {
-                                Text(alias)
-                                    .neumorphicButton()
-                            }
-                            .padding(.horizontal, 30)
-                            .padding(.bottom, 15)
+                        // TODO: This alias work is just hack to show new chats for now.
+                        let alias = chat.alias ?? "unknown"
+                        Button {
+                            viewStore.send(.chatButtonTapped(chat.chatID))
+                        } label: {
+                            Text(alias)
+                                .neumorphicButton()
                         }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 15)
                     }
                 }
                 .toolbar {
@@ -131,6 +131,19 @@ public struct ChatsListView: View {
 //                                    // style: .blue
 //                                    // Asset.Colors.ChatDetail.sent2.color
 //                                )
+                        }
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            viewStore.send(.reloadChats)
+                        } label: {
+                            Image(systemName: "arrow.clockwise.square")
+                                .renderingMode(.template)
+                                .tint(Asset.Colors.fontPrimary.color)
+                            //                                .neumorphicButton(
+                            //                                    // style: .blue
+                            //                                    // Asset.Colors.ChatDetail.sent2.color
+                            //                                )
                         }
                     }
                 }

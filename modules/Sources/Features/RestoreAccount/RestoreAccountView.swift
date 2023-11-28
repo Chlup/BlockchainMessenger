@@ -69,7 +69,7 @@ public struct RestoreAccountView: View {
                         .neumorphicButton()
                 }
                 
-                //Spacer()
+                // Spacer()
             }
             .padding(.horizontal, 35)
         }
