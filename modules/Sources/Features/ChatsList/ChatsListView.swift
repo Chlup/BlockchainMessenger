@@ -34,6 +34,7 @@ import ChatDetail
 import Funds
 import Generated
 import Messages
+import Models
 import NewChat
 import Utils
 
@@ -49,57 +50,64 @@ public struct ChatsListView: View {
             store.scope(state: \.path, action: \.path)
         ) {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
-                ScrollView {
-                    if !viewStore.incomingChats.isEmpty {
+                VStack(alignment: .leading) {
+                    // TODO: temporary development debug info of the synchronizer
+                    VStack(alignment: .leading) {
                         HStack {
-                            Text("Chats")
-                                .font(.system(size: 36))
-                                .fontWeight(.semibold)
-                                .foregroundStyle(Asset.Colors.fontPrimary.color)
-                            Spacer()
+                            Text("verified \(viewStore.shieldedBalance.data.verified.decimalZashiFormatted()) TAZ")
+                            Text("total \(viewStore.shieldedBalance.data.total.decimalZashiFormatted()) TAZ")
                         }
-                        .padding(.horizontal, 30)
-                        
-                        HStack {
-                            Text("Incoming chats")
-                            
-                            Text("\(viewStore.incomingChats.count)")
-                                .foregroundStyle(.white)
-                                .padding(7)
-                                .background {
-                                    Circle()
-                                        .foregroundStyle(.red)
-                                }
-                        }
-                        .neumorphicButton()
-                        .padding(.horizontal, 30)
-                        .padding(.bottom, 15)
+
+                        Text("Synchronizer: \(viewStore.synchronizerStatusSnapshot.message)")
                     }
-                    
-                    //                ForEach(viewStore.incomingChats) { chat in
-                    //                    Text("\(Date(timeIntervalSince1970: Double(chat.timestamp)).asHumanReadable())")
-                    //                        .font(.system(size: 10))
-                    //                        .foregroundStyle(.white)
-                    //                        .frame(height: 25)
-                    //                        .frame(maxWidth: .infinity)
-                    //                        .padding()
-                    //                        .background {
-                    //                            Capsule()
-                    //                                .foregroundStyle(.black)
-                    //                        }
-                    //                }
-                    
-                    ForEach(viewStore.verifiedChats) { chat in
-                        // TODO: This alias work is just hack to show new chats for now.
-                        let alias = chat.alias ?? "unknown"
-                        Button {
-                            viewStore.send(.chatButtonTapped(chat.chatID))
-                        } label: {
-                            Text(alias)
-                                .neumorphicButton()
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Asset.Colors.fontPrimary.color)
+
+                    List {
+                        if !viewStore.incomingChats.isEmpty {
+                            HStack {
+                                Text("Chats")
+                                    .font(.system(size: 36))
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(Asset.Colors.fontPrimary.color)
+                                Spacer()
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            
+                            HStack {
+                                Text("Incoming chats")
+                                
+                                Text("\(viewStore.incomingChats.count)")
+                                    .foregroundStyle(.white)
+                                    .padding(7)
+                                    .background {
+                                        Circle()
+                                            .foregroundStyle(.red)
+                                    }
+                            }
+                            .neumorphicButton()
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                         }
-                        .padding(.horizontal, 30)
-                        .padding(.bottom, 15)
+                        
+                        ForEach(viewStore.verifiedChats) { chat in
+                            Button {
+                                viewStore.send(.chatButtonTapped(chat.chatID))
+                            } label: {
+                                // TODO: This alias work is just hack to show new chats for now.
+                                Text(chat.alias ?? "unknown")
+                                    .neumorphicButton()
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                        }
+                    }
+                    .listStyle(.plain)
+                    .refreshable {
+                        viewStore.send(.reloadChats)
                     }
                 }
                 .toolbar {
@@ -131,19 +139,6 @@ public struct ChatsListView: View {
 //                                    // style: .blue
 //                                    // Asset.Colors.ChatDetail.sent2.color
 //                                )
-                        }
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            viewStore.send(.reloadChats)
-                        } label: {
-                            Image(systemName: "arrow.clockwise")
-                                .renderingMode(.template)
-                                .tint(Asset.Colors.fontPrimary.color)
-                            //                                .neumorphicButton(
-                            //                                    // style: .blue
-                            //                                    // Asset.Colors.ChatDetail.sent2.color
-                            //                                )
                         }
                     }
                 }
@@ -195,10 +190,14 @@ public struct ChatsListView: View {
     ChatsListView(
         store:
             Store(
-                initialState: ChatsListReducer.State()
+                initialState: ChatsListReducer.State(
+                    synchronizerStatusSnapshot: .placeholder
+                )
             ) {
-                ChatsListReducer(networkType: ZcashNetworkBuilder.network(for: .testnet).networkType)
-                    ._printChanges()
+                ChatsListReducer(
+                    networkType: ZcashNetworkBuilder.network(for: .testnet).networkType
+                )
+                ._printChanges()
             }
     )
 }

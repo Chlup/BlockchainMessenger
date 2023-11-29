@@ -36,6 +36,7 @@ import RestoreAccount
 import DatabaseFiles
 import Generated
 import Messages
+import Models
 import MnemonicClient
 import Models
 import WalletStorage
@@ -72,6 +73,8 @@ public struct RootReducer {
         case initializationSucceeded
         case path(PresentationAction<Path.Action>)
         case restoreAccount
+        case retryStart
+        case synchronizerStartFailed(ZcashError)
     }
     
     public struct Path: Reducer {
@@ -114,6 +117,7 @@ public struct RootReducer {
     @Dependency(\.messages) var messages
     @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.mnemonic) var mnemonic
+    @Dependency(\.sdkSynchronizer) var synchronizer
     @Dependency(\.walletStorage) var walletStorage
     @Dependency(\.zcashSDKEnvironment) var zcashSDKEnvironment
 
@@ -124,6 +128,16 @@ public struct RootReducer {
                 return .run { send in
                     try await mainQueue.sleep(for: .seconds(0.02))
                     await send(.initiateAccount)
+                }
+                
+            case .appDelegate(.didEnterBackground):
+                synchronizer.stop()
+                return .none
+                
+            case .appDelegate(.willEnterForeground):
+                return .run { send in
+                    try await mainQueue.sleep(for: .seconds(1))
+                    await send(.retryStart)
                 }
                 
             case .appDelegate:
@@ -191,7 +205,7 @@ public struct RootReducer {
 
             case .initializationSucceeded:
                 state.appInitializationState = .initialized
-                state.path = .chatsList(ChatsListReducer.State())
+                state.path = .chatsList(ChatsListReducer.State(synchronizerStatusSnapshot: SyncStatusSnapshot()))
                 return .none
 
             case .path(.presented(.restoreAccount(.successfullyRecovered))):
@@ -210,6 +224,22 @@ public struct RootReducer {
                 
             case .restoreAccount:
                 state.path = .restoreAccount(RestoreAccountReducer.State())
+                return .none
+                
+            case .retryStart:
+                // Try the start only if the synchronizer has been already prepared
+                guard synchronizer.latestState().syncStatus.isPrepared else {
+                    return .none
+                }
+                return .run { send in
+                    do {
+                        try await synchronizer.start(true)
+                    } catch {
+                        await send(.synchronizerStartFailed(error.toZcashError()))
+                    }
+                }
+
+            case .synchronizerStartFailed:
                 return .none
             }
         }

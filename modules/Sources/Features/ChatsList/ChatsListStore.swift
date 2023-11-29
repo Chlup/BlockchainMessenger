@@ -33,6 +33,7 @@ import ZcashLightClientKit
 import ChatDetail
 import Funds
 import Messages
+import Models
 import NewChat
 import Utils
 import WalletStorage
@@ -45,9 +46,10 @@ public struct ChatsListReducer {
 
     public struct State: Equatable {
         public var incomingChats: IdentifiedArrayOf<Chat>
-        @PresentationState public var sheetPath: SheetPath.State?
         var path = StackState<Path.State>()
+        @PresentationState public var sheetPath: SheetPath.State?
         public var shieldedBalance = Balance.zero
+        public var synchronizerStatusSnapshot: SyncStatusSnapshot
         public var verifiedChats: IdentifiedArrayOf<Chat>
 
         public var availableMessagesCount: UInt {
@@ -58,8 +60,12 @@ public struct ChatsListReducer {
             UInt(floor(Double(shieldedBalance.data.total.amount) / 10_000))
         }
 
-        public init(path: StackState<Path.State> = StackState<Path.State>()) {
+        public init(
+            path: StackState<Path.State> = StackState<Path.State>(),
+            synchronizerStatusSnapshot: SyncStatusSnapshot
+        ) {
             self.path = path
+            self.synchronizerStatusSnapshot = synchronizerStatusSnapshot
             
             let chats = Chat.mockedChats
 
@@ -273,6 +279,15 @@ public struct ChatsListReducer {
             case .synchronizerStateChanged(let latestState):
                 let shieldedBalance = latestState.shieldedBalance
                 state.shieldedBalance = shieldedBalance.redacted
+                
+                let snapshot = SyncStatusSnapshot.snapshotFor(state: latestState.syncStatus)
+                if snapshot.syncStatus != state.synchronizerStatusSnapshot.syncStatus {
+                    state.synchronizerStatusSnapshot = snapshot
+                }
+                
+                if case .upToDate = latestState.syncStatus {
+                    return .send(.reloadChats)
+                }
                 return .none
                 
             case .wipeFailed:

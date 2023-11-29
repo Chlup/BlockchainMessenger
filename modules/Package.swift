@@ -61,6 +61,7 @@ let package = Package(
                 "Funds",
                 "Logger",
                 "Messages",
+                "Models",
                 "NewChat",
                 "SDKSynchronizer",
                 "Utils",
