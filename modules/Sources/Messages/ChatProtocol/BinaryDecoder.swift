@@ -36,17 +36,30 @@ final class BinaryDecoder {
 
     let bytes: [UInt8]
     private var offset: Int
+    private var numberOfNonNullBytes: Int
     init(bytes: [UInt8]) {
         self.bytes = bytes
+        
+        // ZCash SDK automatically fills memos with null bytes (\0) if length of the memo is smaller than 512 bytes. We don't want to process null
+        // bytes. So here we find out how many bytes with real value there is. And then use this number as max number of available bytes.
+        var numberOfNonNullBytes = bytes.count
+        for i in stride(from: bytes.count - 1, to: -1, by: -1) {
+            // swiftlint:disable:next for_where
+            if bytes[i] != 0 {
+                numberOfNonNullBytes = i + 1
+                break
+            }
+        }
+        self.numberOfNonNullBytes = numberOfNonNullBytes
         offset = 0
     }
 
     var unreadBytesCount: Int {
-        return bytes.count - offset
+        return numberOfNonNullBytes - offset
     }
 
     private func get(bytesCount count: Int) throws -> ArraySlice<UInt8> {
-        guard offset + count <= bytes.count else {
+        guard offset + count <= numberOfNonNullBytes else {
             throw Errors.bytesRangeOutOfBounds
         }
 
