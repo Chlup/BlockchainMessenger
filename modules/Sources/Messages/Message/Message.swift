@@ -31,7 +31,7 @@ import ZcashLightClientKit
 import SQLite
 import Dependencies
 
-public struct Message: Codable, Equatable, Identifiable {
+public struct Message: Codable, Equatable, Identifiable, Hashable {
     public typealias ID = Int
 
     public let id: ID
