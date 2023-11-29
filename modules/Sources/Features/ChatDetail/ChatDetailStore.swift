@@ -123,11 +123,16 @@ public struct ChatDetailReducer {
                 
                 if case .upToDate = latestState.syncStatus {
                     state.isSyncing = false
+                    return .run { [chatId = state.chatId, currentMessages = state.messages] send in
+                        let messages = IdentifiedArrayOf(uniqueElements: try await messages.allMessages(for: chatId))
+                        if currentMessages != messages {
+                            await send(.messagesLoaded(IdentifiedArrayOf(uniqueElements: messages)))
+                        }
+                    }
                 }
                 if case .syncing = latestState.syncStatus {
                     state.isSyncing = true
                 }
-
                 return .none
             }
         }

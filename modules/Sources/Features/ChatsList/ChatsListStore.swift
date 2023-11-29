@@ -66,46 +66,8 @@ public struct ChatsListReducer {
         ) {
             self.path = path
             self.synchronizerStatusSnapshot = synchronizerStatusSnapshot
-            
-            let chats = Chat.mockedChats
-
-            self.incomingChats = IdentifiedArrayOf(
-                uniqueElements:
-                    chats.compactMap {
-                        guard !$0.verified else { return nil }
-                        return $0
-                    }
-            )
-
-            self.verifiedChats = IdentifiedArrayOf(
-                uniqueElements:
-                    chats.compactMap {
-                        guard $0.verified else { return nil }
-                        return $0
-                    }
-            )
-        }
-
-        public func processChats(_ chats: [Chat]) -> (IdentifiedArrayOf<Chat>, IdentifiedArrayOf<Chat>) {
-            let finalChats = Chat.mockedChats + chats
-
-            let incomingChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
-                uniqueElements:
-                    finalChats.compactMap {
-                        guard !$0.verified else { return nil }
-                        return $0
-                    }
-            )
-
-            let verifiedChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
-                uniqueElements:
-                    finalChats.compactMap {
-                        guard $0.verified else { return nil }
-                        return $0
-                    }
-            )
-
-            return (incomingChats, verifiedChats)
+            self.incomingChats = []
+            self.verifiedChats = []
         }
     }
     
@@ -239,12 +201,11 @@ public struct ChatsListReducer {
             case .reloadChats:
                 return .run { send in
                     let chats = try await messages.allChats()
-                    let mockedChats = Chat.mockedChats
 
                     let incomingChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
                         uniqueElements:
-                            mockedChats.compactMap {
-                                guard !$0.verified else { return nil }
+                            chats.compactMap {
+                                guard $0.verified else { return nil }
                                 return $0
                             }
                     )
@@ -252,8 +213,8 @@ public struct ChatsListReducer {
                     let verifiedChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
                         uniqueElements:
                             // TODO: Care about verified status of real chats. For now we don't have verification so these wouldn't be shown at all.
-                            chats + mockedChats.compactMap {
-                                guard $0.verified else { return nil }
+                            chats.compactMap {
+                                guard !$0.verified else { return nil }
                                 return $0
                             }
                     )
