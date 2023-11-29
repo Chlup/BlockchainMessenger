@@ -90,12 +90,26 @@ extension MessagesSenderImpl: MessagesSender {
     }
 
     func newChat(fromAddress: String, toAddress: String, verificationText: String, alias: String?) async throws {
+        let myUnifiedAddress: String
+        do {
+            guard let possibleUnifiedAddress = try await synchronizer.getUnifiedAddress(account: 0) else {
+                throw MessagesError.getUnifiedAddressWhenCreatingChat
+            }
+            myUnifiedAddress = possibleUnifiedAddress.stringEncoded
+        } catch {
+            throw MessagesError.getUnifiedAddressWhenCreatingChat
+        }
+
+        let amICreatorOfChat = myUnifiedAddress == fromAddress
+
         let newChat = Chat.createNew(
             alias: alias,
             fromAddress: fromAddress,
             toAddress: toAddress,
             verificationText: verificationText,
-            verified: false
+            // When current seed is creator of chat then chat is verified on it's side because there is nothing to verify. The other side must
+            // recieve `verificationText` through different channel and verify this chat.
+            verified: amICreatorOfChat
         )
 
         let protocolMessage = ChatProtocol.ChatMessage(
