@@ -223,16 +223,17 @@ public struct ChatsListReducer {
                     let incomingChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
                         uniqueElements:
                             chats.compactMap {
-                                guard $0.verified else { return nil }
+                                guard !$0.verified else { return nil }
                                 return $0
                             }
                     )
 
                     let verifiedChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
                         uniqueElements:
-                            // TODO: Care about verified status of real chats. For now we don't have verification so these wouldn't be shown at all.
                             chats.compactMap {
-                                guard !$0.verified else { return nil }
+                                // TODO: Don't care about verified status of real chats. For now we don't have verification so these wouldn't be shown
+                                // at all.
+//                                guard $0.verified else { return nil }
                                 return $0
                             }
                     )
