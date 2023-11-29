@@ -47,13 +47,16 @@ final class SDKManagerImpl {
 
     var transactionsStream: AnyPublisher<[Transaction], Never> {
         return synchronizer.eventStream()
-            .compactMap { [weak self] event in
+            .compactMap { event in
                 switch event {
                 case let .foundTransactions(transactions, _):
                     return transactions.map { transaction in
-                        self?.logger.debug("RAW ID size: \(transaction.rawID.count)")
                         return Transaction(zcashTransaction: transaction)
                     }
+
+                case let .minedTransaction(transaction):
+                    return [Transaction(zcashTransaction: transaction)]
+
                 default:
                     return nil
                 }
