@@ -62,7 +62,7 @@ public struct ChatDetailView: View {
                             ForEach(viewStore.messages) { message in
                                 HStack {
                                     if message.isSent {
-                                        Spacer()
+                                        Spacer(minLength: 40)
                                     }
                                     
                                     Text(message.text)
@@ -126,7 +126,7 @@ public struct ChatDetailView: View {
                                         }
                                     
                                     if !message.isSent {
-                                        Spacer()
+                                        Spacer(minLength: 40)
                                     }
                                 }
                                 .listRowBackground(Color.clear)
