@@ -39,6 +39,7 @@ protocol MessagesStorage: Actor {
     func chat(for chatID: Int) async throws -> Chat
     func doesChatExists(for chatID: Int) async throws -> Bool
     func storeChat(_ chat: Chat) async throws
+    func updateAlias(for chatID: Int, alias: String?) async throws
 
     func allMessages(for chatID: Int) async throws -> [Message]
     func doesMessageExists(for messageID: Message.ID) async throws -> Bool
@@ -129,6 +130,8 @@ extension MessagesStorageImpl: MessagesStorage {
         }
     }
 
+    // MARK: - Chat
+
     func allChats() async throws -> [Chat] {
         let query = chatsTable
             .order(Chat.Column.timestamp.desc)
@@ -154,6 +157,16 @@ extension MessagesStorageImpl: MessagesStorage {
         try db.run(chatsTable.insert(chat))
         eventsSender.send(event: .newChat(chat))
     }
+
+    func updateAlias(for chatID: Int, alias: String?) async throws {
+        let db = try dbConnection.connection()
+        let chat = chatsTable.filter(Chat.Column.chatID == chatID)
+        if try db.run(chat.update(Chat.Column.alias <- alias)) <= 0 {
+            throw MessagesError.chatDoesntExistWhenUpdatingAlias
+        }
+    }
+
+    // MARK: - Message
 
     func allMessages(for chatID: Int) async throws -> [Message] {
         let query = messagesTable

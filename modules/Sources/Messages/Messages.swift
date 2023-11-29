@@ -46,6 +46,7 @@ public enum MessagesError: Error {
     case storeNewChat(Error)
     case chatDoesntExistWhenSendingMessage(Error)
     case getUnifiedAddressWhenSendingMessage
+    case chatDoesntExistWhenUpdatingAlias
 }
 
 public enum MessagesEvent: Equatable {
@@ -62,6 +63,7 @@ public protocol Messages {
     func newChat(fromAddress: String, toAddress: String, verificationText: String, alias: String?) async throws
     func sendMessage(chatID: Int, text: String) async throws -> Message
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
+    func updateAlias(for chatID: Int, alias: String?) async throws
     func wipe() async throws
 }
 
@@ -119,6 +121,10 @@ extension MessagesImpl: Messages {
         await messagesSender.setSeedBytes(seedBytes)
         await transactionsProcessor.start()
         try await sdkManager.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
+    }
+
+    func updateAlias(for chatID: Int, alias: String?) async throws {
+        try await messagesStorage.updateAlias(for: chatID, alias: alias)
     }
 
     func wipe() async throws {

@@ -61,7 +61,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
                 logger.error("Failed to initialize messages module!!!! This is fatal error. \(error)")
             }
 
-//            // Debugging stuff to test stuff
+            // Debugging stuff to test stuff
 //            do {
 //                let seed = """
 //                burden help grit wheat sustain exit text radar ready wide tribe august post century suspect seminar relax mixed brother old enrich \
@@ -69,13 +69,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 //                """
 //                let seedBytes = try Mnemonic.deterministicSeedBytes(from: seed)
 //                try await messages.start(with: seedBytes, birthday: 2604585, walletMode: .existingWallet)
-//
+
 //                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) { [weak self] in
 //                    guard let self = self else { return }
 //                    Task {
-////                        try? await self.listAllChatsAndMessages()
-////                        try? await self.sendMessageToFirstChat()
-////                        try? await self.createNewChat()
+//                        try? await self.updateAliasForFirstChat()
+//                        try? await self.listAllChatsAndMessages()
+//                        try? await self.sendMessageToFirstChat()
+//                        try? await self.createNewChat()
 //                    }
 //                }
 //            } catch {
@@ -95,6 +96,26 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     // MARK: - Debug
+
+    private func updateAliasForFirstChat() async throws {
+        do {
+            var chats = try await self.messages.allChats()
+            logger.debug("\(chats)")
+
+            guard let chat = chats.first else {
+                logger.debug("No chats found")
+                return
+            }
+
+            try await messages.updateAlias(for: chat.chatID, alias: "New alias \(Int.random(in: 0...1000))")
+            chats = try await self.messages.allChats()
+            logger.debug("\(chats)")
+
+        } catch {
+            logger.debug("Failed to update alias for first chat: \(error)")
+            throw error
+        }
+    }
 
     private func listAllChatsAndMessages() async throws {
         do {
