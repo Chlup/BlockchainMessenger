@@ -142,6 +142,14 @@ public struct ChatDetailView: View {
                                 }
                             }
                         }
+                        // TODO: This is probably overkill and some optimized solution is better but for MVP this is good enough
+                        .onChange(of: viewStore.message) { _ in
+                            if let lastMessage = viewStore.messages.last {
+                                withAnimation {
+                                    scrollView.scrollTo(lastMessage, anchor: .center)
+                                }
+                            }
+                        }
                     }
                 }
                 .listStyle(.plain)
@@ -151,15 +159,15 @@ public struct ChatDetailView: View {
                 
                 Spacer()
                 
-                VStack {
-//                    ProgressView(
-//                        value: 5.0,
-//                        total: 10.0
-//                    )
-//                    .tint(.green)
-                    
+                VStack(alignment: .leading) {
+                    if viewStore.bytesLeft < 0 {
+                        Text("bytes limit exceeded by \(viewStore.bytesLeft)")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.red)
+                    }
+
                     HStack {
-                        TextField("message", text: viewStore.$message)
+                        TextField("message", text: viewStore.$message, axis: .vertical)
                             .font(.system(size: 14))
                             .foregroundStyle(Asset.Colors.fontPrimary.color)
                             .autocorrectionDisabled()

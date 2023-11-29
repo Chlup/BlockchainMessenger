@@ -44,11 +44,18 @@ public struct ChatDetailReducer {
         @BindingState public var message = ""
         public var messages: IdentifiedArrayOf<Message> = []
         public var shieldedBalance = Balance.zero
+        
+        public var bytesLeft: Int {
+            // The memo supports unicode so the overall count is not char count of text
+            // but byte representation instead
+            490 - message.utf8.count
+        }
 
         public var isSendAvailable: Bool {
             shieldedBalance.data.verified.amount > 0
             && !isSyncing
             && !message.isEmpty
+            && bytesLeft >= 0
         }
         
         public init(chatId: Int) {
