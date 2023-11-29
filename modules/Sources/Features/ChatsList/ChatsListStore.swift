@@ -76,6 +76,7 @@ public struct ChatsListReducer {
         case chatButtonTapped(Int)
         case debugButtonTapped
         case didLoadChats(IdentifiedArrayOf<Chat>, IdentifiedArrayOf<Chat>)
+        case editChatAliasTapped(Int)
         case fundsButtonTapped
         case newChatButtonTapped
         case onAppear
@@ -199,6 +200,11 @@ public struct ChatsListReducer {
                 state.verifiedChats = verifiedChats
                 return .none
 
+            case .editChatAliasTapped(let chatId):
+                // TODO: API for the chat alias update needed
+                print(chatId)
+                return .none
+                
             case .fundsButtonTapped:
                 state.sheetPath = .funds(FundsReducer.State())
                 return .none

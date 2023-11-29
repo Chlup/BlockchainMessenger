@@ -101,12 +101,21 @@ public struct ChatsListView: View {
                                 // TODO: This alias work is just hack to show new chats for now.
                                 Text(chat.alias ?? "unknown")
                                     .neumorphicButton()
+                                    .swipeActions(allowsFullSwipe: false) {
+                                        Button {
+                                            viewStore.send(.editChatAliasTapped(chat.id))
+                                        } label: {
+                                            Label("Edit", systemImage: "pencil")
+                                        }
+                                        .tint(.clear)
+                                    }
                             }
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                         }
                     }
                     .listStyle(.plain)
+                    .padding(.horizontal, 10)
                     .refreshable {
                         viewStore.send(.reloadChats)
                     }
@@ -122,7 +131,7 @@ public struct ChatsListView: View {
                                 + Text(" \(viewStore.availableMessagesCount)/\(viewStore.possibleMessagesCount) messages")
                                     .foregroundColor(.white)
                             }
-                            .font(.system(size: 15))
+                            .font(.system(size: 13))
                         }
                         .padding(.leading, 5)
                         .padding(.horizontal, 5)
