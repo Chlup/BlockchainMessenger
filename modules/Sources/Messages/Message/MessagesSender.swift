@@ -45,6 +45,7 @@ actor MessagesSenderImpl {
     @Dependency(\.derivationTool) var derivationTool
     @Dependency(\.chatProtocol) var chatProtocol
     @Dependency(\.logger) var logger
+    @Dependency(\.transactionsProcessor) var transactionsProcessor
 
     private enum Constants {
         static let messagePrice = Zatoshi(0)
@@ -127,8 +128,7 @@ extension MessagesSenderImpl: MessagesSender {
         do {
             try await storage.storeChat(newChat)
         } catch {
-            // TODO: Something happened with storing of the chat. We have to use transactionRawID and error handling to process created transaction
-            // to create chat.
+            await transactionsProcessor.failureHappened()
             throw MessagesError.storeNewChat(error)
         }
     }
@@ -169,12 +169,11 @@ extension MessagesSenderImpl: MessagesSender {
             toAddress = chat.toAddress
         }
 
-        let transactionRawID = try await send(message: protocolMessage, toAddress: toAddress)
+        _ = try await send(message: protocolMessage, toAddress: toAddress)
         do {
             try await storage.storeMessage(newMessage)
         } catch {
-            // TODO: Something happened with storing of the chat. We have to use transactionRawID and error handling to process created transaction
-            // to create chat.
+            await transactionsProcessor.failureHappened()
         }
 
         return newMessage

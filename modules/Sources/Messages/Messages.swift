@@ -78,6 +78,7 @@ struct MessagesImpl {
     @Dependency(\.messagesStorage) var messagesStorage
     @Dependency(\.messagesSender) var messagesSender
     @Dependency(\.eventsSender) var eventsSender
+    @Dependency(\.clearedHeightStorage) var clearedHeightStorage
 }
 
 extension MessagesImpl: Messages {
@@ -135,6 +136,7 @@ extension MessagesImpl: Messages {
     }
 
     func wipe() async throws {
+        clearedHeightStorage.updateClearedHeight(0)
         try await messagesStorage.wipe()
     }
 }

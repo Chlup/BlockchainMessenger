@@ -31,10 +31,10 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.5.0"),
-        .package(url: "https://github.com/pointfreeco/swift-case-paths", from: "1.1.1"),
+        .package(url: "https://github.com/pointfreeco/swift-case-paths", exact: "1.1.1"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.1"),
         .package(url: "https://github.com/zcash-hackworks/MnemonicSwift", exact: "2.2.4"),
-        .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", revision: "e49d8e0c77c3b1b190c3310f6a9abe6d75cecf32"),
+        .package(url: "https://github.com/Chlup/ZcashLightClientKit.git", revision: "b0e155ab198a59796583887bcb585b3d5bfd01c7"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.14.1"),
         .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
         .package(url: "https://github.com/realm/SwiftLint.git", exact: "0.54.0")

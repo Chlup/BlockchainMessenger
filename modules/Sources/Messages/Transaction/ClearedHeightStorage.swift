@@ -1,8 +1,8 @@
 //
-//  Transaction.swift
-//  BlockchainMessenger
+//  ClearedHeightStorage.swift
 //
-//  Created by Michal Fousek on 19.11.2023.
+//
+//  Created by Michal Fousek on 29.11.2023.
 //
 //  MIT License
 //
@@ -26,31 +26,45 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import Dependencies
 import Foundation
 import ZcashLightClientKit
 
-struct Transaction {
-    typealias ID = String
-
-    let id: ID
-    let rawID: Data
-    let isSentTransaction: Bool
-    let memoCount: Int
-    let minedHeight: BlockHeight?
-
-    init(id: ID, rawID: Data, isSentTransaction: Bool, memoCount: Int, minedHeight: BlockHeight?) {
-        self.id = id
-        self.rawID = rawID
-        self.isSentTransaction = isSentTransaction
-        self.memoCount = memoCount
-        self.minedHeight = minedHeight
+struct ClearedHeightStorage {
+    private enum Constants {
+        static let clearedHeightUDKey = "cleared_height"
     }
 
-    init(zcashTransaction: ZcashTransaction.Overview) {
-        self.id = zcashTransaction.rawID.sha256
-        self.rawID = zcashTransaction.rawID
-        self.isSentTransaction = zcashTransaction.isSentTransaction
-        self.memoCount = zcashTransaction.memoCount
-        self.minedHeight = zcashTransaction.minedHeight
+    var clearedHeight: () -> BlockHeight
+    var updateClearedHeight: (BlockHeight) -> Void
+
+    private static func currentClearedHeight() -> Int {
+        return UserDefaults.standard.integer(forKey: Constants.clearedHeightUDKey)
+    }
+
+    private static func updateClearedHeight(_ value: BlockHeight) {
+        UserDefaults.standard.set(value, forKey: Constants.clearedHeightUDKey)
+    }
+
+    static var live: ClearedHeightStorage {
+        return Self(
+            clearedHeight: {
+                Self.currentClearedHeight()
+            },
+            updateClearedHeight: { height in
+                Self.updateClearedHeight(height)
+            }
+        )
+    }
+}
+
+private enum ClearedHeightStorageClientKey: DependencyKey {
+    static let liveValue = ClearedHeightStorage.live
+}
+
+extension DependencyValues {
+    var clearedHeightStorage: ClearedHeightStorage {
+        get { self[ClearedHeightStorageClientKey.self] }
+        set { self[ClearedHeightStorageClientKey.self] = newValue }
     }
 }

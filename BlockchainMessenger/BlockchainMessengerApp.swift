@@ -53,13 +53,38 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         logger.debug("DB path \(databaseFiles.messagesDBURL())")
-        Task {
-            do {
-                try await messages.initialize(network: TargetConstants.zcashNetwork.networkType)
-            } catch {
-                // TODO: This must be somehow handled and communicated to user that something went seriously wrong.
-                logger.error("Failed to initialize messages module!!!! This is fatal error. \(error)")
-            }
+
+//        DispatchQueue.global(qos: .default).asyncAfter(deadline: .now() + .seconds(3)) { [weak self] in
+//            guard let self = self else { return }
+//            var counter = 0
+//            let stream = AsyncThrowingStream<Int, Error>() {
+//                self.logger.debug("Adding to counter")
+//                counter += 1
+//                return counter
+//            }
+//            var iterator = stream.makeAsyncIterator()
+//
+//            Task {
+//                self.logger.debug("Starting work on stream")
+//                do {
+//                    while let next = try await iterator.next() {
+//                        self.logger.debug("Got next: \(next)")
+//                        try await Task.sleep(for: .seconds(1))
+//                    }
+//                } catch {
+//                    self.logger.error("Error when rocessing iterator: \(error)")
+//                }
+//            }
+//        }
+
+//        Task {
+
+//            do {
+//                try await messages.initialize(network: TargetConstants.zcashNetwork.networkType)
+//            } catch {
+//                // TODO: This must be somehow handled and communicated to user that something went seriously wrong.
+//                logger.error("Failed to initialize messages module!!!! This is fatal error. \(error)")
+//            }
 
             // Debugging stuff to test stuff
 //            do {
@@ -83,7 +108,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 //            } catch {
 //                logger.debug("Failed to init SDK: \(error)")
 //            }
-        }
+//        }
         rootStore.send(.appDelegate(.didFinishLaunching))
 
         return true

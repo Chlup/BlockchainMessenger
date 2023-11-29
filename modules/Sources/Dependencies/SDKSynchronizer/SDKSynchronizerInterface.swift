@@ -64,6 +64,7 @@ public struct SDKSynchronizerClient {
     public var getSaplingAddress: (_ accountIndex: Int) async throws -> SaplingAddress?
 
     public var getTransaction: (_ rawID: Data) async throws -> ZcashTransaction.Overview?
+    public var getTransactions: (_ fromHeight: BlockHeight) async throws -> AsyncThrowingStream<ZcashTransaction.Overview, Error>
     public var sendTransaction: (UnifiedSpendingKey, Zatoshi, Recipient, Memo?) async throws -> Data
 //    public let shieldFunds: (UnifiedSpendingKey, Memo, Zatoshi) async throws -> TransactionState
 

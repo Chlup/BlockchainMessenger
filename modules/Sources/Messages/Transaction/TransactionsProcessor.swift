@@ -34,56 +34,28 @@ import ZcashLightClientKit
 
 protocol TransactionsProcessor: Actor {
     func start() async
-    func failedProcessing(transactionRawID: Data) async
+    func failureHappened() async
 }
 
 actor TransactionsProcessorImpl {
-    private enum ProcessingItem {
-        case transaction(Transaction)
-        case rawID(Failed)
-
-        var transactionRawID: Data {
-            switch self {
-            case let .transaction(transaction): transaction.rawID
-            case let .rawID(failedItem): failedItem.transactionRawID
-            }
-        }
-
-        var failuresCount: Int {
-            switch self {
-            case .transaction: 0
-            case let .rawID(failedItem): failedItem.failuresCount
-            }
-        }
-
-        var lastProcessingTime: Date? {
-            switch self {
-            case .transaction: nil
-            case let .rawID(failedItem): failedItem.lastProcessingTime
-            }
-        }
+    private enum Constants {
+        static let retriesCount = 1
     }
 
-    private struct Failed {
-        let transactionRawID: Data
+    private struct ProcessingItem {
+        var transactionID: String { transaction.rawID.sha256 }
+        let transaction: Transaction
         let failuresCount: Int
-        let lastProcessingTime: Date?
     }
-
-//    private enum Errors: Error {
-//        case
-//    }
 
     @Dependency(\.messagesStorage) var storage
     @Dependency(\.sdkManager) var sdkManager
     @Dependency(\.sdkSynchronizer) var synchronizer
     @Dependency(\.logger) var logger
     @Dependency(\.chatProtocol) var chatProtocol
+    @Dependency(\.clearedHeightStorage) var clearedHeightStorage
 
     private var cancellables: [AnyCancellable] = []
-    private var failedTransactionRawIDs: [Data] = []
-    private var processingQueue: [ProcessingItem] = []
-
     private var processing = false
 
     private func cancel() async {
@@ -91,72 +63,66 @@ actor TransactionsProcessorImpl {
         cancellables = []
     }
 
-    private func addItemsToProcessing(items: [ProcessingItem]) async {
-        processingQueue.append(contentsOf: items)
-    }
-
-    private func startProcessing() async {
+    private func startProcessingTransactions() async {
         Task {
-            guard !processing else { return }
+            logger.debug("Trying to start processing of transactions.")
+            guard !processing else {
+                logger.debug("Processing already in progress.")
+                return
+            }
             processing = true
 
-            if processingQueue.isEmpty {
-                processing = false
-                return
-            }
+            logger.debug("Processing transactions")
 
-            logger.debug("Start processing \(processingQueue.count)")
+            var clearedHeight = clearedHeightStorage.clearedHeight()
+            logger.debug("Cleared height: \(clearedHeight)")
+            var recordClearedHeight = true
+            var latestTransactionHeight: BlockHeight = clearedHeight
 
-            var failedItems: [ProcessingItem] = []
-            for item in processingQueue {
+            do {
+                let transactionsStream = try await synchronizer.getTransactions(clearedHeight + 1)
+                var iterator = transactionsStream.makeAsyncIterator()
+
                 do {
-                    // TODO: Some logic which decides if item should be processed. Maybe it's failed item that failed lot of times so we should wait
-                    // some time until it is going to be processed again.
-                    try await process(item: item)
-                } catch {
-                    let failedItem = Failed(
-                        transactionRawID: item.transactionRawID,
-                        failuresCount: item.failuresCount + 1,
-                        lastProcessingTime: Date()
-                    )
+                    while let zcashTransaction = try await iterator.next() {
+                        let transaction = Transaction(zcashTransaction: zcashTransaction)
+                        do {
+                            try await process(transaction: transaction)
 
-                    // TODO: Use some better policy in future
-                    if failedItem.failuresCount < 3 {
-                        failedItems.append(.rawID(failedItem))
+                            if let height = transaction.minedHeight {
+                                if height > clearedHeight, recordClearedHeight {
+                                    clearedHeightStorage.updateClearedHeight(height - 1)
+                                    clearedHeight = clearedHeightStorage.clearedHeight()
+                                    logger.debug("Recoding new cleared height: \(clearedHeight)")
+                                }
+                                latestTransactionHeight = height
+                            }
+                        } catch {
+                            logger.error("Failed to process transaction: \(error)")
+                            recordClearedHeight = false
+                            continue
+                        }
                     }
+
+                    if recordClearedHeight, latestTransactionHeight > clearedHeight {
+                        clearedHeightStorage.updateClearedHeight(latestTransactionHeight)
+                    }
+                } catch {
+                    logger.error("Error while loading transations from DB. \(error)")
                 }
+            } catch {
+                logger.error("Failed to get transactions stream. This is strange and bad. Something is wrong with SDK DB. \(error)")
             }
 
-            logger.debug("Failed items count after processing: \(failedItems.count)")
-
-            processingQueue = []
-            // TODO: Some logic which increaase failuresCount and decide if item should be immeditally processed.
-            processingQueue = failedItems
-
+            logger.debug("Finished transactions processing")
             processing = false
-            await startProcessing()
-        }
-    }
-
-    private func process(item: ProcessingItem) async throws {
-        switch item {
-        case let .transaction(transaction):
-            try await process(transaction: transaction)
-
-        case let .rawID(failedItem):
-            // TODO: Somehow handle state when transaction is not found on SDK level.
-            guard let transaction = try await synchronizer.getTransaction(rawID: failedItem.transactionRawID) else {
-                // TODO: Behave in a same way asi if transaction doesn't exist on SDK level.
-                return
-            }
-            try await process(transaction: Transaction(zcashTransaction: transaction))
         }
     }
 
     private func process(transaction: Transaction) async throws {
         // 1. check if transaction has memos
-        // 2. get first memo for transaction
-        // 3. check if memo contains chat messages
+        // 2. get memos for transaction
+        // 3. check if any memo contains chat messages
         // 4.
         //   - if transaction contains init message handle chat creation for that
         //   - if transaction continas message handle message creation
@@ -166,8 +132,18 @@ actor TransactionsProcessorImpl {
             return
         }
 
-        let memos = try await synchronizer.getMemos(transaction.rawID)
-        guard let decodedMessage = processMemo(memos) else {
+        let memos: [Memo]
+        do {
+            memos = try await synchronizer.getMemos(transaction.rawID)
+        } catch let ZcashError.transactionRepositoryFindMemos(underlyingError) {
+            logger.error("Failed to get memos for transaction: \(transaction.id) \(underlyingError)")
+            throw ZcashError.transactionRepositoryFindMemos(underlyingError)
+        } catch {
+            logger.error("Failed to get memos for transaction: \(transaction.id) \(error)")
+            return
+        }
+
+        guard let decodedMessage = processMemos(memos) else {
             logger.debug("\(transaction.id) Can't get memo for transaction.")
             return
         }
@@ -199,6 +175,16 @@ actor TransactionsProcessorImpl {
             return
         }
 
+        let myUnifiedAddress: String
+        do {
+            guard let possibleUnifiedAddress = try await synchronizer.getUnifiedAddress(account: 0) else { return }
+            myUnifiedAddress = possibleUnifiedAddress.stringEncoded
+        } catch {
+            throw error
+        }
+
+        let amICreatorOfChat = myUnifiedAddress == fromAddress
+
         let newChat = Chat(
             alias: alias,
             chatID: message.chatID,
@@ -206,12 +192,17 @@ actor TransactionsProcessorImpl {
             fromAddress: fromAddress,
             toAddress: toAddress,
             verificationText: verificationText,
-            verified: false
+            // When current seed is creator of chat then chat is verified on it's side because there is nothing to verify. The other side must
+            // recieve `verificationText` through different channel and verify this chat.
+            verified: amICreatorOfChat
         )
 
-        // TODO: We must somehow builtin some recovery mode. Because now each found transacation is handled only once. When storing fails then
-        // it won't ever be handled and it is practically lost.
-        try await storage.storeChat(newChat)
+        do {
+            try await storage.storeChat(newChat)
+        } catch {
+            logger.error("Failed to store new chat from processed transaction into DB: \(error)")
+            throw error
+        }
     }
 
     private func processTextMessage(_ message: ChatProtocol.ChatMessage, text: String, transaction: Transaction) async throws {
@@ -229,12 +220,15 @@ actor TransactionsProcessorImpl {
             isSent: transaction.isSentTransaction
         )
 
-        // TODO: We must somehow builtin some recovery mode. Because now each found transacation is handled only once. When storing fails then
-        // it won't ever be handled and it is practically lost.
-        try await storage.storeMessage(newMessage)
+        do {
+            try await storage.storeMessage(newMessage)
+        } catch {
+            logger.error("Failed to store new message from processed transaction into DB: \(error)")
+            throw error
+        }
     }
 
-    private func processMemo(_ memos: [Memo]) -> ChatProtocol.ChatMessage? {
+    private func processMemos(_ memos: [Memo]) -> ChatProtocol.ChatMessage? {
         for memo in memos {
             do {
                 let memoBytes = try memo.asMemoBytes().bytes
@@ -251,25 +245,22 @@ actor TransactionsProcessorImpl {
 extension TransactionsProcessorImpl: TransactionsProcessor {
     func start() async {
         await cancel()
-        sdkManager.transactionsStream
+        sdkManager.importantSDKEventsStream
             .sink(
-                receiveValue: { [weak self] transactions in
+                receiveValue: { [weak self] _ in
                     // Strange hack. If self?.process... is used then compiler throws:
                     // "Reference to captured var 'self' in concurrently-executing code" error.
                     let me = self
                     Task {
-                        await me?.addItemsToProcessing(items: transactions.map { .transaction($0) })
-                        await me?.startProcessing()
+                        await me?.startProcessingTransactions()
                     }
                 }
             )
             .store(in: &cancellables)
     }
 
-    func failedProcessing(transactionRawID: Data) async {
-        let failedItem = Failed(transactionRawID: transactionRawID, failuresCount: 1, lastProcessingTime: Date())
-        await addItemsToProcessing(items: [.rawID(failedItem)])
-        await startProcessing()
+    func failureHappened() async {
+        await startProcessingTransactions()
     }
 }
 

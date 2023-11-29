@@ -34,7 +34,7 @@ import SDKSynchronizer
 import ZcashLightClientKit
 
 protocol SDKManager: AnyObject {
-    var transactionsStream: AnyPublisher<[Transaction], Never> { get }
+    var importantSDKEventsStream: AnyPublisher<Void, Never> { get }
 
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
 }
@@ -45,23 +45,34 @@ final class SDKManagerImpl {
 
     private var cancellables: [AnyCancellable] = []
 
-    var transactionsStream: AnyPublisher<[Transaction], Never> {
-        return synchronizer.eventStream()
+    var importantSDKEventsStream: AnyPublisher<Void, Never> {
+        let eventStreamSignal: AnyPublisher<Void, Never> = synchronizer.eventStream()
             .compactMap { event in
                 switch event {
-                case let .foundTransactions(transactions, _):
-                    return transactions.map { transaction in
-                        return Transaction(zcashTransaction: transaction)
-                    }
+                case .foundTransactions:
+                    return Void()
 
-                case let .minedTransaction(transaction):
-                    return [Transaction(zcashTransaction: transaction)]
+                case .minedTransaction:
+                    return Void()
 
                 default:
                     return nil
                 }
             }
-            .share()
+            .eraseToAnyPublisher()
+
+        let syncFinishedSignalStream: AnyPublisher<Void, Never> = synchronizer.stateStream()
+            .compactMap { state in
+                switch state.syncStatus {
+                case .upToDate:
+                    return Void()
+                default:
+                    return nil
+                }
+            }
+            .eraseToAnyPublisher()
+
+        return Publishers.Merge(eventStreamSignal, syncFinishedSignalStream)
             .eraseToAnyPublisher()
     }
 

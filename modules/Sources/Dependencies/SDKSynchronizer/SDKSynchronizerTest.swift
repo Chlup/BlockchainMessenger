@@ -57,6 +57,7 @@ extension SDKSynchronizerClient {
         getTransparentAddress: { _ in nil },
         getSaplingAddress: { _ in nil },
         getTransaction: { _ in nil },
+        getTransactions: { _ in AsyncThrowingStream() { nil } },
         sendTransaction: { _, _, _, _ in return Data() },
 //        shieldFunds: { _, _, _ in return .placeholder() },
         wipe: { Empty<Void, Error>().eraseToAnyPublisher() }
@@ -150,6 +151,9 @@ extension SDKSynchronizerClient {
             )
         },
         getTransaction: @escaping (_ rawID: Data) async throws -> ZcashTransaction.Overview? = { _ in nil },
+        getTransactions: @escaping (_ fromHeight: BlockHeight) async throws -> AsyncThrowingStream<ZcashTransaction.Overview, Error> = { _ in
+            return AsyncThrowingStream() { nil }
+        },
         sendTransaction:
         @escaping (UnifiedSpendingKey, Zatoshi, Recipient, Memo?) async throws -> Data = { _, _, _, _ in
             return Data()
@@ -188,6 +192,7 @@ extension SDKSynchronizerClient {
             getTransparentAddress: getTransparentAddress,
             getSaplingAddress: getSaplingAddress,
             getTransaction: getTransaction,
+            getTransactions: getTransactions,
             sendTransaction: sendTransaction,
 //            shieldFunds: shieldFunds,
             wipe: wipe

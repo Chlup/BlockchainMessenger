@@ -181,6 +181,7 @@ public struct RootReducer {
                         
                         return .run { send in
                             do {
+                                // TODO: This must be somehow handled and communicated to user that something went seriously wrong.
                                 try await messages.initialize(network: zcashNetwork.networkType)
                                 try await messages.start(with: seedBytes, birthday: birthday, walletMode: walletMode)
                                 
