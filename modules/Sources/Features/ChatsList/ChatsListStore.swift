@@ -202,7 +202,7 @@ public struct ChatsListReducer {
 
             case .editChatAliasTapped(let chatId):
                 // TODO: API for the chat alias update needed
-                print(chatId)
+                logger.debug("\(chatId)")
                 return .none
                 
             case .fundsButtonTapped:

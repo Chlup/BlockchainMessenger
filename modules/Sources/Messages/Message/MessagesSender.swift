@@ -35,7 +35,7 @@ import ZcashLightClientKit
 protocol MessagesSender: Actor {
     func setNetwork(_ network: NetworkType) async
     func setSeedBytes(_ seedBytes: [UInt8]) async
-    func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws
+    func newChat(fromAddress: String, toAddress: String, verificationText: String, alias: String?) async throws
     func sendMessage(chatID: Int, text: String) async throws -> Message
 }
 
@@ -89,8 +89,15 @@ extension MessagesSenderImpl: MessagesSender {
         self.network = network
     }
 
-    func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws {
-        let newChat = Chat.createNew(alias: nil, fromAddress: fromAddress, toAddress: toAddress, verificationText: verificationText)
+    func newChat(fromAddress: String, toAddress: String, verificationText: String, alias: String?) async throws {
+        let newChat = Chat.createNew(
+            alias: alias,
+            fromAddress: fromAddress,
+            toAddress: toAddress,
+            verificationText: verificationText,
+            verified: false
+        )
+
         let protocolMessage = ChatProtocol.ChatMessage(
             chatID: newChat.chatID,
             timestmap: newChat.timestamp,

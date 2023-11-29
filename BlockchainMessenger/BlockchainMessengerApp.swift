@@ -144,7 +144,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
                 utest1rnyjr8jak3uzw4rylwydw5lkd9x2f4ce0wmnv699nlw5g94x758ah6pg774k0fcqxx98eagp90vqrxemfcxhym44qt54gftl9ff6nh0084hnamtu45\
                 l7un362z2rg9ukfjw0qrx4qer
                 """,
-                verificationText: "612398"
+                verificationText: "612398",
+                alias: "New chat"
             )
         } catch {
             logger.debug("Failed to create new chat: \(error)")

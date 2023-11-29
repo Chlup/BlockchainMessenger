@@ -262,6 +262,8 @@ extension TransactionState {
 
 // MARK: - Placeholders
 
+// swiftlint:disable force_try line_length
+
 extension TransactionState {
     public static func placeholder(
         amount: Zatoshi = .zero,
@@ -399,3 +401,5 @@ public struct TransactionStateMockHelper {
         self.uuid = uuid
     }
 }
+
+// swiftlint:enable force_try line_length

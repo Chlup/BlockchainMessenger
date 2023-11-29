@@ -91,7 +91,8 @@ public struct Chat: Codable, Equatable, Identifiable {
         alias: String?,
         fromAddress: String,
         toAddress: String,
-        verificationText: String
+        verificationText: String,
+        verified: Bool
     ) -> Chat {
         @Dependency(\.chatProtocol) var chatProtocol
         
@@ -104,7 +105,7 @@ public struct Chat: Codable, Equatable, Identifiable {
             fromAddress: fromAddress,
             toAddress: toAddress,
             verificationText: verificationText,
-            verified: false
+            verified: verified
         )
     }
 }

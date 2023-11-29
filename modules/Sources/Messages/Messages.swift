@@ -42,6 +42,7 @@ public enum MessagesError: Error {
     case invalidToAddressWhenCreatingChat
     case createMemoFromMessageWhenCreatingChat(Error)
     case createRecipientWhenCreatingChat(Error)
+    case getUnifiedAddressWhenCreatingChat
     case storeNewChat(Error)
     case chatDoesntExistWhenSendingMessage(Error)
     case getUnifiedAddressWhenSendingMessage
@@ -58,7 +59,7 @@ public protocol Messages {
     func allChats() async throws -> [Chat]
     func allMessages(for chatID: Int) async throws -> [Message]
     func initialize(network: NetworkType) async throws
-    func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws
+    func newChat(fromAddress: String, toAddress: String, verificationText: String, alias: String?) async throws
     func sendMessage(chatID: Int, text: String) async throws -> Message
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
     func wipe() async throws
@@ -106,8 +107,8 @@ extension MessagesImpl: Messages {
         try await messagesStorage.initialize()
     }
 
-    func newChat(fromAddress: String, toAddress: String, verificationText: String) async throws {
-        try await messagesSender.newChat(fromAddress: fromAddress, toAddress: toAddress, verificationText: verificationText)
+    func newChat(fromAddress: String, toAddress: String, verificationText: String, alias: String?) async throws {
+        try await messagesSender.newChat(fromAddress: fromAddress, toAddress: toAddress, verificationText: verificationText, alias: alias)
     }
 
     func sendMessage(chatID: Int, text: String) async throws -> Message {

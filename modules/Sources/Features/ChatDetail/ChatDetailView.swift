@@ -76,7 +76,7 @@ public struct ChatDetailView: View {
                                         )
                                         .font(.system(size: 8))
                                         .foregroundStyle(Asset.Colors.fontPrimary.color)
-                                        
+
                                         Text(message.text)
                                             .font(.system(size: 14))
                                             .foregroundStyle(.white)
@@ -135,8 +135,9 @@ public struct ChatDetailView: View {
                                                         lineWidth: 1
                                                     )
                                                 )
-                                            }                                    }
-                                    
+                                            }
+                                    }
+
                                     if !message.isSent {
                                         Spacer(minLength: 40)
                                     }
