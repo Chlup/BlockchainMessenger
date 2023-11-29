@@ -55,7 +55,7 @@ public struct SDKSynchronizerClient {
 
     public var getShieldedBalance: () -> WalletBalance?
     public var getTransparentBalance: () -> WalletBalance?
-//    public var getAllTransactions: () async throws -> [TransactionState]
+    public var getAllTransactions: () async throws -> [TransactionState]
 
     public var getMemos: (_ transactionRawID: Data) async throws -> [Memo]
 

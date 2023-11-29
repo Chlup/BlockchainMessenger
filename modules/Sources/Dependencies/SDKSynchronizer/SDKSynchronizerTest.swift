@@ -51,7 +51,7 @@ extension SDKSynchronizerClient {
         rewind: { _ in Empty<Void, Error>().eraseToAnyPublisher() },
         getShieldedBalance: { .zero },
         getTransparentBalance: { .zero },
-//        getAllTransactions: { [] },
+        getAllTransactions: { [] },
         getMemos: { _ in [] },
         getUnifiedAddress: { _ in nil },
         getTransparentAddress: { _ in nil },
@@ -79,57 +79,57 @@ extension SDKSynchronizerClient {
         rewind: @escaping (RewindPolicy) -> AnyPublisher<Void, Error> = { _ in return Empty<Void, Error>().eraseToAnyPublisher() },
         getShieldedBalance: @escaping () -> WalletBalance? = { WalletBalance(verified: Zatoshi(12345000), total: Zatoshi(12345000)) },
         getTransparentBalance: @escaping () -> WalletBalance? = { WalletBalance(verified: Zatoshi(12345000), total: Zatoshi(12345000)) },
-//        getAllTransactions: @escaping () -> [TransactionState] = {
-//            let mockedCleared: [TransactionStateMockHelper] = [
-//                TransactionStateMockHelper(date: 1651039202, amount: Zatoshi(1), status: .paid, uuid: "aa11"),
-//                TransactionStateMockHelper(date: 1651039101, amount: Zatoshi(2), uuid: "bb22"),
-//                TransactionStateMockHelper(date: 1651039000, amount: Zatoshi(3), status: .paid, uuid: "cc33"),
-//                TransactionStateMockHelper(date: 1651039505, amount: Zatoshi(4), uuid: "dd44"),
-//                TransactionStateMockHelper(date: 1651039404, amount: Zatoshi(5), uuid: "ee55")
-//            ]
-//
-//            var clearedTransactions = mockedCleared
-//                .map {
-//                    let transaction = TransactionState.placeholder(
-//                        amount: $0.amount,
-//                        fee: Zatoshi(10),
-//                        shielded: $0.shielded,
-//                        status: $0.status,
-//                        timestamp: $0.date,
-//                        uuid: $0.uuid
-//                    )
-//                    return transaction
-//                }
-//        
-//            let mockedPending: [TransactionStateMockHelper] = [
-//                TransactionStateMockHelper(
-//                    date: 1651039606,
-//                    amount: Zatoshi(6),
-//                    status: .paid,
-//                    uuid: "ff66"
-//                ),
-//                TransactionStateMockHelper(date: 1651039303, amount: Zatoshi(7), uuid: "gg77"),
-//                TransactionStateMockHelper(date: 1651039707, amount: Zatoshi(8), status: .paid, uuid: "hh88"),
-//                TransactionStateMockHelper(date: 1651039808, amount: Zatoshi(9), uuid: "ii99")
-//            ]
-//
-//            let pendingTransactions = mockedPending
-//                .map {
-//                    let transaction = TransactionState.placeholder(
-//                        amount: $0.amount,
-//                        fee: Zatoshi(10),
-//                        shielded: $0.shielded,
-//                        status: $0.amount.amount > 5 ? .sending : $0.status,
-//                        timestamp: $0.date,
-//                        uuid: $0.uuid
-//                    )
-//                    return transaction
-//                }
-//            
-//            clearedTransactions.append(contentsOf: pendingTransactions)
-//
-//            return clearedTransactions
-//        },
+        getAllTransactions: @escaping () -> [TransactionState] = {
+            let mockedCleared: [TransactionStateMockHelper] = [
+                TransactionStateMockHelper(date: 1651039202, amount: Zatoshi(1), status: .paid, uuid: "aa11"),
+                TransactionStateMockHelper(date: 1651039101, amount: Zatoshi(2), uuid: "bb22"),
+                TransactionStateMockHelper(date: 1651039000, amount: Zatoshi(3), status: .paid, uuid: "cc33"),
+                TransactionStateMockHelper(date: 1651039505, amount: Zatoshi(4), uuid: "dd44"),
+                TransactionStateMockHelper(date: 1651039404, amount: Zatoshi(5), uuid: "ee55")
+            ]
+
+            var clearedTransactions = mockedCleared
+                .map {
+                    let transaction = TransactionState.placeholder(
+                        amount: $0.amount,
+                        fee: Zatoshi(10),
+                        shielded: $0.shielded,
+                        status: $0.status,
+                        timestamp: $0.date,
+                        uuid: $0.uuid
+                    )
+                    return transaction
+                }
+        
+            let mockedPending: [TransactionStateMockHelper] = [
+                TransactionStateMockHelper(
+                    date: 1651039606,
+                    amount: Zatoshi(6),
+                    status: .paid,
+                    uuid: "ff66"
+                ),
+                TransactionStateMockHelper(date: 1651039303, amount: Zatoshi(7), uuid: "gg77"),
+                TransactionStateMockHelper(date: 1651039707, amount: Zatoshi(8), status: .paid, uuid: "hh88"),
+                TransactionStateMockHelper(date: 1651039808, amount: Zatoshi(9), uuid: "ii99")
+            ]
+
+            let pendingTransactions = mockedPending
+                .map {
+                    let transaction = TransactionState.placeholder(
+                        amount: $0.amount,
+                        fee: Zatoshi(10),
+                        shielded: $0.shielded,
+                        status: $0.amount.amount > 5 ? .sending : $0.status,
+                        timestamp: $0.date,
+                        uuid: $0.uuid
+                    )
+                    return transaction
+                }
+            
+            clearedTransactions.append(contentsOf: pendingTransactions)
+
+            return clearedTransactions
+        },
         getMemos: @escaping (_ transactionRawID: Data) async throws -> [Memo] = { _ in return [] },
         getUnifiedAddress: @escaping (_ account: Int) -> UnifiedAddress? = { _ in
             // swiftlint:disable:next force_try
@@ -182,7 +182,7 @@ extension SDKSynchronizerClient {
             rewind: rewind,
             getShieldedBalance: getShieldedBalance,
             getTransparentBalance: getTransparentBalance,
-//            getAllTransactions: getAllTransactions,
+            getAllTransactions: getAllTransactions,
             getMemos: getMemos,
             getUnifiedAddress: getUnifiedAddress,
             getTransparentAddress: getTransparentAddress,

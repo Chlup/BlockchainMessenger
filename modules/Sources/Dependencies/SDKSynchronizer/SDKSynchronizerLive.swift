@@ -70,34 +70,34 @@ extension SDKSynchronizerClient {
             rewind: { synchronizer.rewind($0) },
             getShieldedBalance: { synchronizer.latestState.shieldedBalance },
             getTransparentBalance: { synchronizer.latestState.transparentBalance },
-//            getAllTransactions: {
-//                let clearedTransactions = try await synchronizer.allTransactions()
-//
-//                var clearedTxs: [TransactionState] = []
-//                
-//                for clearedTransaction in clearedTransactions {
-//                    var transaction = TransactionState.init(
-//                        transaction: clearedTransaction,
-//                        memos: clearedTransaction.memoCount > 0 ? try await synchronizer.getMemos(for: clearedTransaction) : nil,
-//                        latestBlockHeight: try await SDKSynchronizerClient.latestBlockHeight(synchronizer: synchronizer)
-//                    )
-//
-//                    let recipients = await synchronizer.getRecipients(for: clearedTransaction)
-//                    let addresses = recipients.compactMap {
-//                        if case let .address(address) = $0 {
-//                            return address
-//                        } else {
-//                            return nil
-//                        }
-//                    }
-//                    
-//                    transaction.zAddress = addresses.first?.stringEncoded
-//                    
-//                    clearedTxs.append(transaction)
-//                }
-//                
-//                return clearedTxs
-//            },
+            getAllTransactions: {
+                let clearedTransactions = try await synchronizer.allTransactions()
+
+                var clearedTxs: [TransactionState] = []
+                
+                for clearedTransaction in clearedTransactions {
+                    var transaction = TransactionState.init(
+                        transaction: clearedTransaction,
+                        memos: clearedTransaction.memoCount > 0 ? try await synchronizer.getMemos(for: clearedTransaction) : nil,
+                        latestBlockHeight: try await SDKSynchronizerClient.latestBlockHeight(synchronizer: synchronizer)
+                    )
+
+                    let recipients = await synchronizer.getRecipients(for: clearedTransaction)
+                    let addresses = recipients.compactMap {
+                        if case let .address(address) = $0 {
+                            return address
+                        } else {
+                            return nil
+                        }
+                    }
+                    
+                    transaction.zAddress = addresses.first?.stringEncoded
+                    
+                    clearedTxs.append(transaction)
+                }
+                
+                return clearedTxs
+            },
             getMemos: { try await synchronizer.getMemos(for: $0) },
             getUnifiedAddress: { try await synchronizer.getUnifiedAddress(accountIndex: $0) },
             getTransparentAddress: { try await synchronizer.getTransparentAddress(accountIndex: $0) },

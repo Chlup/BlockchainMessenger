@@ -35,6 +35,7 @@ import Funds
 import Messages
 import Models
 import NewChat
+import TransactionsDebug
 import Utils
 import WalletStorage
 
@@ -73,6 +74,7 @@ public struct ChatsListReducer {
     
     public enum Action: Equatable {
         case chatButtonTapped(Int)
+        case debugButtonTapped
         case didLoadChats(IdentifiedArrayOf<Chat>, IdentifiedArrayOf<Chat>)
         case fundsButtonTapped
         case newChatButtonTapped
@@ -91,10 +93,12 @@ public struct ChatsListReducer {
 
         public enum State: Equatable {
             case chatsDetail(ChatDetailReducer.State)
+            case transactionsDebug(TransactionsDebugReducer.State)
         }
         
         public enum Action: Equatable {
             case chatsDetail(ChatDetailReducer.Action)
+            case transactionsDebug(TransactionsDebugReducer.Action)
         }
         
         public init(networkType: NetworkType) {
@@ -104,6 +108,10 @@ public struct ChatsListReducer {
         public var body: some ReducerOf<Self> {
             Scope(state: /State.chatsDetail, action: /Action.chatsDetail) {
                 ChatDetailReducer(networkType: networkType)
+            }
+
+            Scope(state: /State.transactionsDebug, action: /Action.transactionsDebug) {
+                TransactionsDebugReducer()
             }
         }
     }
@@ -180,6 +188,10 @@ public struct ChatsListReducer {
 
             case .chatButtonTapped(let chatId):
                 state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
+                return .none
+
+            case .debugButtonTapped:
+                state.path.append(.transactionsDebug(TransactionsDebugReducer.State(transactions: [])))
                 return .none
 
             case let .didLoadChats(incomingChats, verifiedChats):

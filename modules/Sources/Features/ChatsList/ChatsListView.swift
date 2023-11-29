@@ -36,6 +36,7 @@ import Generated
 import Messages
 import Models
 import NewChat
+import TransactionsDebug
 import Utils
 
 public struct ChatsListView: View {
@@ -130,6 +131,19 @@ public struct ChatsListView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
+                            viewStore.send(.debugButtonTapped)
+                        } label: {
+                            Image(systemName: "ladybug")
+                                .renderingMode(.template)
+                                .tint(Asset.Colors.fontPrimary.color)
+                            //                                .neumorphicButton(
+                            //                                    // style: .blue
+                            //                                    // Asset.Colors.ChatDetail.sent2.color
+                            //                                )
+                        }
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
                             viewStore.send(.newChatButtonTapped)
                         } label: {
                             Image(systemName: "square.and.pencil")
@@ -180,6 +194,13 @@ public struct ChatsListView: View {
                     /ChatsListReducer.Path.State.chatsDetail,
                     action: ChatsListReducer.Path.Action.chatsDetail,
                     then: ChatDetailView.init(store:)
+                )
+
+            case .transactionsDebug:
+                CaseLet(
+                    /ChatsListReducer.Path.State.transactionsDebug,
+                    action: ChatsListReducer.Path.Action.transactionsDebug,
+                    then: TransactionsDebugView.init(store:)
                 )
             }
         }

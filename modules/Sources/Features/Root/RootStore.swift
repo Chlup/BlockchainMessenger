@@ -36,7 +36,6 @@ import RestoreAccount
 import DatabaseFiles
 import Generated
 import Messages
-import Models
 import MnemonicClient
 import Models
 import WalletStorage

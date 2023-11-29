@@ -65,12 +65,26 @@ let package = Package(
                 "Models",
                 "NewChat",
                 "SDKSynchronizer",
+                "TransactionsDebug",
                 "Utils",
                 "WalletStorage",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
             ],
             path: "Sources/Features/ChatsList",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+        ),
+        .target(
+            name: "TransactionsDebug",
+            dependencies: [
+                "Logger",
+                "Messages",
+                "SDKSynchronizer",
+                "Utils",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
+            ],
+            path: "Sources/Features/TransactionsDebug",
             plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(

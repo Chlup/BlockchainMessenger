@@ -40,17 +40,19 @@ import Dependencies
  message content - max 490 bytes
  */
 
-struct ChatProtocol {
+public struct ChatProtocol {
     enum Version: UInt8 {
         case v1 = 1
     }
 
-    struct ChatMessage {
-        enum Content {
+    public struct ChatMessage: Equatable, Identifiable {
+        public var id: Int { messageID }
+
+        public enum Content: Equatable {
             case initialisation(_ fromAddress: String, _ toAddress: String, _ verificationText: String)
             case text(String)
 
-            var messageType: ChatProtocol.MessageType {
+            public var messageType: ChatProtocol.MessageType {
                 switch self {
                 case .initialisation: return .initialisation
                 case .text: return .text
@@ -58,13 +60,13 @@ struct ChatProtocol {
             }
         }
 
-        let chatID: Int
-        let timestmap: Int
-        let messageID: Int
-        let content: Content
+        public let chatID: Int
+        public let timestmap: Int
+        public let messageID: Int
+        public let content: Content
     }
 
-    enum MessageType: UInt8 {
+    public enum MessageType: UInt8 {
         case initialisation = 1
         case text = 2
     }
@@ -88,12 +90,12 @@ struct ChatProtocol {
     }
 
     // Encode message with latest version.
-    var encode: (_ message: ChatMessage) throws -> [UInt8]
+    public var encode: (_ message: ChatMessage) throws -> [UInt8]
     // Decode message
-    var decode: (_ message: [UInt8]) throws -> ChatMessage
-    var getTimestampForNow: () -> Int
+    public var decode: (_ message: [UInt8]) throws -> ChatMessage
+    public var getTimestampForNow: () -> Int
     // Generate new message ID or chat ID for some timestamp.
-    var generateIDFor: (_ timestamp: Int) -> Int
+    public var generateIDFor: (_ timestamp: Int) -> Int
 
     enum Constants {
         static let maxEncodedMessageLength = 512
@@ -178,7 +180,7 @@ private enum ChatProtocolClientKey: DependencyKey {
 }
 
 extension DependencyValues {
-    var chatProtocol: ChatProtocol {
+    public var chatProtocol: ChatProtocol {
         get { self[ChatProtocolClientKey.self] }
         set { self[ChatProtocolClientKey.self] = newValue }
     }

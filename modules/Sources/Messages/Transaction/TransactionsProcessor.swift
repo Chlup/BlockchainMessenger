@@ -78,7 +78,7 @@ actor TransactionsProcessorImpl {
     @Dependency(\.sdkManager) var sdkManager
     @Dependency(\.sdkSynchronizer) var synchronizer
     @Dependency(\.logger) var logger
-    @Dependency(\.chatProtocol) var chatProtokol
+    @Dependency(\.chatProtocol) var chatProtocol
 
     private var cancellables: [AnyCancellable] = []
     private var failedTransactionRawIDs: [Data] = []
@@ -172,7 +172,7 @@ actor TransactionsProcessorImpl {
         }
 
         let memoBytes = try memo.asMemoBytes().bytes
-        let decodedMessage = try chatProtokol.decode(memoBytes)
+        let decodedMessage = try chatProtocol.decode(memoBytes)
 
         switch decodedMessage.content {
         case let .initialisation(fromAddress, toAddress, verificationText):
