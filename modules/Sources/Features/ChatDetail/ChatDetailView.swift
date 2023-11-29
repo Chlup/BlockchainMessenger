@@ -46,7 +46,7 @@ public struct ChatDetailView: View {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 ScrollViewReader { scrollView in
                     ScrollView(.vertical) {
-                        LazyVStack(spacing: 30) {
+                        VStack(spacing: 30) {
                             Section {
                                 HStack {
                                     Spacer()
