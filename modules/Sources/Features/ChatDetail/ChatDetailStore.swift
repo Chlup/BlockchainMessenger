@@ -46,7 +46,9 @@ public struct ChatDetailReducer {
         public var shieldedBalance = Balance.zero
 
         public var isSendAvailable: Bool {
-            shieldedBalance.data.verified.amount > 0 && !isSyncing
+            shieldedBalance.data.verified.amount > 0 
+            && !isSyncing
+            && !message.isEmpty
         }
         
         public init(chatId: Int) {
