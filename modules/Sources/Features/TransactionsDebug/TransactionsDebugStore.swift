@@ -39,7 +39,6 @@ import WalletStorage
 
 @Reducer
 public struct TransactionsDebugReducer {
-
     public struct TransactionDebug: Equatable, Identifiable {
         public var id: String { state.id }
         public let state: TransactionState

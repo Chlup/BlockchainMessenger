@@ -45,7 +45,7 @@ public struct TransactionsDebugView: View {
             List {
                 ForEach(viewStore.transactions) { transaction in
                     let foreground: Color = transaction.chatMessage == nil ?
-                        .red : (transaction.state.isSentTransaction ? .green : .blue)
+                        .red : (transaction.state.isSentTransaction ? .blue : .green)
 
                     VStack(alignment: .leading) {
                         Text("\(transaction.state.title) - \(transaction.state.dateString ?? "-")")
