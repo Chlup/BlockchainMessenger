@@ -166,13 +166,11 @@ actor TransactionsProcessorImpl {
             return
         }
 
-        guard let memo = try await synchronizer.getMemos(transaction.rawID).first else {
+        let memos = try await synchronizer.getMemos(transaction.rawID)
+        guard let decodedMessage = processMemo(memos) else {
             logger.debug("\(transaction.id) Can't get memo for transaction.")
             return
         }
-
-        let memoBytes = try memo.asMemoBytes().bytes
-        let decodedMessage = try chatProtocol.decode(memoBytes)
 
         switch decodedMessage.content {
         case let .initialisation(fromAddress, toAddress, verificationText):
@@ -234,6 +232,19 @@ actor TransactionsProcessorImpl {
         // TODO: We must somehow builtin some recovery mode. Because now each found transacation is handled only once. When storing fails then
         // it won't ever be handled and it is practically lost.
         try await storage.storeMessage(newMessage)
+    }
+
+    private func processMemo(_ memos: [Memo]) -> ChatProtocol.ChatMessage? {
+        for memo in memos {
+            do {
+                let memoBytes = try memo.asMemoBytes().bytes
+                return try chatProtocol.decode(memoBytes)
+            } catch {
+                continue
+            }
+        }
+
+        return nil
     }
 }
 

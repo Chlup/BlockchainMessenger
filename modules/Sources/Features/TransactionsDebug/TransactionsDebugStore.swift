@@ -72,11 +72,13 @@ public struct TransactionsDebugReducer {
 
                     for transaction in transactions {
                         var chatProtocolMessage: ChatProtocol.ChatMessage?
-                        if let memo = transaction.memos?.first {
+                        for memo in (transaction.memos ?? []) {
                             do {
                                 let memoBytes = try memo.asMemoBytes().bytes
                                 chatProtocolMessage = try chatProtocol.decode(memoBytes)
-                            } catch { }
+                            } catch {
+                                continue
+                            }
                         }
                         debug.append(TransactionDebug(state: transaction, chatMessage: chatProtocolMessage))
                     }
