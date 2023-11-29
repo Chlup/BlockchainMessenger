@@ -37,9 +37,6 @@ import Utils
 public struct ChatDetailView: View {
     let store: StoreOf<ChatDetailReducer>
     
-    // TODO: remove and use one from the TCA store as binding
-    @State var text = ""
-    
     public init(store: StoreOf<ChatDetailReducer>) {
         self.store = store
     }
@@ -155,19 +152,35 @@ public struct ChatDetailView: View {
                 Spacer()
                 
                 VStack {
-                    ProgressView(
-                        value: 5.0,
-                        total: 10.0
-                    )
-                    .tint(.green)
+//                    ProgressView(
+//                        value: 5.0,
+//                        total: 10.0
+//                    )
+//                    .tint(.green)
                     
                     HStack {
-                        TextField("message", text: $text)
+                        TextField("message", text: viewStore.$message)
+                            .font(.system(size: 14))
+                            .foregroundStyle(Asset.Colors.fontPrimary.color)
                             .autocorrectionDisabled()
+                            .padding(5)
+                            .background {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .foregroundStyle(Asset.Colors.screenBackgroundTopLeading.color)
+                            }
                         
-                        Button("send") {
-                            viewStore.send(.send(text))
+                        Button {
+                            viewStore.send(.sendButtonTapped)
+                        } label: {
+                            Image(systemName: "paperplane.fill")
+                                .renderingMode(.template)
+                                .tint(
+                                    viewStore.isSendAvailable
+                                    ? .blue
+                                    : Asset.Colors.fontPrimary.color
+                                )
                         }
+                        .disabled(!viewStore.isSendAvailable)
                     }
                 }
                 .padding(.horizontal, 15)

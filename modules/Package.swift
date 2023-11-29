@@ -47,6 +47,7 @@ let package = Package(
                 "Generated",
                 "Logger",
                 "Messages",
+                "SDKSynchronizer",
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")

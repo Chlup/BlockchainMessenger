@@ -31,56 +31,84 @@ import ZcashLightClientKit
 
 import Logger
 import Messages
+import Utils
 
 @Reducer
 public struct ChatDetailReducer {
+    private enum CancelId { case timer }
     let networkType: NetworkType
 
     public struct State: Equatable {
         public var chatId: Int
+        public var isSyncing = false
+        @BindingState public var message = ""
         public var messages: IdentifiedArrayOf<Message> = []
+        public var shieldedBalance = Balance.zero
 
+        public var isSendAvailable: Bool {
+            shieldedBalance.data.verified.amount > 0 && !isSyncing
+        }
+        
         public init(chatId: Int) {
             self.chatId = chatId
             self.messages = Message.mockedMessages
         }
     }
     
-    public enum Action: Equatable {
+    public enum Action: BindableAction, Equatable {
+        case binding(BindingAction<State>)
         case messagesLoaded(IdentifiedArrayOf<Message>)
         case onAppear
-        case send(String)
+        case sendButtonTapped
+        case synchronizerStateChanged(SynchronizerState)
     }
       
     public init(networkType: NetworkType) {
         self.networkType = networkType
     }
     
-    @Dependency(\.messages) var messages
     @Dependency(\.logger) var logger
+    @Dependency(\.mainQueue) var mainQueue
+    @Dependency(\.messages) var messages
+    @Dependency(\.sdkSynchronizer) var synchronizer
 
     public var body: some ReducerOf<Self> {
+        BindingReducer()
+
         Reduce { state, action in
             switch action {
             case .onAppear:
-                return .run { [chatId = state.chatId] send in
-                    var messages = try await messages.allMessages(for: chatId)
-                    if messages.isEmpty {
-                        // TODO: This is just for now to let mocking for mocked chats work.
-                        messages = Array(Message.mockedMessages)
-                    }
+                return .merge(
+                    .run { [chatId = state.chatId] send in
+                        var messages = try await messages.allMessages(for: chatId)
+                        if messages.isEmpty {
+                            // TODO: This is just for now to let mocking for mocked chats work.
+                            messages = Array(Message.mockedMessages)
+                        }
 
-                    await send(.messagesLoaded(IdentifiedArrayOf(uniqueElements: messages)))
-                }
+                        await send(.messagesLoaded(IdentifiedArrayOf(uniqueElements: messages)))
+                    },
+                    Effect.publisher {
+                        synchronizer.stateStream()
+                            .throttle(for: .seconds(0.2), scheduler: mainQueue, latest: true)
+                            .map(ChatDetailReducer.Action.synchronizerStateChanged)
+                    }
+                    .cancellable(id: CancelId.timer, cancelInFlight: true)
+                )
+
+            case .binding:
+                return .none
 
             case .messagesLoaded(let messages):
                 state.messages = messages
                 return .none
             
-            case .send(let text):
+            case .sendButtonTapped:
+                let message = state.message
+                state.message = ""
                 return .run { [chatId = state.chatId] send in
                     do {
-                        _ = try await messages.sendMessage(chatID: chatId, text: text)
+                        _ = try await messages.sendMessage(chatID: chatId, text: message)
                         let messages = try await messages.allMessages(for: chatId)
                         await send(.messagesLoaded(IdentifiedArrayOf(uniqueElements: messages)))
                     } catch {
@@ -88,6 +116,19 @@ public struct ChatDetailReducer {
                         self.logger.debug("oh no :( \(error)")
                     }
                 }
+                
+            case .synchronizerStateChanged(let latestState):
+                let shieldedBalance = latestState.shieldedBalance
+                state.shieldedBalance = shieldedBalance.redacted
+                
+                if case .upToDate = latestState.syncStatus {
+                    state.isSyncing = false
+                }
+                if case .syncing = latestState.syncStatus {
+                    state.isSyncing = true
+                }
+
+                return .none
             }
         }
     }
