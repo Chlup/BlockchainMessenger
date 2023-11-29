@@ -44,6 +44,7 @@ protocol MessagesStorage: Actor {
     func allMessages(for chatID: Int) async throws -> [Message]
     func doesMessageExists(for messageID: Message.ID) async throws -> Bool
     func storeMessage(_ message: Message) async throws
+    func verifyChat(chatID: Int, fromAddress: String, verificationText: String) async throws -> Chat
 
     func wipe() async throws
 }
@@ -162,8 +163,27 @@ extension MessagesStorageImpl: MessagesStorage {
         let db = try dbConnection.connection()
         let chat = chatsTable.filter(Chat.Column.chatID == chatID)
         if try db.run(chat.update(Chat.Column.alias <- alias)) <= 0 {
-            throw MessagesError.chatDoesntExistWhenUpdatingAlias
+            throw MessagesError.chatDoesntExistsWhenUpdatingAlias
         }
+    }
+
+    func verifyChat(chatID: Int, fromAddress: String, verificationText: String) async throws -> Chat {
+        let chat = try await chat(for: chatID)
+        guard chat.fromAddress == fromAddress, chat.verificationText == verificationText else {
+            throw MessagesError.chatVerificationFailed
+        }
+
+        let db = try dbConnection.connection()
+        let dbChat = chatsTable.filter(Chat.Column.chatID == chatID)
+        do {
+            if try db.run(dbChat.update(Chat.Column.verified <- true)) <= 0 {
+                throw MessagesError.chatUdateAfterVerificationFailed
+            }
+        } catch {
+            throw MessagesError.chatUdateAfterVerificationFailed
+        }
+
+        return try await self.chat(for: chatID)
     }
 
     // MARK: - Message

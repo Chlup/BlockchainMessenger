@@ -73,10 +73,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 //                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) { [weak self] in
 //                    guard let self = self else { return }
 //                    Task {
-//                        try? await self.updateAliasForFirstChat()
-//                        try? await self.listAllChatsAndMessages()
-//                        try? await self.sendMessageToFirstChat()
-//                        try? await self.createNewChat()
+////                        try? await self.verifyFirstUnverifiedChat()
+////                        try? await self.updateAliasForFirstChat()
+////                        try? await self.listAllChatsAndMessages()
+////                        try? await self.sendMessageToFirstChat()
+////                        try? await self.createNewChat()
 //                    }
 //                }
 //            } catch {
@@ -96,6 +97,27 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     // MARK: - Debug
+
+    private func verifyFirstUnverifiedChat() async throws {
+        do {
+            var chats = try await self.messages.allChats()
+            guard let unverifiedChat = chats.first(where: { !$0.verified }) else {
+                logger.debug("All chats are verified")
+                return
+            }
+            logger.debug("\(unverifiedChat)")
+
+            let verifiedChat = try await messages.verifyChat(chatID: unverifiedChat.chatID, fromAddress: "something", verificationText: "some")
+            logger.debug("Verified: \(verifiedChat)")
+
+            chats = try await self.messages.allChats()
+            logger.debug("\(chats)")
+
+        } catch {
+            logger.debug("Failed to verify caht chat: \(error)")
+            throw error
+        }
+    }
 
     private func updateAliasForFirstChat() async throws {
         do {
