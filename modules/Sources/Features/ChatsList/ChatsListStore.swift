@@ -152,6 +152,7 @@ public struct ChatsListReducer {
         self.networkType = networkType
     }
     
+    @Dependency(\.dismiss) var dismiss
     @Dependency(\.logger) var logger
     @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.messages) var messages

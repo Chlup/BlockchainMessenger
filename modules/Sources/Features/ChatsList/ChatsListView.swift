@@ -65,8 +65,11 @@ public struct ChatsListView: View {
         ) {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 VStack(alignment: .leading) {
-                    // TODO: temporary development debug info of the synchronizer
-                    synchronizerStateView(viewStore)
+                    ProgressView(
+                        value: Double(viewStore.availableMessagesCount),
+                        total: Double(viewStore.possibleMessagesCount)
+                    )
+                    .frame(maxWidth: .infinity)
 
                     if viewStore.isZeroFundsAccount {
                         zeroFundsView(viewStore)
@@ -128,23 +131,29 @@ public struct ChatsListView: View {
                     }
                 }
                 .toolbar {
+                    if !viewStore.isZeroFundsAccount && viewStore.availableMessagesCount == 0 {
+                        ToolbarItem(placement: .principal) {
+                            HStack(spacing: 5) {
+                                Text("Syncing")
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(Asset.Colors.fontPrimary.color)
+                                ProgressView()
+                                    .scaleEffect(x: 0.75, y: 0.75)
+                            }
+                            .frame(maxHeight: 20)
+                        }
+                    }
+
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
                             viewStore.send(.fundsButtonTapped)
                         } label: {
-                            Group {
-                                Text("Funds for")
-                                    .foregroundColor(Asset.Colors.fontPrimary.color)
-                                + Text(" \(viewStore.availableMessagesCount)/\(viewStore.possibleMessagesCount) messages")
-                                    .foregroundColor(.white)
-                            }
-                            .font(.system(size: 13))
+                            Image(systemName: "line.3.horizontal")
+                                .renderingMode(.template)
+                                .tint(Asset.Colors.fontPrimary.color)
                         }
-                        .padding(.leading, 5)
-                        .padding(.horizontal, 5)
-                        .neumorphicShape()
-                        .padding(.leading, 15)
                     }
+                    
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             viewStore.send(.debugButtonTapped)
@@ -153,8 +162,8 @@ public struct ChatsListView: View {
                                 .renderingMode(.template)
                                 .tint(Asset.Colors.fontPrimary.color)
                         }
-                        .disabled(!viewStore.isZeroFundsAccount)
                     }
+                    
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             if viewStore.isZeroFundsAccount {
@@ -192,6 +201,7 @@ public struct ChatsListView: View {
                         }
                     }
                 }
+                .navigationBarTitleDisplayMode(.inline)
                 .onAppear { viewStore.send(.onAppear) }
                 .onDisappear { viewStore.send(.onDisappear) }
             }
@@ -204,7 +214,6 @@ public struct ChatsListView: View {
                     action: ChatsListReducer.Path.Action.chatsDetail,
                     then: ChatDetailView.init(store:)
                 )
-
             case .transactionsDebug:
                 CaseLet(
                     /ChatsListReducer.Path.State.transactionsDebug,
@@ -213,22 +222,6 @@ public struct ChatsListView: View {
                 )
             }
         }
-    }
-    
-    @ViewBuilder
-    func synchronizerStateView(_ viewStore: ViewStoreOf<ChatsListReducer>) -> some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("verified \(viewStore.shieldedBalance.data.verified.decimalZashiFormatted()) TAZ")
-                Text("total \(viewStore.shieldedBalance.data.total.decimalZashiFormatted()) TAZ")
-            }
-
-            Text("Synchronizer: \(viewStore.synchronizerStatusSnapshot.message)")
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 10)
-        .font(.system(size: 11))
-        .foregroundStyle(Asset.Colors.fontPrimary.color)
     }
     
     @ViewBuilder
