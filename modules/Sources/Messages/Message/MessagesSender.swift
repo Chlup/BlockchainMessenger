@@ -35,7 +35,7 @@ import ZcashLightClientKit
 protocol MessagesSender: Actor {
     func setNetwork(_ network: NetworkType) async
     func setSeedBytes(_ seedBytes: [UInt8]) async
-    func newChat(fromAddress: String, toAddress: String, verificationText: String, alias: String?) async throws
+    func newChat(toAddress: String, verificationText: String, alias: String?) async throws
     func sendMessage(chatID: Int, text: String) async throws -> Message
 }
 
@@ -90,7 +90,7 @@ extension MessagesSenderImpl: MessagesSender {
         self.network = network
     }
 
-    func newChat(fromAddress: String, toAddress: String, verificationText: String, alias: String?) async throws {
+    func newChat(toAddress: String, verificationText: String, alias: String?) async throws {
         let myUnifiedAddress: String
         do {
             guard let possibleUnifiedAddress = try await synchronizer.getUnifiedAddress(account: 0) else {
@@ -101,30 +101,22 @@ extension MessagesSenderImpl: MessagesSender {
             throw MessagesError.getUnifiedAddressWhenCreatingChat
         }
 
-        let amICreatorOfChat = myUnifiedAddress == fromAddress
-
         let newChat = Chat.createNew(
             alias: alias,
-            fromAddress: fromAddress,
+            fromAddress: myUnifiedAddress,
             toAddress: toAddress,
             verificationText: verificationText,
-            // When current seed is creator of chat then chat is verified on it's side because there is nothing to verify. The other side must
-            // recieve `verificationText` through different channel and verify this chat.
-            verified: amICreatorOfChat
+            verified: true
         )
 
         let protocolMessage = ChatProtocol.ChatMessage(
             chatID: newChat.chatID,
             timestmap: newChat.timestamp,
             messageID: newChat.chatID,
-            content: .initialisation(fromAddress, toAddress, verificationText)
+            content: .initialisation(myUnifiedAddress, toAddress, verificationText)
         )
 
-        guard derivationTool.isUnifiedAddress(fromAddress, network) else {
-            throw MessagesError.invalidFromAddressWhenCreatingChat
-        }
-
-        let transactionRawID = try await send(message: protocolMessage, toAddress: toAddress)
+        _ = try await send(message: protocolMessage, toAddress: toAddress)
         do {
             try await storage.storeChat(newChat)
         } catch {

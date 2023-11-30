@@ -204,10 +204,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         do {
             logger.debug("Creating new chat")
             try await messages.newChat(
-                fromAddress: """
-                utest1exhlew55lcx46lxp8pa8y3qssk848cq56dl6mg9sdrlgaytypresvkkvxgmhsmcz27w9ugmrq2qv7mfam0awctysu9v7zqtgrnqduj7g6qp2gk2lsn\
-                f6e0yjx7339jhwvl2f2q4twfy
-                """,
                 toAddress:"""
                 utest1rnyjr8jak3uzw4rylwydw5lkd9x2f4ce0wmnv699nlw5g94x758ah6pg774k0fcqxx98eagp90vqrxemfcxhym44qt54gftl9ff6nh0084hnamtu45\
                 l7un362z2rg9ukfjw0qrx4qer

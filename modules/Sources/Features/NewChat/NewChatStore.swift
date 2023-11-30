@@ -125,13 +125,8 @@ public struct NewChatReducer {
                 state.isCreatingNewChat = true
                 return .run { [uAddress = state.uAddress, alias = state.alias] send in
                     do {
-                        guard let myUA = try await synchronizer.getUnifiedAddress(account: 0)?.stringEncoded else {
-                            await send(.newChatFailed)
-                            return
-                        }
                         let verificationCode = chatVerification.code()
                         try await messages.newChat(
-                            fromAddress: myUA,
                             toAddress: uAddress,
                             verificationText: verificationCode,
                             alias: alias
@@ -161,7 +156,10 @@ extension AlertState where Action == NewChatReducer.Action {
                 TextState("Confirm")
             }
         } message: {
-            TextState("New chat has been successfuly created with alias: \(alias). Share the following verification code with the receiver \n\n \(code) \n\n (you can see it also in the chat as a first message)")
+            TextState("""
+            New chat has been successfuly created with alias: \(alias). Share the following verification code with the receiver \n\n \(code) \n\n \
+            (you can see it also in the chat as a first message)
+            """)
         }
     }
     
