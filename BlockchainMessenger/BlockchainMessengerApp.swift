@@ -26,15 +26,17 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import SwiftUI
 import ComposableArchitecture
-import ZcashLightClientKit
-import SDKSynchronizer
-import Utils
-import Root
+import Dependencies
+import Foundation
 import Messages
 import MnemonicSwift
-import Dependencies
+import Root
+import SDKSynchronizer
+import SQLite
+import SwiftUI
+import Utils
+import ZcashLightClientKit
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     @Dependency(\.logger) var logger
@@ -54,28 +56,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         logger.debug("DB path \(databaseFiles.messagesDBURL())")
 
-//        DispatchQueue.global(qos: .default).asyncAfter(deadline: .now() + .seconds(3)) { [weak self] in
-//            guard let self = self else { return }
-//            var counter = 0
-//            let stream = AsyncThrowingStream<Int, Error>() {
-//                self.logger.debug("Adding to counter")
-//                counter += 1
-//                return counter
-//            }
-//            var iterator = stream.makeAsyncIterator()
-//
-//            Task {
-//                self.logger.debug("Starting work on stream")
-//                do {
-//                    while let next = try await iterator.next() {
-//                        self.logger.debug("Got next: \(next)")
-//                        try await Task.sleep(for: .seconds(1))
-//                    }
-//                } catch {
-//                    self.logger.error("Error when rocessing iterator: \(error)")
-//                }
-//            }
-//        }
+        rootStore.send(.appDelegate(.didFinishLaunching))
 
 //        Task {
 
@@ -109,8 +90,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 //                logger.debug("Failed to init SDK: \(error)")
 //            }
 //        }
-        rootStore.send(.appDelegate(.didFinishLaunching))
-
         return true
     }
 

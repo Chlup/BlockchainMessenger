@@ -78,10 +78,11 @@ actor TransactionsProcessorImpl {
             logger.debug("Cleared height: \(clearedHeight)")
             var recordClearedHeight = true
             var latestTransactionHeight: BlockHeight = clearedHeight
+            var processedMinedTransactionsCount = 0
 
             do {
                 logger.debug("Going to read transactions from height \(clearedHeight + 1)")
-                let transactionsStream = try await synchronizer.getTransactions(clearedHeight + 1)
+                let transactionsStream = try await synchronizer.getTransactionsToLastEnhancedHeight(clearedHeight + 1)
                 var iterator = transactionsStream.makeAsyncIterator()
 
                 do {
@@ -89,6 +90,10 @@ actor TransactionsProcessorImpl {
                         let transaction = Transaction(zcashTransaction: zcashTransaction)
                         logger.debug("Start processing transaction \(transaction.minedHeight) \(transaction.id)")
                         do {
+                            if transaction.minedHeight != nil {
+                                processedMinedTransactionsCount += 1
+                            }
+
                             try await process(transaction: transaction)
 
                             if let height = transaction.minedHeight {
@@ -120,7 +125,13 @@ actor TransactionsProcessorImpl {
             }
 
             logger.debug("Finished transactions processing")
+
             processing = false
+
+            if processedMinedTransactionsCount > 0 {
+                logger.debug("Scheduling another attempt to process transactions.")
+                await startProcessingTransactions()
+            }
         }
     }
 

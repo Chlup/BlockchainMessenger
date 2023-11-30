@@ -320,7 +320,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Chlup/ZcashLightClientKit.git",
       "state" : {
-        "revision" : "b0e155ab198a59796583887bcb585b3d5bfd01c7"
+        "revision" : "aa205d0b175f1e29761b80e295c793bece6468ae"
       }
     }
   ],

@@ -92,22 +92,6 @@ extension MessagesImpl: Messages {
     }
 
     func initialize(network: NetworkType) async throws {
-        //        do {
-        //            let message = Message.createSent(chatID: 123, text: "Hello 🐞world")
-        //            logger.debug("Input message \(message)")
-        //            logger.debug(message.id.binaryDescription)
-        //            logger.debug(message.timestamp.binaryDescription)
-        //            let protocolMessage = ChatProtocol.ChatMessage(chatID: message.chatID, timestmap: message.timestamp, messageID: message.id, content: .text(message.text))
-        //
-        //            let encoded = try chatProtocol.encode(protocolMessage)
-        //
-        //            let decoded = try chatProtocol.decode(Array(encoded))
-        //            logger.debug("Decoded message \(decoded)")
-        //
-        //        } catch {
-        //            logger.debug("Error while encoding/decoding message: \(error)")
-        //        }
-
         await messagesSender.setNetwork(network)
         try await messagesStorage.initialize()
     }
