@@ -41,9 +41,22 @@ import Utils
 
 public struct ChatsListView: View {
     let store: StoreOf<ChatsListReducer>
-    
+    @State var bounceScale: CGFloat = 1
+
     public init(store: StoreOf<ChatsListReducer>) {
         self.store = store
+    }
+
+    func scaleAnimation() {
+        withAnimation(Animation.easeOut(duration: 0.1)) {
+            bounceScale = 1.05
+        }
+        withAnimation(Animation.easeOut(duration: 0.1).delay(0.1)) {
+            bounceScale = 0.95
+        }
+        withAnimation(Animation.easeOut(duration: 0.1).delay(0.2)) {
+            bounceScale = 1.0
+        }
     }
     
     public var body: some View {
@@ -53,19 +66,13 @@ public struct ChatsListView: View {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 VStack(alignment: .leading) {
                     // TODO: temporary development debug info of the synchronizer
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text("verified \(viewStore.shieldedBalance.data.verified.decimalZashiFormatted()) TAZ")
-                            Text("total \(viewStore.shieldedBalance.data.total.decimalZashiFormatted()) TAZ")
-                        }
+                    synchronizerStateView(viewStore)
 
-                        Text("Synchronizer: \(viewStore.synchronizerStatusSnapshot.message)")
+                    if viewStore.isZeroFundsAccount {
+                        zeroFundsView(viewStore)
+                            .scaleEffect(x: bounceScale, y: bounceScale, anchor: .center)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 10)
-                    .font(.system(size: 11))
-                    .foregroundStyle(Asset.Colors.fontPrimary.color)
-
+                    
                     List {
                         if !viewStore.incomingChats.isEmpty {
                             HStack {
@@ -150,10 +157,15 @@ public struct ChatsListView: View {
                             //                                    // Asset.Colors.ChatDetail.sent2.color
                             //                                )
                         }
+                        .disabled(!viewStore.isZeroFundsAccount)
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
-                            viewStore.send(.newChatButtonTapped)
+                            if viewStore.isZeroFundsAccount {
+                                scaleAnimation()
+                            } else {
+                                viewStore.send(.newChatButtonTapped)
+                            }
                         } label: {
                             Image(systemName: "square.and.pencil")
                                 .renderingMode(.template)
@@ -209,6 +221,45 @@ public struct ChatsListView: View {
                 )
             }
         }
+    }
+    
+    @ViewBuilder func synchronizerStateView(_ viewStore: ViewStoreOf<ChatsListReducer>) -> some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text("verified \(viewStore.shieldedBalance.data.verified.decimalZashiFormatted()) TAZ")
+                Text("total \(viewStore.shieldedBalance.data.total.decimalZashiFormatted()) TAZ")
+            }
+
+            Text("Synchronizer: \(viewStore.synchronizerStatusSnapshot.message)")
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 10)
+        .font(.system(size: 11))
+        .foregroundStyle(Asset.Colors.fontPrimary.color)
+    }
+    
+    @ViewBuilder func zeroFundsView(_ viewStore: ViewStoreOf<ChatsListReducer>) -> some View {
+        Button {
+            viewStore.send(.fundsButtonTapped)
+        } label: {
+            HStack {
+                Image(systemName: "exclamationmark.triangle")
+                    .renderingMode(.template)
+                    .tint(.white)
+
+                Text("This account has zero funds at the moment. It's not possible to create a new chat or write any message in existing chats. Tap to receive funds.")
+                    .font(.system(size: 13))
+                    .multilineTextAlignment(.leading)
+                    .foregroundStyle(.white)
+            }
+        }
+        .padding()
+        .background {
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundStyle(.blue)
+                .opacity(0.6)
+        }
+        .padding(.horizontal, 20)
     }
 }
 

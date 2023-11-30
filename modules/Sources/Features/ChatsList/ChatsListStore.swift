@@ -61,6 +61,10 @@ public struct ChatsListReducer {
             UInt(floor(Double(shieldedBalance.data.total.amount) / 10_000))
         }
 
+        public var isZeroFundsAccount: Bool {
+            shieldedBalance.data.total.amount == 0
+        }
+        
         public init(
             path: StackState<Path.State> = StackState<Path.State>(),
             synchronizerStatusSnapshot: SyncStatusSnapshot
