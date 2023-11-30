@@ -52,6 +52,9 @@ public struct TransactionsDebugView: View {
 
                         if let message = transaction.chatMessage {
                             let date = Date(timeIntervalSince1970: TimeInterval(message.timestmap)).asHumanReadable()
+                            Text("Height: \(transaction.state.minedHeight ?? -1)")
+                            Text("ChatID: \(message.chatID)")
+                            Text("Message ID: \(message.id)")
                             Text("Msg date: \(date)")
                             switch message.content {
                             case .initialisation:

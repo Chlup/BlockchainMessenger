@@ -52,9 +52,6 @@ final class SDKManagerImpl {
                 case .foundTransactions:
                     return Void()
 
-                case .minedTransaction:
-                    return Void()
-
                 default:
                     return nil
                 }

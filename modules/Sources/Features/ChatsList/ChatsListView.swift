@@ -109,7 +109,8 @@ public struct ChatsListView: View {
                                 viewStore.send(.chatButtonTapped(chat.chatID))
                             } label: {
                                 // TODO: This alias work is just hack to show new chats for now.
-                                Text(chat.alias ?? "unknown")
+                                let alias = chat.alias ?? "unknown"
+                                Text("\(alias) (\(chat.chatID))")
                                     .neumorphicButton()
                                     .swipeActions(allowsFullSwipe: false) {
                                         Button {
@@ -234,7 +235,10 @@ public struct ChatsListView: View {
                     .renderingMode(.template)
                     .tint(.white)
 
-                Text("This account has zero funds at the moment. It's not possible to create a new chat or write any message in existing chats. Tap to receive funds.")
+                Text("""
+                This account has zero funds at the moment. It's not possible to create a new chat or write any message in existing chats. Tap to \
+                receive funds.
+                """)
                     .font(.system(size: 13))
                     .multilineTextAlignment(.leading)
                     .foregroundStyle(.white)

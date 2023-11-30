@@ -80,23 +80,27 @@ actor TransactionsProcessorImpl {
             var latestTransactionHeight: BlockHeight = clearedHeight
 
             do {
+                logger.debug("Going to read transactions from height \(clearedHeight + 1)")
                 let transactionsStream = try await synchronizer.getTransactions(clearedHeight + 1)
                 var iterator = transactionsStream.makeAsyncIterator()
 
                 do {
                     while let zcashTransaction = try await iterator.next() {
                         let transaction = Transaction(zcashTransaction: zcashTransaction)
+                        logger.debug("Start processing transaction \(transaction.minedHeight) \(transaction.id)")
                         do {
                             try await process(transaction: transaction)
 
                             if let height = transaction.minedHeight {
-                                if height > clearedHeight, recordClearedHeight {
+                                if (height - 1) > clearedHeight, recordClearedHeight {
                                     clearedHeightStorage.updateClearedHeight(height - 1)
                                     clearedHeight = clearedHeightStorage.clearedHeight()
                                     logger.debug("Recoding new cleared height: \(clearedHeight)")
                                 }
                                 latestTransactionHeight = height
                             }
+
+                            logger.debug("Finished processing transaction \(transaction.minedHeight) \(transaction.id)")
                         } catch {
                             logger.error("Failed to process transaction: \(error)")
                             recordClearedHeight = false
@@ -105,6 +109,7 @@ actor TransactionsProcessorImpl {
                     }
 
                     if recordClearedHeight, latestTransactionHeight > clearedHeight {
+                        logger.debug("Recording new cleard heigh from last transaction: \(latestTransactionHeight)")
                         clearedHeightStorage.updateClearedHeight(latestTransactionHeight)
                     }
                 } catch {
@@ -148,6 +153,8 @@ actor TransactionsProcessorImpl {
             return
         }
 
+        logger.debug("\(decodedMessage)")
+
         switch decodedMessage.content {
         case let .initialisation(fromAddress, toAddress, verificationText):
             try await processInitialisationMessage(
@@ -180,6 +187,7 @@ actor TransactionsProcessorImpl {
             guard let possibleUnifiedAddress = try await synchronizer.getUnifiedAddress(account: 0) else { return }
             myUnifiedAddress = possibleUnifiedAddress.stringEncoded
         } catch {
+            logger.debug("Can't get unifiead address \(error)")
             throw error
         }
 
