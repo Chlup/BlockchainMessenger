@@ -152,10 +152,6 @@ public struct ChatsListView: View {
                             Image(systemName: "ladybug")
                                 .renderingMode(.template)
                                 .tint(Asset.Colors.fontPrimary.color)
-                            //                                .neumorphicButton(
-                            //                                    // style: .blue
-                            //                                    // Asset.Colors.ChatDetail.sent2.color
-                            //                                )
                         }
                         .disabled(!viewStore.isZeroFundsAccount)
                     }
@@ -170,10 +166,6 @@ public struct ChatsListView: View {
                             Image(systemName: "square.and.pencil")
                                 .renderingMode(.template)
                                 .tint(Asset.Colors.fontPrimary.color)
-//                                .neumorphicButton(
-//                                    // style: .blue
-//                                    // Asset.Colors.ChatDetail.sent2.color
-//                                )
                         }
                     }
                 }
@@ -223,7 +215,8 @@ public struct ChatsListView: View {
         }
     }
     
-    @ViewBuilder func synchronizerStateView(_ viewStore: ViewStoreOf<ChatsListReducer>) -> some View {
+    @ViewBuilder
+    func synchronizerStateView(_ viewStore: ViewStoreOf<ChatsListReducer>) -> some View {
         VStack(alignment: .leading) {
             HStack {
                 Text("verified \(viewStore.shieldedBalance.data.verified.decimalZashiFormatted()) TAZ")
@@ -238,7 +231,8 @@ public struct ChatsListView: View {
         .foregroundStyle(Asset.Colors.fontPrimary.color)
     }
     
-    @ViewBuilder func zeroFundsView(_ viewStore: ViewStoreOf<ChatsListReducer>) -> some View {
+    @ViewBuilder
+    func zeroFundsView(_ viewStore: ViewStoreOf<ChatsListReducer>) -> some View {
         Button {
             viewStore.send(.fundsButtonTapped)
         } label: {
