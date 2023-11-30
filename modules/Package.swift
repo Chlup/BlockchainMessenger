@@ -11,6 +11,7 @@ let package = Package(
     products: [
         .library(name: "ChatDetail", targets: ["ChatDetail"]),
         .library(name: "ChatsList", targets: ["ChatsList"]),
+        .library(name: "ChatVerification", targets: ["ChatVerification"]),
         .library(name: "CreateAccount", targets: ["CreateAccount"]),
         .library(name: "DatabaseFiles", targets: ["DatabaseFiles"]),
         .library(name: "DerivationTool", targets: ["DerivationTool"]),
@@ -75,16 +76,11 @@ let package = Package(
             plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
-            name: "TransactionsDebug",
+            name: "ChatVerification",
             dependencies: [
-                "Logger",
-                "Messages",
-                "SDKSynchronizer",
-                "Utils",
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
-            path: "Sources/Features/TransactionsDebug",
+            path: "Sources/Dependencies/ChatVerification",
             plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
@@ -199,8 +195,11 @@ let package = Package(
         .target(
             name: "NewChat",
             dependencies: [
+                "ChatVerification",
                 "DerivationTool",
                 "Logger",
+                "Messages",
+                "SDKSynchronizer",
                 "Utils",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
@@ -269,6 +268,19 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Dependencies/SecItem",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+        ),
+        .target(
+            name: "TransactionsDebug",
+            dependencies: [
+                "Logger",
+                "Messages",
+                "SDKSynchronizer",
+                "Utils",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
+            ],
+            path: "Sources/Features/TransactionsDebug",
             plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(

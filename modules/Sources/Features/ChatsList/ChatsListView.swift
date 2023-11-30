@@ -188,12 +188,8 @@ public struct ChatsListView: View {
                         }
                     }
                 }
-                .onAppear {
-                    viewStore.send(.onAppear)
-                }
-                .onDisappear {
-                    viewStore.send(.onDisappear)
-                }
+                .onAppear { viewStore.send(.onAppear) }
+                .onDisappear { viewStore.send(.onDisappear) }
             }
             .applyScreenBackground()
         } destination: { state in

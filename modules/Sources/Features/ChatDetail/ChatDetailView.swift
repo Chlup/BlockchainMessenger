@@ -166,10 +166,9 @@ public struct ChatDetailView: View {
                     }
                 }
                 .listStyle(.plain)
-                .onAppear {
-                    viewStore.send(.onAppear)
-                }
-                
+                .onAppear { viewStore.send(.onAppear) }
+                .onDisappear { viewStore.send(.onDisappear) }
+
                 Spacer()
                 
                 VStack(alignment: .leading) {

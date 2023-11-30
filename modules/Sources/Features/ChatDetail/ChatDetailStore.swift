@@ -52,7 +52,7 @@ public struct ChatDetailReducer {
         }
 
         public var isSendAvailable: Bool {
-            shieldedBalance.data.verified.amount > 0
+            shieldedBalance.data.verified.amount > 10_000
             && !isSyncing
             && !message.isEmpty
             && bytesLeft >= 0
@@ -68,6 +68,7 @@ public struct ChatDetailReducer {
         case binding(BindingAction<State>)
         case messagesLoaded(IdentifiedArrayOf<Message>)
         case onAppear
+        case onDisappear
         case sendButtonTapped
         case synchronizerStateChanged(SynchronizerState)
     }
@@ -104,6 +105,9 @@ public struct ChatDetailReducer {
                     }
                     .cancellable(id: CancelId.timer, cancelInFlight: true)
                 )
+
+            case .onDisappear:
+                return .cancel(id: CancelId.timer)
 
             case .binding:
                 return .none

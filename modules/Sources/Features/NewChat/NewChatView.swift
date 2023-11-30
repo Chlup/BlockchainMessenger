@@ -59,8 +59,16 @@ public struct NewChatView: View {
                     }
                     .padding(.bottom, 10)
 
-                Button("Start chat") {
+                Button {
                     viewStore.send(.startChatButtonTapped)
+                } label: {
+                    HStack(spacing: 10) {
+                        Text("Start chat")
+                        
+                        if viewStore.isCreatingNewChat {
+                            ProgressView()
+                        }
+                    }
                 }
                 .disabled(!viewStore.isValidForm)
                 
@@ -73,8 +81,13 @@ public struct NewChatView: View {
                 }
             }
             .navigationBarBackButtonHidden()
+            .onAppear { viewStore.send(.onAppear) }
+            .onDisappear { viewStore.send(.onDisappear) }
         }
         .applyScreenBackground()
+        .alert(
+            store: self.store.scope(state: \.$alert, action: \.alert)
+        )
     }
 }
 

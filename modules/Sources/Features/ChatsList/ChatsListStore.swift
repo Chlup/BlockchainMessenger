@@ -241,17 +241,21 @@ public struct ChatsListReducer {
                     await send(.didLoadChats(incomingChats, verifiedChats))
                 }
 
-            case .sheetPath(.presented(.newChat(.startChatButtonTapped))):
-                if case .newChat(let newChatState) = state.sheetPath.optional {
-                    let uAddress = newChatState.uAddress
-                    let alias = newChatState.alias
-                    // TODO: here we know what UA user wants to initiate chat with
-                    logger.debug("uAddress: \(uAddress), alias: \(alias)")
-                    // TODO: some messages.createChat is needed
-                    // messages.createChat(for: uAddress, alias: alias)
-                }
+            case .sheetPath(.presented(.newChat(.alert(.dismiss)))):
                 state.sheetPath = nil
-                return .none
+                return .send(.reloadChats)
+
+//            case .sheetPath(.presented(.newChat(.startChatButtonTapped))):
+//                if case .newChat(let newChatState) = state.sheetPath.optional {
+//                    let uAddress = newChatState.uAddress
+//                    let alias = newChatState.alias
+//                    // TODO: here we know what UA user wants to initiate chat with
+//                    logger.debug("uAddress: \(uAddress), alias: \(alias)")
+//                    // TODO: some messages.createChat is needed
+//                    // messages.createChat(for: uAddress, alias: alias)
+//                }
+//                state.sheetPath = nil
+//                return .none
 
             case .sheetPath:
                 return .none

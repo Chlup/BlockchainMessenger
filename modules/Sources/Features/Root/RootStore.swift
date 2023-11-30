@@ -208,6 +208,9 @@ public struct RootReducer {
                 state.path = .chatsList(ChatsListReducer.State(synchronizerStatusSnapshot: SyncStatusSnapshot()))
                 return .none
 
+            case .path(.presented(.createAccount(.confirmationButtonTapped))):
+                return .send(.initiateAccount)
+
             case .path(.presented(.restoreAccount(.successfullyRecovered))):
                 // TODO: Here I want to pass .restore and act accordingly in the UI
                 return .send(.initiateAccount)

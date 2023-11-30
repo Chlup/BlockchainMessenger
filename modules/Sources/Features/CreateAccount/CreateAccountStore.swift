@@ -77,8 +77,7 @@ public struct CreateAccountReducer {
                 return .none
 
             case .tapToCopyTapped:
-                var mixed = "\(state.birthdayValue ?? "") \(state.seedWords.data)".redacted
-                pasteboard.setString(mixed)
+                pasteboard.setString("\(state.birthdayValue ?? "") \(state.seedWords.data)".redacted)
                 return .none
             }
         }
