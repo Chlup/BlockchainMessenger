@@ -1,0 +1,62 @@
+//  MIT License
+//
+//  Copyright (c) 2023 Zcash
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
+
+/*
+!!!!! To edit this file go to MErrorCodeDefinition first and udate/add codes. Then run generateErrorCode.sh script to regenerate this file.
+
+By design each error should be used only at one place in the app. Thanks to that it is possible to identify exact line in the code from which the
+error originates. And it can help with debugging.
+*/
+
+import Foundation
+
+{% for type in types.enums where type.name == "MErrorDefinition" %}
+public enum MError: Equatable, Error {
+    {% for case in type.cases %}
+    {% for docLine in case.documentation %}
+    /// {{ docLine }}
+    {% endfor %}
+    /// {{ case.annotations["code"] }}
+    case {{ case.name }}{% if case.associatedValues.count > 0 %}({% for value in case.associatedValues %}_ {{ value.externalName }}: {{ value.typeName }}{% if not forloop.last%}, {% endif %}{% endfor %}){% endif %}
+    {% endfor %}
+
+    public var message: String {
+        switch self {
+        {% for case in type.cases %}
+        case .{{ case.name }}: return "{{ case.documentation[0] }}"
+        {% endfor %}
+        }
+    }
+
+    public var code: MErrorCode {
+        switch self {
+            {% for case in type.cases %}
+        case .{{ case.name }}: return .{{ case.name}}
+            {% endfor %}
+        }
+    }
+
+    public static func == (lhs: MError, rhs: MError) -> Bool {
+        return lhs.code == rhs.code
+    }
+}
+{% endfor %}

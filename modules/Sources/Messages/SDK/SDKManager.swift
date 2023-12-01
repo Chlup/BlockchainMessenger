@@ -108,7 +108,7 @@ extension SDKManagerImpl: SDKManager {
             do {
                 try await synchronizer.prepareWith(seedBytes, birthday, walletMode)
             } catch {
-                throw MessagesError.synchronizerInitFailed(error)
+                throw MError.synchronizerInitFailed(error)
             }
         }
 

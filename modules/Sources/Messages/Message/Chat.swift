@@ -83,7 +83,7 @@ public struct Chat: Codable, Equatable, Identifiable {
             verificationText = try row.get(Column.verificationText)
             verified = try row.get(Column.verified)
         } catch {
-            throw MessagesError.chatEntityInit(error)
+            throw MError.chatEntityInit(error)
         }
     }
 

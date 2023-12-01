@@ -70,7 +70,7 @@ public struct Message: Codable, Equatable, Identifiable, Hashable {
             text = try row.get(Column.text)
             isSent = try row.get(Column.isSent)
         } catch {
-            throw MessagesError.messageEntityInit(error)
+            throw MError.messageEntityInit(error)
         }
     }
 

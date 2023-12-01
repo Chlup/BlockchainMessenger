@@ -31,25 +31,6 @@ import Dependencies
 import Foundation
 import ZcashLightClientKit
 
-public enum MessagesError: Error {
-    case chatEntityInit(Error)
-    case messageEntityInit(Error)
-    case simpleConnectionProvider(Error)
-    case synchronizerInitFailed(Error)
-    case messagesStorageQueryExecute(Error)
-    case messagesStorageEntityNotFound
-    case invalidToAddressWhenCreatingChat
-    case createMemoFromMessageWhenCreatingChat(Error)
-    case createRecipientWhenCreatingChat(Error)
-    case getUnifiedAddressWhenCreatingChat
-    case storeNewChat(Error)
-    case chatDoesntExistWhenSendingMessage(Error)
-    case getUnifiedAddressWhenSendingMessage
-    case chatDoesntExistsWhenUpdatingAlias
-    case chatVerificationFailed
-    case chatUdateAfterVerificationFailed
-}
-
 public enum MessagesEvent: Equatable {
     case newChat(Chat)
     case newMessage(Message)

@@ -54,7 +54,7 @@ class SimpleConnectionProvider: ConnectionProvider {
                 self.db = conn
                 return conn
             } catch {
-                throw MessagesError.simpleConnectionProvider(error)
+                throw MError.simpleConnectionProvider(error)
             }
         }
         return conn

@@ -29,6 +29,7 @@
 import ComposableArchitecture
 import ZcashLightClientKit
 
+import Errors
 import Logger
 import Messages
 import Utils
@@ -88,6 +89,7 @@ public struct ChatDetailReducer {
         Reduce { state, action in
             switch action {
             case .onAppear:
+                let err = ZcashError.accountDAOUpdateInvalidAccount
                 return .merge(
                     .run { [chatId = state.chatId] send in
                         var messages = try await messages.allMessages(for: chatId)

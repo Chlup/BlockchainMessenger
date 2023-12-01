@@ -6,6 +6,8 @@ included:
 
 excluded:
   - xctemplates
+  - modules/Sources/Messages/Errors/MError.swift
+  - modules/Sources/Messages/Errors/MErrorCode.swift
 
 disabled_rules:
   - notification_center_detachment

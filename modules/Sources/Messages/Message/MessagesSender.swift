@@ -59,7 +59,7 @@ actor MessagesSenderImpl {
         logger.debug("Encoded: \(encodedMessage)")
 
         guard derivationTool.isUnifiedAddress(toAddress, network) else {
-            throw MessagesError.invalidToAddressWhenCreatingChat
+            throw MError.invalidToAddressWhenCreatingChat
         }
 
         let spendingKey = try derivationTool.deriveSpendingKey(seedBytes, 0, network)
@@ -67,14 +67,14 @@ actor MessagesSenderImpl {
         do {
             memo = try Memo(bytes: encodedMessage)
         } catch {
-            throw MessagesError.createMemoFromMessageWhenCreatingChat(error)
+            throw MError.createMemoFromMessageWhenCreatingChat(error)
         }
 
         let recipient: Recipient
         do {
             recipient = try Recipient(toAddress, network: network)
         } catch {
-            throw MessagesError.createRecipientWhenCreatingChat(error)
+            throw MError.createRecipientWhenCreatingChat(error)
         }
 
         return try await synchronizer.sendTransaction(spendingKey, Constants.messagePrice, recipient, memo)
@@ -94,11 +94,11 @@ extension MessagesSenderImpl: MessagesSender {
         let myUnifiedAddress: String
         do {
             guard let possibleUnifiedAddress = try await synchronizer.getUnifiedAddress(account: 0) else {
-                throw MessagesError.getUnifiedAddressWhenCreatingChat
+                throw MError.getUnifiedAddressWhenCreatingChat
             }
             myUnifiedAddress = possibleUnifiedAddress.stringEncoded
         } catch {
-            throw MessagesError.getUnifiedAddressWhenCreatingChat
+            throw MError.getUnifiedAddressWhenCreatingChat
         }
 
         let newChat = Chat.createNew(
@@ -121,7 +121,7 @@ extension MessagesSenderImpl: MessagesSender {
             try await storage.storeChat(newChat)
         } catch {
             await transactionsProcessor.failureHappened()
-            throw MessagesError.storeNewChat(error)
+            throw MError.storeNewChat(error)
         }
     }
     
@@ -130,7 +130,7 @@ extension MessagesSenderImpl: MessagesSender {
         do {
             chat = try await storage.chat(for: chatID)
         } catch {
-            throw MessagesError.chatDoesntExistWhenSendingMessage(error)
+            throw MError.chatDoesntExistWhenSendingMessage(error)
         }
 
         let newMessage = Message.createSent(chatID: chatID, text: text)
@@ -144,11 +144,11 @@ extension MessagesSenderImpl: MessagesSender {
         let unifiedAddress: UnifiedAddress
         do {
             guard let possibleUnifiedAddress = try await synchronizer.getUnifiedAddress(account: 0) else {
-                throw MessagesError.getUnifiedAddressWhenSendingMessage
+                throw MError.getUnifiedAddressWhenSendingMessage
             }
             unifiedAddress = possibleUnifiedAddress
         } catch {
-            throw MessagesError.getUnifiedAddressWhenSendingMessage
+            throw MError.getUnifiedAddressWhenSendingMessage
         }
 
         // There are two sides chatting. When side A creates chat it sends init message with `fromAddress` and `toAddress`. Side A's address is

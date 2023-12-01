@@ -75,7 +75,7 @@ actor MessagesStorageImpl {
 
     private func execute<Entity>(_ query: Table, createEntity: (Row) throws -> Entity) throws -> Entity {
         let entities: [Entity] = try execute(query, createEntity: createEntity)
-        guard let entity = entities.first else { throw MessagesError.messagesStorageEntityNotFound }
+        guard let entity = entities.first else { throw MError.messagesStorageEntityNotFound }
         return entity
     }
 
@@ -88,10 +88,10 @@ actor MessagesStorageImpl {
 
             return entities
         } catch {
-            if let error = error as? MessagesError {
+            if let error = error as? MError {
                 throw error
             } else {
-                throw MessagesError.messagesStorageQueryExecute(error)
+                throw MError.messagesStorageQueryExecute(error)
             }
         }
     }
@@ -163,24 +163,24 @@ extension MessagesStorageImpl: MessagesStorage {
         let db = try dbConnection.connection()
         let chat = chatsTable.filter(Chat.Column.chatID == chatID)
         if try db.run(chat.update(Chat.Column.alias <- alias)) <= 0 {
-            throw MessagesError.chatDoesntExistsWhenUpdatingAlias
+            throw MError.chatDoesntExistsWhenUpdatingAlias
         }
     }
 
     func verifyChat(chatID: Int, fromAddress: String, verificationText: String) async throws -> Chat {
         let chat = try await chat(for: chatID)
         guard chat.fromAddress == fromAddress, chat.verificationText == verificationText else {
-            throw MessagesError.chatVerificationFailed
+            throw MError.chatVerificationFailed
         }
 
         let db = try dbConnection.connection()
         let dbChat = chatsTable.filter(Chat.Column.chatID == chatID)
         do {
             if try db.run(dbChat.update(Chat.Column.verified <- true)) <= 0 {
-                throw MessagesError.chatUdateAfterVerificationFailed
+                throw MError.chatUdateAfterVerificationFailed
             }
         } catch {
-            throw MessagesError.chatUdateAfterVerificationFailed
+            throw MError.chatUdateAfterVerificationFailed
         }
 
         return try await self.chat(for: chatID)
