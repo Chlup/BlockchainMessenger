@@ -32,6 +32,8 @@ import Foundation
 import ZcashLightClientKit
 
 public enum MessagesEvent: Equatable {
+    case didVerifyChat(Chat)
+    case didUpdateChatAlias(Chat)
     case newChat(Chat)
     case newMessage(Message)
 }

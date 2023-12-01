@@ -165,6 +165,8 @@ extension MessagesStorageImpl: MessagesStorage {
         if try db.run(chat.update(Chat.Column.alias <- alias)) <= 0 {
             throw MError.chatDoesntExistsWhenUpdatingAlias
         }
+        let updatedChat = try await self.chat(for: chatID)
+        eventsSender.send(event: .didUpdateChatAlias(updatedChat))
     }
 
     func verifyChat(chatID: Int, fromAddress: String, verificationText: String) async throws -> Chat {
@@ -183,7 +185,9 @@ extension MessagesStorageImpl: MessagesStorage {
             throw MError.chatUdateAfterVerificationFailed
         }
 
-        return try await self.chat(for: chatID)
+        let updatedChat = try await self.chat(for: chatID)
+        eventsSender.send(event: .didVerifyChat(updatedChat))
+        return updatedChat
     }
 
     // MARK: - Message
