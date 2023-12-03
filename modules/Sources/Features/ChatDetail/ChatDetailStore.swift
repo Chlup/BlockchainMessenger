@@ -29,7 +29,6 @@
 import ComposableArchitecture
 import ZcashLightClientKit
 
-import Errors
 import Logger
 import Messages
 import Utils
