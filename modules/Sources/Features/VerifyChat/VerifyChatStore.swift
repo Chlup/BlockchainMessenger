@@ -40,12 +40,12 @@ public struct VerifyChatReducer {
 
     public struct State: Equatable {
         @PresentationState public var alert: AlertState<Action>?
-        @BindingState public var alias = "DEKU"
+        @BindingState public var alias = ""
         var isValidAlias = false
         var isValidVerificationText = false
         var isVerifying = false
-        @BindingState public var uAddress = "utest1wh7a39fdvgynrpnxx87jpfj04u72eu34nx79qn40fhqx5vumwycctjykp4s6u9335nzc2pf9rwck0u6ldzxh5e2xfwwgsggmh737k60t03tcnjgu2uyjy9pdjlr58cvm42qcgw0deku"
-        @BindingState public var verificationText = "123456"
+        @BindingState public var uAddress = ""
+        @BindingState public var verificationText = ""
 
         public var isValidForm: Bool {
             isValidAlias
