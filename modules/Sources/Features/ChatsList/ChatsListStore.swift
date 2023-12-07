@@ -77,7 +77,7 @@ public struct ChatsListReducer {
     }
     
     public enum Action: Equatable {
-        case chatButtonTapped(Int)
+        case chatButtonTapped(Int, String)
         case debugButtonTapped
         case didLoadChats(IdentifiedArrayOf<Chat>, IdentifiedArrayOf<Chat>)
         case editChatAliasTapped(Int)
@@ -192,8 +192,8 @@ public struct ChatsListReducer {
             case .onDisappear:
                 return .cancel(id: CancelId.timer)
 
-            case .chatButtonTapped(let chatId):
-                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId)))
+            case let .chatButtonTapped(chatId, verificationText):
+                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId, verificationText: verificationText)))
                 return .none
 
             case .debugButtonTapped:

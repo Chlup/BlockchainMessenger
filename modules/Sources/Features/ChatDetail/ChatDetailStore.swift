@@ -41,9 +41,11 @@ public struct ChatDetailReducer {
     public struct State: Equatable {
         public var chatId: Int
         public var isSyncing = false
+        public var isWaitingOnVerification = false
         @BindingState public var message = ""
         public var messages: IdentifiedArrayOf<Message> = []
         public var shieldedBalance = Balance.zero
+        public var verificationText: String
         
         public var bytesLeft: Int {
             // The memo supports unicode so the overall count is not char count of text
@@ -58,8 +60,9 @@ public struct ChatDetailReducer {
             && bytesLeft >= 0
         }
         
-        public init(chatId: Int) {
+        public init(chatId: Int, verificationText: String) {
             self.chatId = chatId
+            self.verificationText = verificationText
             self.messages = Message.mockedMessages
         }
     }
@@ -67,6 +70,7 @@ public struct ChatDetailReducer {
     public enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case messagesLoaded(IdentifiedArrayOf<Message>)
+        case noReceivedMessages
         case onAppear
         case onDisappear
         case sendButtonTapped
@@ -92,10 +96,16 @@ public struct ChatDetailReducer {
                 return .merge(
                     .run { [chatId = state.chatId] send in
                         var messages = try await messages.allMessages(for: chatId)
-                        if messages.isEmpty {
-                            // TODO: This is just for now to let mocking for mocked chats work.
-                            messages = Array(Message.mockedMessages)
+                        let received = messages.compactMap { !$0.isSent ? $0 : nil }
+                        
+                        if received.isEmpty {
+                            await send(.noReceivedMessages)
                         }
+                        
+//                        if messages.isEmpty {
+//                            // TODO: This is just for now to let mocking for mocked chats work.
+//                            messages = Array(Message.mockedMessages)
+//                        }
 
                         await send(.messagesLoaded(IdentifiedArrayOf(uniqueElements: messages)))
                     },
@@ -115,6 +125,10 @@ public struct ChatDetailReducer {
 
             case .messagesLoaded(let messages):
                 state.messages = messages
+                return .none
+            
+            case .noReceivedMessages:
+                state.isWaitingOnVerification = true
                 return .none
             
             case .sendButtonTapped:

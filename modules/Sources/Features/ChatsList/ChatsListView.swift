@@ -106,7 +106,7 @@ public struct ChatsListView: View {
                         
                         ForEach(viewStore.verifiedChats) { chat in
                             Button {
-                                viewStore.send(.chatButtonTapped(chat.chatID))
+                                viewStore.send(.chatButtonTapped(chat.chatID, chat.verificationText))
                             } label: {
                                 // TODO: This alias work is just hack to show new chats for now.
                                 let alias = chat.alias ?? "unknown"

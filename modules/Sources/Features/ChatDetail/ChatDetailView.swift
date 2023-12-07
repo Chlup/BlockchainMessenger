@@ -46,6 +46,22 @@ public struct ChatDetailView: View {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 ScrollViewReader { scrollView in
                     ScrollView(.vertical) {
+                        if viewStore.isWaitingOnVerification {
+                            Group {
+                                Text("Verification code:\n")
+                                + Text("\(viewStore.verificationText)\n")
+                                    .font(.system(size: 16))
+                                    .fontWeight(.black)
+                                + Text("Let the user to know it so the chat can be verified.")
+                            }
+                            .padding(.vertical, 5)
+                            .frame(maxWidth: .infinity)
+                            .font(.system(size: 14))
+                            .foregroundStyle(Asset.Colors.fontPrimary.color)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        }
+                        
                         VStack(spacing: 30) {
                             Section {
                                 HStack {
@@ -216,7 +232,7 @@ public struct ChatDetailView: View {
         ChatDetailView(
             store:
                 Store(
-                    initialState: ChatDetailReducer.State(chatId: 1)
+                    initialState: ChatDetailReducer.State(chatId: 1, verificationText: "")
                 ) {
                     ChatDetailReducer(networkType: ZcashNetworkBuilder.network(for: .testnet).networkType)
                         ._printChanges()
