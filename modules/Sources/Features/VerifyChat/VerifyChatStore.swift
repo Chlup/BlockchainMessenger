@@ -78,11 +78,6 @@ public struct VerifyChatReducer {
         
         Reduce { state, action in
             switch action {
-//            case .alert(.presented):
-//                return .run { _ in
-//                    await self.dismiss()
-//                }
-
             case .alert:
                 return .none
 

@@ -122,15 +122,29 @@ public struct FundsView: View {
                     """)
                     .font(.system(size: 10))
                     .padding(.top, 30)
+                    
+                    Button {
+                        viewStore.send(.wipeRequested)
+                    } label: {
+                        Text("Wipe the account")
+                            .foregroundStyle(.white)
+                            .padding()
+                            .background {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundStyle(.red)
+                            }
+                    }
                 }
                 .padding()
-                .onAppear {
-                    viewStore.send(.onAppear)
-                }
+                .onAppear { viewStore.send(.onAppear) }
+                .onDisappear { viewStore.send(.onDisappear) }
                 .foregroundStyle(Asset.Colors.fontPrimary.color)
             }
         }
         .applyScreenBackground()
+        .alert(
+            store: self.store.scope(state: \.$alert, action: \.alert)
+        )
     }
 }
 

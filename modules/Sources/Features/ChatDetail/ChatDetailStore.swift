@@ -39,7 +39,12 @@ public struct ChatDetailReducer {
     let networkType: NetworkType
 
     public struct State: Equatable {
+        public enum Field: Hashable {
+          case message
+        }
+
         public var chatId: Int
+        @BindingState var focus: Field?
         public var isSyncing = false
         public var isWaitingOnVerification = false
         @BindingState public var message = ""
@@ -60,10 +65,11 @@ public struct ChatDetailReducer {
             && bytesLeft >= 0
         }
         
-        public init(chatId: Int, verificationText: String?) {
+        public init(chatId: Int, verificationText: String?, focus: Field? = .message) {
             self.chatId = chatId
-            self.verificationText = verificationText
+            self.focus = focus
             self.messages = Message.mockedMessages
+            self.verificationText = verificationText
         }
     }
     

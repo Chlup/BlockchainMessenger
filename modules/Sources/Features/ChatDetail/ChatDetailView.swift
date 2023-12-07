@@ -36,7 +36,8 @@ import Utils
 
 public struct ChatDetailView: View {
     let store: StoreOf<ChatDetailReducer>
-    
+    @FocusState var focus: ChatDetailReducer.State.Field?
+
     public init(store: StoreOf<ChatDetailReducer>) {
         self.store = store
     }
@@ -196,6 +197,7 @@ public struct ChatDetailView: View {
 
                     HStack {
                         TextField("message", text: viewStore.$message, axis: .vertical)
+                            .focused(self.$focus, equals: .message)
                             .font(.system(size: 14))
                             .foregroundStyle(Asset.Colors.fontPrimary.color)
                             .autocorrectionDisabled()
@@ -219,6 +221,7 @@ public struct ChatDetailView: View {
                         .disabled(!viewStore.isSendAvailable)
                     }
                 }
+                .bind(viewStore.$focus, to: self.$focus)
                 .padding(.horizontal, 15)
                 .padding(.bottom, 10)
             }

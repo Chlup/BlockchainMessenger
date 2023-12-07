@@ -219,8 +219,10 @@ public struct RootReducer {
                 state.path = nil
                 return .none
                 
-            case .path(.presented(.chatsList(.wipeSucceeded))):
-                return .none
+            case .path(.presented(.chatsList(.sheetPath(.presented(.funds(.wipeSucceeded)))))):
+                state.path = nil
+                state.isLoading = true
+                return .send(.initiateAccount)
                 
             case .path:
                 return .none

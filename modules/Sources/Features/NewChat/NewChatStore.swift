@@ -97,11 +97,6 @@ public struct NewChatReducer {
             case .onDisappear:
                 return .cancel(id: CancelId.timer)
 
-            case .alert(.presented):
-                return .run { _ in
-                    await self.dismiss()
-                }
-
             case .alert:
                 return .none
 

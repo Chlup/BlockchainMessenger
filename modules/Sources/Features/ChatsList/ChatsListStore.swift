@@ -43,11 +43,11 @@ import WalletStorage
 @Reducer
 public struct ChatsListReducer {
     private enum CancelId { case timer }
-    private enum WipeCancelId { case timer }
     let networkType: NetworkType
 
     public struct State: Equatable {
         public var incomingChats: IdentifiedArrayOf<Chat>
+        public var hasFinishedFirstSync = false
         var path = StackState<Path.State>()
         @PresentationState public var sheetPath: SheetPath.State?
         public var shieldedBalance = Balance.zero
@@ -65,6 +65,7 @@ public struct ChatsListReducer {
 
         public var isZeroFundsAccount: Bool {
             shieldedBalance.data.total.amount == 0
+            && hasFinishedFirstSync
         }
         
         public init(
@@ -93,8 +94,6 @@ public struct ChatsListReducer {
         case sheetPath(PresentationAction<SheetPath.Action>)
         case synchronizerStateChanged(SynchronizerState)
         case uAddressResponse(RedactableString)
-        case wipeFailed
-        case wipeSucceeded
     }
     
     public struct Path: Reducer {
@@ -172,25 +171,6 @@ public struct ChatsListReducer {
         Reduce { state, action in
             switch action {
             case .onAppear:
-                // TODO: here is the option to wipe the wallet until it's properly implemented
-//                guard let wipePublisher = synchronizer.wipe() else {
-//                    return .none
-//                }
-//                return .concatenate(
-//                    .publisher {
-//                        wipePublisher
-//                            .replaceEmpty(with: Void())
-//                            .map { _ in return ChatsListReducer.Action.wipeSucceeded }
-//                            .replaceError(with: ChatsListReducer.Action.wipeFailed)
-//                            .receive(on: mainQueue)
-//                    }
-//                    .cancellable(id: WipeCancelId.timer, cancelInFlight: true),
-//                    .run { _ in
-//                        walletStorage.nukeWallet()
-//                        try await messages.wipe()
-//                    }
-//                )
-
                 return .merge(
                     Effect.publisher {
                         synchronizer.stateStream()
@@ -295,24 +275,23 @@ public struct ChatsListReducer {
                 let shieldedBalance = latestState.shieldedBalance
                 state.shieldedBalance = shieldedBalance.redacted
                 
+                if shieldedBalance.total.amount > 0 {
+                    state.hasFinishedFirstSync = true
+                }
+                
                 let snapshot = SyncStatusSnapshot.snapshotFor(state: latestState.syncStatus)
                 if snapshot.syncStatus != state.synchronizerStatusSnapshot.syncStatus {
                     state.synchronizerStatusSnapshot = snapshot
                 }
                 
                 if case .upToDate = latestState.syncStatus {
+                    state.hasFinishedFirstSync = true
                     return .send(.reloadChats)
                 }
                 return .none
                 
             case .uAddressResponse(let address):
                 state.uAddress = address
-                return .none
-
-            case .wipeFailed:
-                return .none
-
-            case .wipeSucceeded:
                 return .none
             }
         }
