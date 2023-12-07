@@ -46,10 +46,10 @@ public struct ChatDetailView: View {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 ScrollViewReader { scrollView in
                     ScrollView(.vertical) {
-                        if viewStore.isWaitingOnVerification {
+                        if let verificationText = viewStore.verificationText, viewStore.isWaitingOnVerification {
                             Group {
                                 Text("Verification code:\n")
-                                + Text("\(viewStore.verificationText)\n")
+                                + Text("\(verificationText)\n")
                                     .font(.system(size: 16))
                                     .fontWeight(.black)
                                 + Text("Let the user to know it so the chat can be verified.")

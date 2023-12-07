@@ -111,11 +111,10 @@ public struct ChatsListView: View {
                         
                         ForEach(viewStore.verifiedChats) { chat in
                             Button {
-                                viewStore.send(.chatButtonTapped(chat.chatID, chat.verificationText))
+                                viewStore.send(.chatButtonTapped(chat))
                             } label: {
-                                // TODO: This alias work is just hack to show new chats for now.
-                                let alias = chat.alias ?? "unknown"
-                                Text("\(alias) (\(chat.chatID))")
+                                let alias = chat.alias ?? "no alias - swipe to edit"
+                                Text(alias)
                                     .neumorphicButton()
                                     .swipeActions(allowsFullSwipe: false) {
                                         Button {

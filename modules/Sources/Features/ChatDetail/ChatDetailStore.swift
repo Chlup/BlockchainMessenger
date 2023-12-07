@@ -45,7 +45,7 @@ public struct ChatDetailReducer {
         @BindingState public var message = ""
         public var messages: IdentifiedArrayOf<Message> = []
         public var shieldedBalance = Balance.zero
-        public var verificationText: String
+        public var verificationText: String?
         
         public var bytesLeft: Int {
             // The memo supports unicode so the overall count is not char count of text
@@ -60,7 +60,7 @@ public struct ChatDetailReducer {
             && bytesLeft >= 0
         }
         
-        public init(chatId: Int, verificationText: String) {
+        public init(chatId: Int, verificationText: String?) {
             self.chatId = chatId
             self.verificationText = verificationText
             self.messages = Message.mockedMessages

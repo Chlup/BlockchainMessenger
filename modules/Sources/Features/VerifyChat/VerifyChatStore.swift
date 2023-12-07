@@ -40,12 +40,12 @@ public struct VerifyChatReducer {
 
     public struct State: Equatable {
         @PresentationState public var alert: AlertState<Action>?
-        @BindingState public var alias = ""
+        @BindingState public var alias = "DEKU"
         var isValidAlias = false
         var isValidVerificationText = false
         var isVerifying = false
-        @BindingState public var uAddress = ""
-        @BindingState public var verificationText = ""
+        @BindingState public var uAddress = "utest1wh7a39fdvgynrpnxx87jpfj04u72eu34nx79qn40fhqx5vumwycctjykp4s6u9335nzc2pf9rwck0u6ldzxh5e2xfwwgsggmh737k60t03tcnjgu2uyjy9pdjlr58cvm42qcgw0deku"
+        @BindingState public var verificationText = "123456"
 
         public var isValidForm: Bool {
             isValidAlias
@@ -59,6 +59,8 @@ public struct VerifyChatReducer {
     public enum Action: BindableAction, Equatable {
         case alert(PresentationAction<Action>)
         case binding(BindingAction<State>)
+        case chatVerified(Chat)
+        case noneChatHasBeenVerified
         case verifyButtonTapped
     }
       
@@ -76,10 +78,10 @@ public struct VerifyChatReducer {
         
         Reduce { state, action in
             switch action {
-            case .alert(.presented):
-                return .run { _ in
-                    await self.dismiss()
-                }
+//            case .alert(.presented):
+//                return .run { _ in
+//                    await self.dismiss()
+//                }
 
             case .alert:
                 return .none
@@ -89,58 +91,44 @@ public struct VerifyChatReducer {
                 state.isValidVerificationText = !state.verificationText.isEmpty
                 return .none
                 
+            case .chatVerified:
+                state.isVerifying = false
+                return .none
+
+            case .noneChatHasBeenVerified:
+                state.alert = AlertState.noneChatHasBeenVerified()
+                state.isVerifying = false
+                return .none
+
             case .verifyButtonTapped:
                 state.isVerifying = true
-                return .none
-                // TODO: API update is needed
-//                return .run { [
-//                    uAddress = state.uAddress,
-//                    alias = state.alias,
-//                    verificationText = state.verificationText,
-//                ] send in
-//                    do {
-//                        let verificationCode = chatVerification.code()
-//                        try await messages.verifyChat(
-//                            chatID: <#T##Int#>,
-//                            fromAddress: uAddress,
-//                            verificationText: verificationText
-//                        )
-//                        await send(.newChatCreated(alias, verificationCode))
-//                    } catch {
-//                        // TODO: Error handling
-//                        await send(.newChatFailed)
-//                    }
-//                }
+                return .run { [uAddress = state.uAddress, alias = state.alias, verificationText = state.verificationText] send in
+                    do {
+                        let chat = try await messages.verifyChat(
+                            fromAddress: uAddress,
+                            verificationText: verificationText,
+                            alias: alias
+                        )
+                        await send(.chatVerified(chat))
+                    } catch {
+                        await send(.noneChatHasBeenVerified)
+                    }
+                }
             }
         }
     }
 }
 
 extension AlertState where Action == VerifyChatReducer.Action {
-    static func chatCreated(for alias: String, with code: String) -> Self {
+    static func noneChatHasBeenVerified() -> Self {
         Self {
-            TextState("New Chat Created")
-        } actions: {
-            ButtonState(role: .cancel) {
-                TextState("Confirm")
-            }
-        } message: {
-            TextState("""
-            New chat has been successfuly created with alias: \(alias). Share the following verification code with the receiver \n\n \(code) \n\n \
-            (you can see it also in the chat as a first message)
-            """)
-        }
-    }
-    
-    static func newChatFailed() -> Self {
-        Self {
-            TextState("New Chat Failed")
+            TextState("No chat found")
         } actions: {
             ButtonState(role: .cancel) {
                 TextState("Cancel")
             }
         } message: {
-            TextState("Creation of the new chat failed.")
+            TextState("We haven't found any chat that correspond to the data you provided.")
         }
     }
 }

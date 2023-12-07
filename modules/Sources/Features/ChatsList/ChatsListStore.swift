@@ -52,6 +52,7 @@ public struct ChatsListReducer {
         @PresentationState public var sheetPath: SheetPath.State?
         public var shieldedBalance = Balance.zero
         public var synchronizerStatusSnapshot: SyncStatusSnapshot
+        public var uAddress: RedactableString = "".redacted
         public var verifiedChats: IdentifiedArrayOf<Chat>
 
         public var availableMessagesCount: UInt {
@@ -78,7 +79,7 @@ public struct ChatsListReducer {
     }
     
     public enum Action: Equatable {
-        case chatButtonTapped(Int, String)
+        case chatButtonTapped(Chat)
         case chatRequestsButtonTapped
         case debugButtonTapped
         case didLoadChats(IdentifiedArrayOf<Chat>, IdentifiedArrayOf<Chat>)
@@ -91,6 +92,7 @@ public struct ChatsListReducer {
         case reloadChats
         case sheetPath(PresentationAction<SheetPath.Action>)
         case synchronizerStateChanged(SynchronizerState)
+        case uAddressResponse(RedactableString)
         case wipeFailed
         case wipeSucceeded
     }
@@ -188,19 +190,30 @@ public struct ChatsListReducer {
 //                        try await messages.wipe()
 //                    }
 //                )
-                
-                return Effect.publisher {
-                    synchronizer.stateStream()
-                        .throttle(for: .seconds(0.2), scheduler: mainQueue, latest: true)
-                        .map(ChatsListReducer.Action.synchronizerStateChanged)
-                }
-                .cancellable(id: CancelId.timer, cancelInFlight: true)
+
+                return .merge(
+                    Effect.publisher {
+                        synchronizer.stateStream()
+                            .throttle(for: .seconds(0.2), scheduler: mainQueue, latest: true)
+                            .map(ChatsListReducer.Action.synchronizerStateChanged)
+                    }
+                    .cancellable(id: CancelId.timer, cancelInFlight: true),
+                    .run { send in
+                        if let address = try await synchronizer.getUnifiedAddress(0) {
+                            await send(.uAddressResponse(address.stringEncoded.redacted))
+                        }
+                    }
+                )
 
             case .onDisappear:
                 return .cancel(id: CancelId.timer)
 
-            case let .chatButtonTapped(chatId, verificationText):
-                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId, verificationText: verificationText)))
+            case .chatButtonTapped(let chat):
+                var verificationText: String?
+                if chat.fromAddress == state.uAddress.data {
+                    verificationText = chat.verificationText
+                }
+                state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chat.chatID, verificationText: verificationText)))
                 return .none
                 
             case .chatRequestsButtonTapped:
@@ -255,6 +268,10 @@ public struct ChatsListReducer {
                     await send(.didLoadChats(incomingChats, verifiedChats))
                 }
 
+            case .sheetPath(.presented(.verifyChat(.chatVerified(let chat)))):
+                state.sheetPath = nil
+                return .send(.chatButtonTapped(chat))
+                
             case .sheetPath(.presented(.newChat(.alert(.dismiss)))):
                 state.sheetPath = nil
                 return .send(.reloadChats)
@@ -288,6 +305,10 @@ public struct ChatsListReducer {
                 }
                 return .none
                 
+            case .uAddressResponse(let address):
+                state.uAddress = address
+                return .none
+
             case .wipeFailed:
                 return .none
 
