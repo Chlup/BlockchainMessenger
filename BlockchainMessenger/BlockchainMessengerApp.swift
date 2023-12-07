@@ -79,7 +79,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 //                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) { [weak self] in
 //                    guard let self = self else { return }
 //                    Task {
-////                        try? await self.verifyFirstUnverifiedChat()
+//                          try? await self.verifyFirstUnverifiedChat()
 ////                        try? await self.updateAliasForFirstChat()
 ////                        try? await self.listAllChatsAndMessages()
 ////                        try? await self.sendMessageToFirstChat()
@@ -111,7 +111,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             }
             logger.debug("\(unverifiedChat)")
 
-            let verifiedChat = try await messages.verifyChat(chatID: unverifiedChat.chatID, fromAddress: "something", verificationText: "some")
+            let verifiedChat = try await messages.verifyChat(
+                fromAddress: "something",
+                verificationText: "some", 
+                alias: "Barbucha"
+            )
             logger.debug("Verified: \(verifiedChat)")
 
             chats = try await self.messages.allChats()

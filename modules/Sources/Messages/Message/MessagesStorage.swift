@@ -44,7 +44,7 @@ protocol MessagesStorage: Actor {
     func allMessages(for chatID: Int) async throws -> [Message]
     func doesMessageExists(for messageID: Message.ID) async throws -> Bool
     func storeMessage(_ message: Message) async throws
-    func verifyChat(chatID: Int, fromAddress: String, verificationText: String) async throws -> Chat
+    func verifyChat(fromAddress: String, verificationText: String, alias: String?) async throws -> Chat
 
     func wipe() async throws
 }
@@ -111,6 +111,9 @@ extension MessagesStorageImpl: MessagesStorage {
             table.column(Chat.Column.verified)
         }
         let createChatsTimestampIndex = chatsTable.createIndex(Chat.Column.timestamp, ifNotExists: true)
+        let createChatsFromAddressIndex = chatsTable.createIndex(Chat.Column.fromAddress, ifNotExists: true)
+        let createChatsVerificationTextIndex = chatsTable.createIndex(Chat.Column.verificationText, ifNotExists: true)
+        let createChatsVerifiedIndex = chatsTable.createIndex(Chat.Column.verified, ifNotExists: true)
 
         let createMessagesTable = messagesTable.create(ifNotExists: true) { table in
             table.column(Message.Column.id, primaryKey: true)
@@ -128,6 +131,9 @@ extension MessagesStorageImpl: MessagesStorage {
             try db.run(createMessagesTable)
             try db.run(createMessagesChatIDIndex)
             try db.run(createMessagesTimestampIndex)
+            try db.run(createChatsFromAddressIndex)
+            try db.run(createChatsVerificationTextIndex)
+            try db.run(createChatsVerifiedIndex)
         }
     }
 
@@ -169,23 +175,29 @@ extension MessagesStorageImpl: MessagesStorage {
         eventsSender.send(event: .didUpdateChatAlias(updatedChat))
     }
 
-    func verifyChat(chatID: Int, fromAddress: String, verificationText: String) async throws -> Chat {
-        let chat = try await chat(for: chatID)
-        guard chat.fromAddress == fromAddress, chat.verificationText == verificationText else {
+    func verifyChat(fromAddress: String, verificationText: String, alias: String?) async throws -> Chat {
+        let chatQuery = chatsTable
+            .filter(Chat.Column.fromAddress == fromAddress && Chat.Column.verificationText == verificationText)
+
+        let chat: Chat
+        do {
+            chat = try execute(chatQuery) { try Chat(row: $0) }
+        } catch MError.messagesStorageEntityNotFound {
             throw MError.chatVerificationFailed
+        } catch {
+            throw error
         }
 
         let db = try dbConnection.connection()
-        let dbChat = chatsTable.filter(Chat.Column.chatID == chatID)
         do {
-            if try db.run(dbChat.update(Chat.Column.verified <- true)) <= 0 {
+            if try db.run(chatQuery.update(Chat.Column.verified <- true, Chat.Column.alias <- alias)) <= 0 {
                 throw MError.chatUdateAfterVerificationFailed
             }
         } catch {
             throw MError.chatUdateAfterVerificationFailed
         }
 
-        let updatedChat = try await self.chat(for: chatID)
+        let updatedChat = try await self.chat(for: chat.chatID)
         eventsSender.send(event: .didVerifyChat(updatedChat))
         return updatedChat
     }

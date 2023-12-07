@@ -48,7 +48,7 @@ public protocol Messages {
     func sendMessage(chatID: Int, text: String) async throws -> Message
     func start(with seedBytes: [UInt8], birthday: BlockHeight, walletMode: WalletInitMode) async throws
     func updateAlias(for chatID: Int, alias: String?) async throws
-    func verifyChat(chatID: Int, fromAddress: String, verificationText: String) async throws -> Chat
+    func verifyChat(fromAddress: String, verificationText: String, alias: String?) async throws -> Chat
     func wipe() async throws
 }
 
@@ -97,8 +97,8 @@ extension MessagesImpl: Messages {
         try await messagesStorage.updateAlias(for: chatID, alias: alias)
     }
 
-    func verifyChat(chatID: Int, fromAddress: String, verificationText: String) async throws -> Chat {
-        return try await messagesStorage.verifyChat(chatID: chatID, fromAddress: fromAddress, verificationText: verificationText)
+    func verifyChat(fromAddress: String, verificationText: String, alias: String?) async throws -> Chat {
+        return try await messagesStorage.verifyChat(fromAddress: fromAddress, verificationText: verificationText, alias: alias)
     }
 
     func wipe() async throws {
