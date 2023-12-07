@@ -1,8 +1,8 @@
 //
-//  NewChatView.swift
+//  VerifyChatView.swift
 //
 //
-//  Created by Lukáš Korba on 23.11.2023.
+//  Created by Lukáš Korba on 07.12.2023.
 //
 //  MIT License
 //
@@ -32,24 +32,32 @@ import ZcashLightClientKit
 
 import Utils
 
-public struct NewChatView: View {
-    let store: StoreOf<NewChatReducer>
+public struct VerifyChatView: View {
+    let store: StoreOf<VerifyChatReducer>
     
-    public init(store: StoreOf<NewChatReducer>) {
+    public init(store: StoreOf<VerifyChatReducer>) {
         self.store = store
     }
     
     public var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             VStack(alignment: .leading) {
-                Text("Enter the address of a recipient")
+                Text("Enter the address of a sender you expect messages from")
                 TextEditor(text: viewStore.$uAddress)
                     .frame(height: 150)
                     .padding(1)
                     .background {
                         Color.black
                     }
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 20)
+                
+                TextField("verification code", text: viewStore.$verificationText)
+                    .padding(5)
+                    .background {
+                        Rectangle()
+                            .stroke()
+                    }
+                    .padding(.bottom, 20)
                 
                 TextField("alias", text: viewStore.$alias)
                     .padding(5)
@@ -57,15 +65,15 @@ public struct NewChatView: View {
                         Rectangle()
                             .stroke()
                     }
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 20)
 
                 Button {
-                    viewStore.send(.startChatButtonTapped)
+                    viewStore.send(.verifyButtonTapped)
                 } label: {
                     HStack(spacing: 10) {
-                        Text("Start chat")
-                        
-                        if viewStore.isCreatingNewChat {
+                        Text("Verify")
+
+                        if viewStore.isVerifying {
                             ProgressView()
                         }
                     }
@@ -76,8 +84,6 @@ public struct NewChatView: View {
             }
             .padding()
             .navigationBarBackButtonHidden()
-            .onAppear { viewStore.send(.onAppear) }
-            .onDisappear { viewStore.send(.onDisappear) }
         }
         .applyScreenBackground()
         .alert(
@@ -88,12 +94,12 @@ public struct NewChatView: View {
 
 #Preview {
     NavigationStack {
-        NewChatView(
+        VerifyChatView(
             store:
                 Store(
-                    initialState: NewChatReducer.State()
+                    initialState: VerifyChatReducer.State()
                 ) {
-                    NewChatReducer(networkType: ZcashNetworkBuilder.network(for: .testnet).networkType)
+                    VerifyChatReducer(networkType: ZcashNetworkBuilder.network(for: .testnet).networkType)
                         ._printChanges()
                 }
         )

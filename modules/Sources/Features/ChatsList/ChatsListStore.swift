@@ -37,6 +37,7 @@ import Models
 import NewChat
 import TransactionsDebug
 import Utils
+import VerifyChat
 import WalletStorage
 
 @Reducer
@@ -78,6 +79,7 @@ public struct ChatsListReducer {
     
     public enum Action: Equatable {
         case chatButtonTapped(Int, String)
+        case chatRequestsButtonTapped
         case debugButtonTapped
         case didLoadChats(IdentifiedArrayOf<Chat>, IdentifiedArrayOf<Chat>)
         case editChatAliasTapped(Int)
@@ -127,11 +129,13 @@ public struct ChatsListReducer {
         public enum State: Equatable {
             case funds(FundsReducer.State)
             case newChat(NewChatReducer.State)
+            case verifyChat(VerifyChatReducer.State)
         }
         
         public enum Action: Equatable {
             case funds(FundsReducer.Action)
             case newChat(NewChatReducer.Action)
+            case verifyChat(VerifyChatReducer.Action)
         }
         
         public init(networkType: NetworkType) {
@@ -144,6 +148,9 @@ public struct ChatsListReducer {
             }
             Scope(state: /State.newChat, action: /Action.newChat) {
                 NewChatReducer(networkType: networkType)
+            }
+            Scope(state: /State.verifyChat, action: /Action.verifyChat) {
+                VerifyChatReducer(networkType: networkType)
             }
         }
     }
@@ -195,6 +202,10 @@ public struct ChatsListReducer {
             case let .chatButtonTapped(chatId, verificationText):
                 state.path.append(.chatsDetail(ChatDetailReducer.State(chatId: chatId, verificationText: verificationText)))
                 return .none
+                
+            case .chatRequestsButtonTapped:
+                state.sheetPath = .verifyChat(VerifyChatReducer.State())
+                return .none
 
             case .debugButtonTapped:
                 state.path.append(.transactionsDebug(TransactionsDebugReducer.State(transactions: [])))
@@ -236,9 +247,7 @@ public struct ChatsListReducer {
                     let verifiedChats: IdentifiedArrayOf<Chat> = IdentifiedArrayOf(
                         uniqueElements:
                             chats.compactMap {
-                                // TODO: Don't care about verified status of real chats. For now we don't have verification so these wouldn't be shown
-                                // at all.
-//                                guard $0.verified else { return nil }
+                                guard $0.verified else { return nil }
                                 return $0
                             }
                     )

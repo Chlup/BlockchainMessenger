@@ -38,6 +38,7 @@ import Models
 import NewChat
 import TransactionsDebug
 import Utils
+import VerifyChat
 
 public struct ChatsListView: View {
     let store: StoreOf<ChatsListReducer>
@@ -88,16 +89,20 @@ public struct ChatsListView: View {
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                             
-                            HStack {
-                                Text("Incoming chats")
-                                
-                                Text("\(viewStore.incomingChats.count)")
-                                    .foregroundStyle(.white)
-                                    .padding(7)
-                                    .background {
-                                        Circle()
-                                            .foregroundStyle(.red)
-                                    }
+                            Button {
+                                viewStore.send(.chatRequestsButtonTapped)
+                            } label: {
+                                HStack {
+                                    Text("Chat requests")
+                                    
+                                    Text("\(viewStore.incomingChats.count)")
+                                        .foregroundStyle(.white)
+                                        .padding(7)
+                                        .background {
+                                            Circle()
+                                                .foregroundStyle(.red)
+                                        }
+                                }
                             }
                             .neumorphicButton()
                             .listRowBackground(Color.clear)
@@ -198,6 +203,12 @@ public struct ChatsListView: View {
                                 /ChatsListReducer.SheetPath.State.newChat,
                                 action: ChatsListReducer.SheetPath.Action.newChat,
                                 then: NewChatView.init(store:)
+                            )
+                        case .verifyChat:
+                            CaseLet(
+                                /ChatsListReducer.SheetPath.State.verifyChat,
+                                action: ChatsListReducer.SheetPath.Action.verifyChat,
+                                then: VerifyChatView.init(store:)
                             )
                         }
                     }

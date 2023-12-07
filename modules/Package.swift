@@ -27,11 +27,12 @@ let package = Package(
         .library(name: "SDKSynchronizer", targets: ["SDKSynchronizer"]),
         .library(name: "SecItem", targets: ["SecItem"]),
         .library(name: "Utils", targets: ["Utils"]),
+        .library(name: "VerifyChat", targets: ["VerifyChat"]),
         .library(name: "WalletStorage", targets: ["WalletStorage"]),
         .library(name: "ZcashSDKEnvironment", targets: ["ZcashSDKEnvironment"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.5.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.5.1"),
         .package(url: "https://github.com/pointfreeco/swift-case-paths", exact: "1.1.1"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.1"),
         .package(url: "https://github.com/zcash-hackworks/MnemonicSwift", exact: "2.2.4"),
@@ -68,6 +69,7 @@ let package = Package(
                 "SDKSynchronizer",
                 "TransactionsDebug",
                 "Utils",
+                "VerifyChat",
                 "WalletStorage",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ZcashLightClientKit", package: "ZcashLightClientKit")
@@ -293,6 +295,18 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ],
             path: "Sources/Utils",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+        ),
+        .target(
+            name: "VerifyChat",
+            dependencies: [
+                "DerivationTool",
+                "Logger",
+                "Messages",
+                "Utils",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+            ],
+            path: "Sources/Features/VerifyChat",
             plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .target(
