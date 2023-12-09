@@ -51,7 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3457A7CE2B07C91200216B3E /* BlockchainMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlockchainMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3457A7CE2B07C91200216B3E /* Zchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3457A7D12B07C91200216B3E /* BlockchainMessengerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainMessengerApp.swift; sourceTree = "<group>"; };
 		3457A7D52B07C91300216B3E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3457A7D82B07C91300216B3E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 		3457A7CF2B07C91200216B3E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3457A7CE2B07C91200216B3E /* BlockchainMessenger.app */,
+				3457A7CE2B07C91200216B3E /* Zchat.app */,
 				3457A7DE2B07C91300216B3E /* BlockchainMessengerTests.xctest */,
 				3457A7E82B07C91300216B3E /* BlockchainMessengerUITests.xctest */,
 			);
@@ -205,7 +205,7 @@
 				343E4AC02B10999F000E26AE /* ZcashSDKEnvironment */,
 			);
 			productName = BlockchainMessenger;
-			productReference = 3457A7CE2B07C91200216B3E /* BlockchainMessenger.app */;
+			productReference = 3457A7CE2B07C91200216B3E /* Zchat.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3457A7DD2B07C91300216B3E /* BlockchainMessengerTests */ = {
@@ -489,6 +489,7 @@
 				DEVELOPMENT_TEAM = W5KABFU8SV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -502,7 +503,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mugeaters.BlockchainMessenger;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Zchat;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) _TESTNET";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -521,6 +522,7 @@
 				DEVELOPMENT_TEAM = W5KABFU8SV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -534,7 +536,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mugeaters.BlockchainMessenger;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Zchat;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
