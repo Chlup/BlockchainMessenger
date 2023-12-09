@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3457A7CD2B07C91200216B3E"
-               BuildableName = "BlockchainMessenger.app"
+               BuildableName = "Zchat.app"
                BlueprintName = "BlockchainMessenger"
                ReferencedContainer = "container:BlockchainMessenger.xcodeproj">
             </BuildableReference>
@@ -44,7 +44,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3457A7CD2B07C91200216B3E"
-            BuildableName = "BlockchainMessenger.app"
+            BuildableName = "Zchat.app"
             BlueprintName = "BlockchainMessenger"
             ReferencedContainer = "container:BlockchainMessenger.xcodeproj">
          </BuildableReference>
@@ -61,7 +61,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3457A7CD2B07C91200216B3E"
-            BuildableName = "BlockchainMessenger.app"
+            BuildableName = "Zchat.app"
             BlueprintName = "BlockchainMessenger"
             ReferencedContainer = "container:BlockchainMessenger.xcodeproj">
          </BuildableReference>
